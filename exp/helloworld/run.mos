@@ -1,0 +1,3 @@
+// loadModel(Modelica);
+loadFile("text.mo");
+simulate(A);
