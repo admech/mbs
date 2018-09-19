@@ -30,12 +30,12 @@ partial model Joint
   // Force along joint axis
   SI.Torque M;
   // Torque about joint axis
-//  SI.Velocity mu;
+  //  SI.Velocity mu;
   SI.Acceleration mu;
   // Acceleration along joint axis
   //  SI.AngularVelocity lambda; // Angular acceleration about joint axis
   SI.AngularAcceleration lambda;
-//  SI.Velocity mu;
+  //  SI.Velocity mu;
 equation
   RA = InPortA.r + InPortA.T*rA;
   RB = InPortB.r + InPortB.T*rB;
@@ -45,7 +45,7 @@ equation
   vBa = InPortB.v + cross(InPortB.omega, InPortB.T*rB);
   vBe = InPortA.v + cross(InPortA.omega, RB - InPortA.r);
   vBa = vBe + vBr;
-//  vBr = mu*nAi;
+  //  vBr = mu*nAi;
 
   aBa = InPortB.a + cross(InPortB.epsilon, InPortB.T*rB) + cross(InPortB.
     omega, cross(InPortB.omega, InPortB.T*rB));
@@ -54,7 +54,7 @@ equation
   aBa = aBe + 2*cross(InPortA.omega, vBr) + aBr;
   aBr = mu*nAi;
 
-//  aBr = der(vBr);
+  //  aBr = der(vBr);
 
   omegar = InPortB.omega - InPortA.omega;
   //  omegar = lambda*nAi;
@@ -306,7 +306,7 @@ model FixedJoint
   SI.Velocity[3] vA;
   SI.Velocity[3] vB;
   SI.AngularAcceleration lambda;
-//  SI.AngularVelocity mu;
+  //  SI.AngularVelocity mu;
   SI.AngularVelocity[3] omegar "Relative angular velocity";
   SI.AngularAcceleration[3] epsilonr "Relative angular acceleration";
   Real nAi[3] "Unit vector of joint axis w. r. t. inertial frame";
@@ -320,13 +320,13 @@ equation
 
   nAi = InPortA.T*nA;
 
-//  InPortA.epsilon = InPortB.epsilon;
-//  cross(InPortA.T*nA, InPortB.T*nB) = zeros(3);
-//  InPortB.T*nB = mu*(InPortA.T*nA);
-//  InPortB.omega - InPortA.omega = lambda*InPortA.T*nA;
+  //  InPortA.epsilon = InPortB.epsilon;
+  //  cross(InPortA.T*nA, InPortB.T*nB) = zeros(3);
+  //  InPortB.T*nB = mu*(InPortA.T*nA);
+  //  InPortB.omega - InPortA.omega = lambda*InPortA.T*nA;
 
   omegar = InPortB.omega - InPortA.omega;
-//  omegar = lambda*nAi;
+  //  omegar = lambda*nAi;
   epsilonr = InPortB.epsilon - InPortA.epsilon - cross(InPortA.omega, omegar);
   epsilonr = lambda*nAi;
 
@@ -577,19 +577,19 @@ equation
   w = (InPortB.T*i)*nA;
 
   if noEvent(abs((InPortB.T*i)*nA) < cos_of_max and h < R) then //??
-//    relvn = 0;
+  //    relvn = 0;
     Drelvn = 0;
-//    rB[2] = 0;
+  //    rB[2] = 0;
 
-//    Physical:
-//    if (noEvent(abs((InPortB.T*i)*nA) < cos(Modelica.Constants.pi/2 - alpha + 7 * Modelica.Constants.pi/180))) then
+  //    Physical:
+  //    if (noEvent(abs((InPortB.T*i)*nA) < cos(Modelica.Constants.pi/2 - alpha + 7 * Modelica.Constants.pi/180))) then
       Forcet = -fric*relvt*(if noEvent(relvtsqrt <= delta) then 1/delta else 1/relvtsqrt)*Forcen + mu*nA;
-//    else
-//      Forcet = zeros(3);
-//    end if;
+  //    else
+  //      Forcet = zeros(3);
+  //    end if;
 
-//    Shaman:
-//    Forcet = (-fric*relvt*(if noEvent(relvtsqrt <= delta) then 1/delta else 1/relvtsqrt)*Forcen + mu*nA)/(if noEvent(ForceTsqrt < 10^(-3)) then 1 else 10000000);
+  //    Shaman:
+  //    Forcet = (-fric*relvt*(if noEvent(relvtsqrt <= delta) then 1/delta else 1/relvtsqrt)*Forcen + mu*nA)/(if noEvent(ForceTsqrt < 10^(-3)) then 1 else 10000000);
     isInContact = 1;
   else
     Forcen = 0;
@@ -610,30 +610,30 @@ model RollerPointContactForcesGeneral
   parameter Real delta = 10^(-6);
   parameter Real fric = 0.1;
   Real mu;
-//  Real mu(stateSelect = StateSelect.prefer);
+  //  Real mu(stateSelect = StateSelect.prefer);
   Real[3] Forcet;
-//  Real[3] Forcet(start = zeros(3));
+  //  Real[3] Forcet(start = zeros(3));
   Real Drelvn;
   Real Forcen;
   Real isInContact;
-/*
-initial equation 
-if noEvent(abs(cosBtwAxisAndVert) < cos_of_max and h < R) then
-Forcen = 1;
-else
-mu = 0;
-end if;
-*/
+  /*
+  initial equation 
+  if noEvent(abs(cosBtwAxisAndVert) < cos_of_max and h < R) then
+  Forcen = 1;
+  else
+  mu = 0;
+  end if;
+  */
 equation
   if noEvent(abs(cosBtwAxisAndVert) < cos_of_max and InPortB.r[2] < R) then
     isInContact = 1;
     // Signorini:
-//    Drelvn = -200*relvn - 1000*h;
+  //    Drelvn = -200*relvn - 1000*h;
     Drelvn = 0;
-//    Physical:
-//    {Forcet[1], Forcet[3]} = -fric*{relvt[1], relvt[3]}*(if noEvent(relvtsqrt <= delta) then 1/delta else 1/relvtsqrt)*Forcen;
+  //    Physical:
+  //    {Forcet[1], Forcet[3]} = -fric*{relvt[1], relvt[3]}*(if noEvent(relvtsqrt <= delta) then 1/delta else 1/relvtsqrt)*Forcen;
     Forcet = -fric*relvt*(if noEvent(relvtsqrt <= delta) then 1/delta else 1/relvtsqrt)*Forcen + mu*nA;
-//    Forcet[2] = 0;
+  //    Forcet[2] = 0;
   else
     isInContact = 0;
     // Signorini:
@@ -659,30 +659,30 @@ model RollerPointContactForcesGeneralStep
   parameter Real delta = 10^(-6);
   parameter Real fric = 0.1;
   Real mu;
-//  Real mu(stateSelect = StateSelect.prefer);
+  //  Real mu(stateSelect = StateSelect.prefer);
   Real[3] Forcet;
-//  Real[3] Forcet(start = zeros(3));
+  //  Real[3] Forcet(start = zeros(3));
   Real Drelvn;
   Real Forcen;
   Real isInContact;
-/*
-initial equation 
-if noEvent(abs(cosBtwAxisAndVert) < cos_of_max and h < R) then
-Forcen = 1;
-else
-mu = 0;
-end if;
-*/
+    /*
+  initial equation 
+  if noEvent(abs(cosBtwAxisAndVert) < cos_of_max and h < R) then
+  Forcen = 1;
+  else
+  mu = 0;
+  end if;
+  */
 equation
   if noEvent(abs(cosBtwAxisAndVert) < cos_of_max and InPortB.r[2] < R) then
     isInContact = 1;
     // Signorini:
-//    Drelvn = -200*relvn - 1000*h;
+  //    Drelvn = -200*relvn - 1000*h;
     Drelvn = 0;
-//    Physical:
-//    {Forcet[1], Forcet[3]} = -fric*{relvt[1], relvt[3]}*(if noEvent(relvtsqrt <= delta) then 1/delta else 1/relvtsqrt)*Forcen;
+  //    Physical:
+  //    {Forcet[1], Forcet[3]} = -fric*{relvt[1], relvt[3]}*(if noEvent(relvtsqrt <= delta) then 1/delta else 1/relvtsqrt)*Forcen;
     Forcet = -fric*relvt*(if noEvent(relvtsqrt <= delta) then 1/delta else 1/relvtsqrt)*Forcen + mu*nA;
-//    Forcet[2] = 0;
+  //    Forcet[2] = 0;
   else
     isInContact = 0;
     // Signorini:
@@ -711,7 +711,7 @@ model AutonomousPointContactOmniWheelTest
   parameter Real[3] v0 = {1, 0, 0};
   parameter Real[3] omega0 = {0, 1, -1};
   parameter Real pi = Modelica.Constants.pi;
-//  Real[3] d;
+  //  Real[3] d;
   Base Floor 
             annotation (Placement(transformation(extent={{-90,-10},{-70,10}})));
   TwoPortsHeavyBody Roller0(
@@ -791,8 +791,8 @@ model AutonomousPointContactOmniWheelTest
     omega(start = omega0)) 
     annotation (Placement(transformation(extent={{60,-10},{80,10}})));
 equation
-//  d = cross({0, 1, 0}, Wheel.OutPort.T*{0, 0, 1});
-//  Wheel.OutPort.epsilon*d/sqrt(d*d) = 0;
+  //  d = cross({0, 1, 0}, Wheel.OutPort.T*{0, 0, 1});
+  //  Wheel.OutPort.epsilon*d/sqrt(d*d) = 0;
   connect(Floor.OutPort, Contact0.InPortA)           annotation (Line(
       points={{-80,-8},{-80,-76},{-54,-76},{-54,-68}},
       color={0,0,255},
@@ -980,36 +980,36 @@ model OmniWheel
     q(start = QMult(q0, {cos(3*pi/4), 0, 0, sin(3*pi/4)})),
     omega(start = {-omega0[2], 0, omega0[3]} + {0, 0, 0})) 
     annotation (Placement(transformation(extent={{-30,50},{-10,70}})));
-//  Rigid Joint3(
-//  FixedJoint Joint3(
-//  SpringJoint Joint3(
+  //  Rigid Joint3(
+  //  FixedJoint Joint3(
+  //  SpringJoint Joint3(
   FixedJoint Joint3(
     nA = {1, 0, 0},
     nB = {0, -1, 0},
     rA = {0, 0, 0},
     rB = {-R1, 0, 0}) 
     annotation (Placement(transformation(extent={{0,50},{20,70}})));
-//  Rigid Joint2(
-//  SpringJoint Joint2(
-//  FixedJoint Joint2(
+  //  Rigid Joint2(
+  //  SpringJoint Joint2(
+  //  FixedJoint Joint2(
   FixedJoint Joint2(
     nA = {1, 0, 0},
     nB = {-1, 0, 0},
     rA = {0, 0, 0},
     rB = {0, R1, 0}) 
     annotation (Placement(transformation(extent={{0,10},{20,30}})));
-//  Rigid Joint1(
-//  SpringJoint Joint1(
-//  FixedJoint Joint1(
+  //  Rigid Joint1(
+  //  SpringJoint Joint1(
+  //  FixedJoint Joint1(
   FixedJoint Joint1(
     nA = {1, 0, 0},
     nB = {0, 1, 0},
     rA = {0, 0, 0},
     rB = {R1, 0, 0}) 
     annotation (Placement(transformation(extent={{0,-30},{20,-10}})));
-//  Rigid Joint0(
-//  SpringJoint Joint0(
-//  FixedJoint Joint0(
+  //  Rigid Joint0(
+  //  SpringJoint Joint0(
+  //  FixedJoint Joint0(
   FixedJoint Joint0(
     nA = {1, 0, 0},
     nB = {1, 0, 0},
@@ -1228,36 +1228,36 @@ model OmniWheelGeneral
     q(start = QMult(q0, {cos(3*pi/4), 0, 0, sin(3*pi/4)})),
     omega(start = {-omega0[2], 0, omega0[3]} + {0, 0, 0})) 
     annotation (Placement(transformation(extent={{-30,50},{-10,70}})));
-//  Rigid Joint3(
-//  FixedJoint Joint3(
-//  SpringJoint Joint3(
+  //  Rigid Joint3(
+  //  FixedJoint Joint3(
+  //  SpringJoint Joint3(
   FixedJoint Joint3(
     nA = {1, 0, 0},
     nB = {0, -1, 0},
     rA = {0, 0, 0},
     rB = {-R1, 0, 0}) 
     annotation (Placement(transformation(extent={{0,50},{20,70}})));
-//  Rigid Joint2(
-//  SpringJoint Joint2(
-//  FixedJoint Joint2(
+  //  Rigid Joint2(
+  //  SpringJoint Joint2(
+  //  FixedJoint Joint2(
   FixedJoint Joint2(
     nA = {1, 0, 0},
     nB = {-1, 0, 0},
     rA = {0, 0, 0},
     rB = {0, R1, 0}) 
     annotation (Placement(transformation(extent={{0,10},{20,30}})));
-//  Rigid Joint1(
-//  SpringJoint Joint1(
-//  FixedJoint Joint1(
+  //  Rigid Joint1(
+  //  SpringJoint Joint1(
+  //  FixedJoint Joint1(
   FixedJoint Joint1(
     nA = {1, 0, 0},
     nB = {0, 1, 0},
     rA = {0, 0, 0},
     rB = {R1, 0, 0}) 
     annotation (Placement(transformation(extent={{0,-30},{20,-10}})));
-//  Rigid Joint0(
-//  SpringJoint Joint0(
-//  FixedJoint Joint0(
+  //  Rigid Joint0(
+  //  SpringJoint Joint0(
+  //  FixedJoint Joint0(
   FixedJoint Joint0(
     nA = {1, 0, 0},
     nB = {1, 0, 0},
@@ -1432,9 +1432,9 @@ model AutonomousPatchContactOmniWheelSetTest
   parameter Real[3] omega0 = {0, om0, 0};
   parameter Real pi = Modelica.Constants.pi;
 
-//  parameter Real[3] omega1_0 = omega0 + (-d)*om0/R * {0, 0, 1} + ((-d)*v0*{cos(-pi/2 + 0*2*pi/3), 0, sin(-pi/2 + 0*2*pi/3)}) * {0,0,1};
-//  parameter Real[3] omega2_0 = omega0 + (-d)*om0/R * {0, 0, 1} + ((-d)*v0*{cos(-pi/2 + 1*2*pi/3), 0, sin(-pi/2 + 1*2*pi/3)}) * {0,0,1};
-//  parameter Real[3] omega3_0 = omega0 + (-d)*om0/R * {0, 0, 1} + ((-d)*v0*{cos(-pi/2 + 2*2*pi/3), 0, sin(-pi/2 + 2*2*pi/3)}) * {0,0,1};
+  //  parameter Real[3] omega1_0 = omega0 + (-d)*om0/R * {0, 0, 1} + ((-d)*v0*{cos(-pi/2 + 0*2*pi/3), 0, sin(-pi/2 + 0*2*pi/3)}) * {0,0,1};
+  //  parameter Real[3] omega2_0 = omega0 + (-d)*om0/R * {0, 0, 1} + ((-d)*v0*{cos(-pi/2 + 1*2*pi/3), 0, sin(-pi/2 + 1*2*pi/3)}) * {0,0,1};
+  //  parameter Real[3] omega3_0 = omega0 + (-d)*om0/R * {0, 0, 1} + ((-d)*v0*{cos(-pi/2 + 2*2*pi/3), 0, sin(-pi/2 + 2*2*pi/3)}) * {0,0,1};
   parameter Real[3] omega1_0 = omega0 + (-d)*om0/R * {0, 0, 1};
   parameter Real[3] omega2_0 = omega0 + (-d)*om0/R * {0, 0, 1};
   parameter Real[3] omega3_0 = omega0 + (-d)*om0/R * {0, 0, 1};
@@ -1450,7 +1450,7 @@ model AutonomousPatchContactOmniWheelSetTest
   Real _v1( start = v0[1]);
   Real _v3( start = v0[3]);
 
-//  Real[3] d;
+  //  Real[3] d;
   Base Floor 
             annotation (Placement(transformation(extent={{-90,-12},{-70,
             10}})));
@@ -1513,8 +1513,8 @@ model AutonomousPatchContactOmniWheelSetTest
     q0=QMult(q0, {cos(-pi/12),0,sin(-pi/12),0}),
     omega0=omega3_0) 
     annotation (Placement(transformation(extent={{-44,-64},{-16,-36}})));
-//    Real w;
-//    Real w1;
+  //    Real w;
+  //    Real w1;
 equation
 
   der(_angle) = _omega0;
@@ -1530,12 +1530,12 @@ equation
   assert(noEvent(Platform.v[2]*Platform.v[2] < 10^(-precisionLevel_v)),  "Platform has vertical speed !!!");
   assert(noEvent(Platform.omega[1]*Platform.omega[1] + Platform.omega[3]*Platform.omega[3] < 10^(-precisionLevel_omega)),  "Platform.omega is not all [2] !!!");
 
-//  w = (Platform.OutPort.T*{0,1,0})*(Wheel1.Wheel.OutPort.T*{0,0,1});
-//  w1 = (Wheel1.Roller0.OutPort.T*{1,0,0})*(Wheel1.Wheel.OutPort.T*{0,0,1});
-//  w = {0,1,0}*(Wheel2.Wheel.OutPort.T*{0,0,1});
-//  w = (Platform.OutPort.T*{0,1,0})*(Wheel2.Wheel.OutPort.T*{0,0,1});
-//  d = cross({0, 1, 0}, Wheel.OutPort.T*{0, 0, 1});
-//  Wheel.OutPort.epsilon*d/sqrt(d*d) = 0;
+  //  w = (Platform.OutPort.T*{0,1,0})*(Wheel1.Wheel.OutPort.T*{0,0,1});
+  //  w1 = (Wheel1.Roller0.OutPort.T*{1,0,0})*(Wheel1.Wheel.OutPort.T*{0,0,1});
+  //  w = {0,1,0}*(Wheel2.Wheel.OutPort.T*{0,0,1});
+  //  w = (Platform.OutPort.T*{0,1,0})*(Wheel2.Wheel.OutPort.T*{0,0,1});
+  //  d = cross({0, 1, 0}, Wheel.OutPort.T*{0, 0, 1});
+  //  Wheel.OutPort.epsilon*d/sqrt(d*d) = 0;
   connect(Floor.OutPort, Wheel2.InPortK) annotation (Line(
       points={{-80,-9.8},{-80,-26},{-35.6,-26},{-35.6,-12.6}},
       color={0,0,255},
@@ -1618,9 +1618,9 @@ model AutonomousPatchContactOmniWheelSetGeneralTest
   parameter Real[3] omega0 = {0, om0, 0};
   parameter Real pi = Modelica.Constants.pi;
 
-//  parameter Real[3] omega1_0 = omega0 + (-d)*om0/R * {0, 0, 1} + ((-d)*v0*{cos(-pi/2 + 0*2*pi/3), 0, sin(-pi/2 + 0*2*pi/3)}) * {0,0,1};
-//  parameter Real[3] omega2_0 = omega0 + (-d)*om0/R * {0, 0, 1} + ((-d)*v0*{cos(-pi/2 + 1*2*pi/3), 0, sin(-pi/2 + 1*2*pi/3)}) * {0,0,1};
-//  parameter Real[3] omega3_0 = omega0 + (-d)*om0/R * {0, 0, 1} + ((-d)*v0*{cos(-pi/2 + 2*2*pi/3), 0, sin(-pi/2 + 2*2*pi/3)}) * {0,0,1};
+  //  parameter Real[3] omega1_0 = omega0 + (-d)*om0/R * {0, 0, 1} + ((-d)*v0*{cos(-pi/2 + 0*2*pi/3), 0, sin(-pi/2 + 0*2*pi/3)}) * {0,0,1};
+  //  parameter Real[3] omega2_0 = omega0 + (-d)*om0/R * {0, 0, 1} + ((-d)*v0*{cos(-pi/2 + 1*2*pi/3), 0, sin(-pi/2 + 1*2*pi/3)}) * {0,0,1};
+  //  parameter Real[3] omega3_0 = omega0 + (-d)*om0/R * {0, 0, 1} + ((-d)*v0*{cos(-pi/2 + 2*2*pi/3), 0, sin(-pi/2 + 2*2*pi/3)}) * {0,0,1};
   parameter Real[3] omega1_0 = omega0 + (-d)*om0/R * {0, 0, 1};
   parameter Real[3] omega2_0 = omega0 + (-d)*om0/R * {0, 0, 1};
   parameter Real[3] omega3_0 = omega0 + (-d)*om0/R * {0, 0, 1};
@@ -1636,7 +1636,7 @@ model AutonomousPatchContactOmniWheelSetGeneralTest
   Real _v1( start = v0[1]);
   Real _v3( start = v0[3]);
 
-//  Real[3] d;
+  //  Real[3] d;
   Base Floor 
             annotation (Placement(transformation(extent={{-90,-12},{-70,
             10}})));
@@ -1699,8 +1699,8 @@ model AutonomousPatchContactOmniWheelSetGeneralTest
     q0=QMult(q0, {cos(-pi/12),0,sin(-pi/12),0}),
     omega0=omega3_0) 
     annotation (Placement(transformation(extent={{-44,-64},{-16,-36}})));
-//    Real w;
-//    Real w1;
+  //    Real w;
+  //    Real w1;
 equation
 
   der(_angle) = _omega0;
@@ -1716,12 +1716,12 @@ equation
   assert(noEvent(Platform.v[2]*Platform.v[2] < 10^(-precisionLevel_v)),  "Platform has vertical speed !!!");
   assert(noEvent(Platform.omega[1]*Platform.omega[1] + Platform.omega[3]*Platform.omega[3] < 10^(-precisionLevel_omega)),  "Platform.omega is not all [2] !!!");
 
-//  w = (Platform.OutPort.T*{0,1,0})*(Wheel1.Wheel.OutPort.T*{0,0,1});
-//  w1 = (Wheel1.Roller0.OutPort.T*{1,0,0})*(Wheel1.Wheel.OutPort.T*{0,0,1});
-//  w = {0,1,0}*(Wheel2.Wheel.OutPort.T*{0,0,1});
-//  w = (Platform.OutPort.T*{0,1,0})*(Wheel2.Wheel.OutPort.T*{0,0,1});
-//  d = cross({0, 1, 0}, Wheel.OutPort.T*{0, 0, 1});
-//  Wheel.OutPort.epsilon*d/sqrt(d*d) = 0;
+  //  w = (Platform.OutPort.T*{0,1,0})*(Wheel1.Wheel.OutPort.T*{0,0,1});
+  //  w1 = (Wheel1.Roller0.OutPort.T*{1,0,0})*(Wheel1.Wheel.OutPort.T*{0,0,1});
+  //  w = {0,1,0}*(Wheel2.Wheel.OutPort.T*{0,0,1});
+  //  w = (Platform.OutPort.T*{0,1,0})*(Wheel2.Wheel.OutPort.T*{0,0,1});
+  //  d = cross({0, 1, 0}, Wheel.OutPort.T*{0, 0, 1});
+  //  Wheel.OutPort.epsilon*d/sqrt(d*d) = 0;
   connect(Floor.OutPort, Wheel2.InPortK) annotation (Line(
       points={{-80,-9.8},{-80,-26},{-35.6,-26},{-35.6,-12.6}},
       color={0,0,255},
@@ -1804,7 +1804,7 @@ model NRollersOmniWheel
   parameter Real[3] wheelInertia = {1, 1, 1}; //INERZIA STUPIZY
   //TODO: proper roller mass and inertia
   parameter Real rollerMass = wheelMass*rollerFraction/NRollers;
-//  parameter Real[3] rollerInertia = rollerMass * {1/2*(R-R1)^2, 3/12*(R-R1)^2 + 1/12*(2*R*sin(alpha))^2, 3/12*(R-R1)^2 + 1/12*(2*R*sin(alpha))^2};
+  //  parameter Real[3] rollerInertia = rollerMass * {1/2*(R-R1)^2, 3/12*(R-R1)^2 + 1/12*(2*R*sin(alpha))^2, 3/12*(R-R1)^2 + 1/12*(2*R*sin(alpha))^2};
   parameter Real[3] rollerInertia = rollerMass * {1/2, 1, 1};
 
   parameter Real pi = Modelica.Constants.pi;
@@ -1857,8 +1857,8 @@ model NRollersOmniWheel
   Real[3] w;
 
   //assumes that the first roller is in contact!
-//  parameter Real[3] vt0 = v0 + T0*cross(omega0, R1*rollerDirs[1,:]) + T0 * cross(omega0[2] * omega0Dirs[1,:] + {0, 0, omega0[3]} + {0, 0, 0}, (R1-R)*{0, -1, 0});
-//  Real vt(start = sqrt(vt0 * vt0)); //?
+  //  parameter Real[3] vt0 = v0 + T0*cross(omega0, R1*rollerDirs[1,:]) + T0 * cross(omega0[2] * omega0Dirs[1,:] + {0, 0, omega0[3]} + {0, 0, 0}, (R1-R)*{0, -1, 0});
+  //  Real vt(start = sqrt(vt0 * vt0)); //?
 
   //Assumes ideal rolling at start
   Real _vt(start = 0); //?
@@ -1906,7 +1906,7 @@ model NRollersOmniWheelGeneral
   parameter Real[3] wheelInertia = {1, 1, 1}; //INERZIA STUPIZY
   //TODO: proper roller mass and inertia
   parameter Real rollerMass = wheelMass*rollerFraction/NRollers;
-//  parameter Real[3] rollerInertia = rollerMass * {1/2*(R-R1)^2, 3/12*(R-R1)^2 + 1/12*(2*R*sin(alpha))^2, 3/12*(R-R1)^2 + 1/12*(2*R*sin(alpha))^2};
+  //  parameter Real[3] rollerInertia = rollerMass * {1/2*(R-R1)^2, 3/12*(R-R1)^2 + 1/12*(2*R*sin(alpha))^2, 3/12*(R-R1)^2 + 1/12*(2*R*sin(alpha))^2};
   parameter Real[3] rollerInertia = rollerMass * {1/2, 1, 1};
 
   parameter Real pi = Modelica.Constants.pi;
@@ -1933,7 +1933,7 @@ model NRollersOmniWheelGeneral
 
   parameter Real[NRollers,3] joint_nB_Dirs = {qtots[i,:,:]*{1,0,0} for i in 1:NRollers};
 
-//  parameter Real[NRollers,3] omega0roller = {(qtots[i,:,:]*omega0 + (if i == 1 then (v0*(transpose(T0)*{0,0,1}))/(R-R1)*{1,0,0} else {0,0,0})) for i in 1:NRollers};
+  //  parameter Real[NRollers,3] omega0roller = {(qtots[i,:,:]*omega0 + (if i == 1 then (v0*(transpose(T0)*{0,0,1}))/(R-R1)*{1,0,0} else {0,0,0})) for i in 1:NRollers};
   parameter Real[NRollers,3] omega0roller = {(transpose(qtots_local[i,:,:])*omega0) for i in 1:NRollers};
 
   TwoPortsHeavyBody[NRollers] Rollers(
@@ -1973,8 +1973,8 @@ model NRollersOmniWheelGeneral
   Real[3] w;
 
   //assumes that the first roller is in contact!
-//  parameter Real[3] vt0 = v0 + T0*cross(omega0, R1*rollerDirs[1,:]) + T0 * cross(omega0[2] * omega0Dirs[1,:] + {0, 0, omega0[3]} + {0, 0, 0}, (R1-R)*{0, -1, 0});
-//  Real vt(start = sqrt(vt0 * vt0)); //?
+  //  parameter Real[3] vt0 = v0 + T0*cross(omega0, R1*rollerDirs[1,:]) + T0 * cross(omega0[2] * omega0Dirs[1,:] + {0, 0, omega0[3]} + {0, 0, 0}, (R1-R)*{0, -1, 0});
+  //  Real vt(start = sqrt(vt0 * vt0)); //?
 
   //Assumes ideal rolling at start
   Real _vt(start = 0); //?
@@ -2022,7 +2022,7 @@ model NRollersOmniWheelGeneralStep
   parameter Real[3] wheelInertia = {1, 1, 1}; //INERZIA STUPIZY
   //TODO: proper roller mass and inertia
   parameter Real rollerMass = wheelMass*rollerFraction/NRollers;
-//  parameter Real[3] rollerInertia = rollerMass * {1/2*(R-R1)^2, 3/12*(R-R1)^2 + 1/12*(2*R*sin(alpha))^2, 3/12*(R-R1)^2 + 1/12*(2*R*sin(alpha))^2};
+  //  parameter Real[3] rollerInertia = rollerMass * {1/2*(R-R1)^2, 3/12*(R-R1)^2 + 1/12*(2*R*sin(alpha))^2, 3/12*(R-R1)^2 + 1/12*(2*R*sin(alpha))^2};
   parameter Real[3] rollerInertia = rollerMass * {1/2, 1, 1};
 
   parameter Real pi = Modelica.Constants.pi;
@@ -2049,7 +2049,7 @@ model NRollersOmniWheelGeneralStep
 
   parameter Real[NRollers,3] joint_nB_Dirs = {qtots[i,:,:]*{1,0,0} for i in 1:NRollers};
 
-//  parameter Real[NRollers,3] omega0roller = {(qtots[i,:,:]*omega0 + (if i == 1 then (v0*(transpose(T0)*{0,0,1}))/(R-R1)*{1,0,0} else {0,0,0})) for i in 1:NRollers};
+  //  parameter Real[NRollers,3] omega0roller = {(qtots[i,:,:]*omega0 + (if i == 1 then (v0*(transpose(T0)*{0,0,1}))/(R-R1)*{1,0,0} else {0,0,0})) for i in 1:NRollers};
   parameter Real[NRollers,3] omega0roller = {(transpose(qtots_local[i,:,:])*omega0) for i in 1:NRollers};
 
   TwoPortsHeavyBody[NRollers] Rollers(
@@ -2089,8 +2089,8 @@ model NRollersOmniWheelGeneralStep
   Real[3] w;
 
   //assumes that the first roller is in contact!
-//  parameter Real[3] vt0 = v0 + T0*cross(omega0, R1*rollerDirs[1,:]) + T0 * cross(omega0[2] * omega0Dirs[1,:] + {0, 0, omega0[3]} + {0, 0, 0}, (R1-R)*{0, -1, 0});
-//  Real vt(start = sqrt(vt0 * vt0)); //?
+  //  parameter Real[3] vt0 = v0 + T0*cross(omega0, R1*rollerDirs[1,:]) + T0 * cross(omega0[2] * omega0Dirs[1,:] + {0, 0, omega0[3]} + {0, 0, 0}, (R1-R)*{0, -1, 0});
+  //  Real vt(start = sqrt(vt0 * vt0)); //?
 
   //Assumes ideal rolling at start
   Real _vt(start = 0); //?
@@ -2188,9 +2188,9 @@ equation
 
   connect(wheel.InPortF, floor.InPort);
   // Applying constant torque to wheel
-//  wheel.InPortF.F = floor.InPort.F;
-//  wheel.InPortF.M = {0,0,1};
-//  wheel.InPortF.P = floor.InPort.P;
+  //  wheel.InPortF.F = floor.InPort.F;
+  //  wheel.InPortF.M = {0,0,1};
+  //  wheel.InPortF.P = floor.InPort.P;
 
   _r = wheel.Wheel.r;
 
@@ -2203,9 +2203,9 @@ end NRollersPointContactOmniWheelGeneralTest;
 model NRollersPointContactOmniWheelGeneralVerticalTest
   import Modelica.Constants.pi;
 
-//  parameter Real _psi = 0;
+  //  parameter Real _psi = 0;
   parameter Real _psi = 10e-1;//pi/4;
-//  parameter Real _psi = 7e-1;
+  //  parameter Real _psi = 7e-1;
 
   parameter Integer NRollers = 4 "Number of rollers";
   parameter Real alpha = Modelica.Constants.pi/NRollers
@@ -2217,7 +2217,7 @@ model NRollersPointContactOmniWheelGeneralVerticalTest
   parameter Real[4] _q0 = {cos(initial_spin/2), 0, sin(initial_spin/2), 0};
   parameter Real[3] v0 = cross(R*{0, -1, 0}, omega0);
 
-//  ForceBase floor;
+  //  ForceBase floor;
   Base floor;
   NRollersOmniWheelGeneral wheel(
     psi = _psi,
@@ -2265,9 +2265,9 @@ end NRollersPointContactOmniWheelGeneralVerticalTest;
 model NRollersPointContactOmniWheelGeneralVerticalStepTest
   import Modelica.Constants.pi;
 
-//  parameter Real _psi = 0;
+  //  parameter Real _psi = 0;
   parameter Real _psi = 10e-1;//pi/4;
-//  parameter Real _psi = 7e-1;
+  //  parameter Real _psi = 7e-1;
 
   parameter Integer NRollers = 4 "Number of rollers";
   parameter Real alpha = Modelica.Constants.pi/NRollers
@@ -2280,7 +2280,7 @@ model NRollersPointContactOmniWheelGeneralVerticalStepTest
   parameter Real[3] v0 = cross(R*{0, -1, 0}, omega0);
   parameter Real[3] nA = {0, 1, 0} "Vertical";
 
-//  ForceBase floor;
+  //  ForceBase floor;
   Base floor;
   NRollersOmniWheelGeneralStep wheel(
     psi = _psi,
@@ -2323,7 +2323,7 @@ equation
   i1 = i2/sqrt(i2*i2);
   wheel.InPortF.F = {0,0,0};
   wheel.InPortF.M = lambda*i1;
-//  wheel.InPortF.M = {lambda,0,0};
+  //  wheel.InPortF.M = {lambda,0,0};
   wheel.InPortF.P = wheel.Wheel.r;
 
   _r = wheel.Wheel.r;
