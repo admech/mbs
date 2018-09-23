@@ -1,4 +1,4 @@
-within MBS;
+within MbsLite;
 
 partial model RigidBody
 
@@ -34,8 +34,8 @@ protected
 
 equation
   a1 = q[1];
-  A1 = { q[2], q[3], q[4] };
   a2 = 0;
+  A1 = { q[2], q[3], q[4] };
   A2 = { omega[1], omega[2], omega[3] };
   A3 = a1 * A2 + a2 * A1 + cross(A1, A2);
   q3 = { a1 * a2 - A1 * A2, A3[1], A3[2], A3[3] };
