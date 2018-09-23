@@ -5,7 +5,7 @@ model Debug
   annotation
     ( experiment
       ( StopTime                         = 0.01 /* 6 */ 
-      , NumberOfIntervals                = 0.01 /* 6 */ / 0.002
+      , NumberOfIntervals                = 100
       , Tolerance                        = 1e-009
       , Algorithm                        = "Dassl"
       )
@@ -18,7 +18,7 @@ model Debug
 
   // globals
   parameter Real    pi                   = Modelica.Constants.pi;
-  parameter Real[3] gravity              = { 0, 0, 0 }; // { 0, -1, 0 };
+  parameter Real[3] gravity              = { 0, -1, 0 };
 
   // mass and geometry
   parameter Real    platformMass         = 10;
@@ -32,12 +32,12 @@ model Debug
   parameter Real[3] r0                   = { 0, R, 0 }                           "Initial mass center position";
   parameter Real[3] v0                   = { 0, 0, 0 }                           "Initial mass center velocity";
   parameter Real[4] q0                   = { 1, 0, 0, 0 }                        "Initial orientation quaternion";
-  parameter Real    om0                  = 0                                     "Initial angular velocity magnitude";
+  parameter Real    om0                  = 0.1                                   "Initial angular velocity magnitude";
   parameter Real[3] omega0               = { 0, om0, 0 }                         "Initial angular velocity vector";
 
-  parameter Real[3] omega1_0             = omega0 + (-d) * om0 / R * { 0, 0, 1 } "Initial angular velocity of wheel 1";
-  parameter Real[3] omega2_0             = omega0 + (-d) * om0 / R * { 0, 0, 1 } "Initial angular velocity of wheel 2";
-  parameter Real[3] omega3_0             = omega0 + (-d) * om0 / R * { 0, 0, 1 } "Initial angular velocity of wheel 3";
+  parameter Real[3] omega1_0             = omega0 + (-d) / R * om0 * { 0, 0, 1 } "Initial angular velocity of wheel 1";
+  parameter Real[3] omega2_0             = omega0 + (-d) / R * om0 * { 0, 0, 1 } "Initial angular velocity of wheel 2";
+  parameter Real[3] omega3_0             = omega0 + (-d) / R * om0 * { 0, 0, 1 } "Initial angular velocity of wheel 3";
 
   // for plotting
   Real _angle   (start = 0);
