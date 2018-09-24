@@ -3,13 +3,17 @@ within MbsLite;
 model NPortsHeavyBody
   extends RigidBody;
 
-  parameter Integer N;
-  parameter SI.Acceleration[3] Gravity;
+  parameter Integer N = -Integer_inf;
+  parameter SI.Acceleration[3] Gravity = fill(inf, 3);
 
   WrenchPort[N] InPorts;
 
 protected
   Real[N, 3] crosses;
+
+initial algorithm
+  AssertInitializedI(N, "N");
+  AssertInitialized(Gravity, "Gravity");
 
 equation
 

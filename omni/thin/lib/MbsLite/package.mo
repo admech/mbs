@@ -6,5 +6,6 @@ package MbsLite
 
   import Modelica.Constants.pi;
   import Modelica.Constants.inf;
+  import Modelica.Constants.Integer_inf;
 
 end MbsLite;
