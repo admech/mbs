@@ -19,6 +19,7 @@ equation
 
   M = { sum(InPorts.M[i] + crosses[:,i]) for i in 1 : 3 };
 
-  connect(InPorts[1], InPorts[1]);
+  // FIXME: WHY WAS THIS NEEDED ? THE COMPILER IGNORES IT ANYWAY
+  // connect(InPorts[1], InPorts[1]);
 
 end NPortsHeavyBody;
