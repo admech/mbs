@@ -24,14 +24,6 @@ partial model RigidBody
   Real[3, 3]                 T "Matrix of rotation";
   Real                       Active(start=1) "Flag of active dynamics";
 
-protected
-  Real a1;
-  Real a2;
-  Real A1[3];
-  Real A2[3];
-  Real A3[3];
-  Real q3[4];
-
 initial algorithm
   assert(CompareReal(q * q, 1), "Quaternion of body orientation should have norm 1, was: " + String(q * q) + ", q = " + StringA(q) + ". Are the initial conditions specified?");
   AssertInitialized(r, "r");
@@ -42,12 +34,6 @@ initial algorithm
   AssertInitialized(M, "M");
 
 equation
-  a1 = q[1];
-  a2 = 0;
-  A1 = { q[2], q[3], q[4] };
-  A2 = { omega[1], omega[2], omega[3] };
-  A3 = a1 * A2 + a2 * A1 + cross(A1, A2);
-  q3 = { a1 * a2 - A1 * A2, A3[1], A3[2], A3[3] };
 
   der(Active) = 0;
 
@@ -55,13 +41,9 @@ equation
   der(v) = Active * a;
   m * a = F;
 
-  der(q) = Active * 0.5 * q3; // der(q) = Active * 0.5 * QMult(q, { 0, omega[1], omega[2], omega[3] });
+  der(q) = Active * 0.5 * QMult(q, { 0, omega[1], omega[2], omega[3] });
   der(omega) = Active * epsilon;
-  T =
-    [ q[1]^2 + q[2]^2 - q[3]^2 - q[4]^2,    2 * (q[2] * q[3] - q[1] * q[4]),      2 * (q[2] * q[4] + q[1] * q[3])
-    ; 2 * (q[1] * q[4] + q[2] * q[3]),      q[1]^2 - q[2]^2 + q[3]^2 - q[4]^2,    2 * (q[3] * q[4] - q[1] * q[2])
-    ; 2 * (q[2] * q[4] - q[1] * q[3]),      2 * (q[1] * q[2] + q[3] * q[4]),      q[1]^2 - q[2]^2 - q[3]^2 + q[4]^2
-    ] / (q * q);
+  T = QToT(q);
   I * epsilon + cross(omega, I * omega) = transpose(T) * M;
 
   OutPort.r = r;
