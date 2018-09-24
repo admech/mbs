@@ -117,6 +117,7 @@ model Debug
       ]
     , r0      = r0 + { -d*cos(pi/3), 0,d *cos(pi/6) }
     , v0      = v0 + cross(omega0, { -d*cos(pi/3), 0, d*cos(pi/6) })
+    // FIXME: LOOKS LIKE IT SHOULD BE 11 * pi / 12 RATHER THAN -pi / 12
     , q0      = QMult(q0, { cos(-pi/12), 0, sin(-pi/12), 0 })
     , omega0  = omega3_0
     );

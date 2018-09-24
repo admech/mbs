@@ -28,6 +28,7 @@ model OmniWheelGeneral
   parameter Real[n, 3]  RollerCenterDirections  = { { sin(RollerAngles[i]), -cos(RollerAngles[i]), 0 } for i in 1 : n };
   parameter Real[n, 3]  RollerAxisDirections    = { { cos(RollerAngles[i]), sin(RollerAngles[i]),  0 } for i in 1 : n };
   parameter Real[n, 3]  RollerCenters           = R1 * RollerCenterDirections;
+  parameter Real[n, 3]  VerticalInRollersAxes   = { { sin(RollerAngles[i]), cos(RollerAngles[i]),  0 } for i in 1 : n };
 
   RollerPointContactForcesGeneral[n] Contacts;
 
@@ -40,7 +41,7 @@ model OmniWheelGeneral
       , omega
           ( start
             = { { 0, 0, omega0[3] } for i in 1 : n }
-            + omega0[2] * RollerCenterDirections
+            + omega0[2] * VerticalInRollersAxes
           )
       );
 
@@ -79,7 +80,7 @@ equation
     connect(Rollers[i].InPorts[2],   Joints[i].OutPortA);
     connect(Rollers[i].OutPort,      Joints[i].InPortA);
 
-    connect(Wheel.InPorts[i],        Joints[i].OutPortB); // fixme: should it be symmetric as it is now ?
+    connect(Wheel.InPorts[i + 1],    Joints[i].OutPortB); // fixme: should it be assymmetric as it is now ?
 
     connect(Wheel.OutPort,           Joints[i].InPortB);
   end for;
