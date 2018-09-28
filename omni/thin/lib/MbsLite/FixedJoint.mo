@@ -1,19 +1,20 @@
-within MbsLite.Examples.OmniVehicle.PointContact;
+within MbsLite;
 
 model FixedJoint
   extends Constraint;
 
-  parameter Real[3]        nA;
-  parameter Real[3]        nB;
-  parameter SI.Position[3] rA = zeros(3)    "Constraint position in body A";
-  parameter SI.Position[3] rB = zeros(3)    "Constraint position in body B";
+  parameter Real[3]        nA               "Axis in body A local";
+  parameter Real[3]        nB               "Axis in body B local";
+  parameter SI.Position[3] rA = zeros(3)    "Axis position in body A local";
+  parameter SI.Position[3] rB = zeros(3)    "Axis position in body B local";
 
   SI.Position[3]             RA;
   SI.Position[3]             RB;
   SI.Velocity[3]             vA;
   SI.Velocity[3]             vB;
-  SI.AngularAcceleration     lambda;
-  // SI.AngularVelocity         mu;
+  SI.AngularAcceleration     lambda         "Relative angular acceleration along the axis";
+  SI.AngularVelocity         mu             "Relative angular velocity along the axis";
+  SI.AngularVelocity         angle          "Relative angle. Beware numeric error accumulation!";
   SI.AngularVelocity[3]      omegar         "Relative angular velocity";
   SI.AngularAcceleration[3]  epsilonr       "Relative angular acceleration";
 
@@ -37,9 +38,9 @@ equation
   //  InPortB.omega - InPortA.omega = lambda * InPortA.T*nA;
 
   omegar = InPortB.omega - InPortA.omega;
-  //  omegar = lambda * nAi;
   epsilonr = InPortB.epsilon - InPortA.epsilon - cross(InPortA.omega, omegar);
   epsilonr = lambda * nAi;
+  //  omegar = lambda * nAi;
 
   M = OutPortA.M * nAi;
   M = 0;
@@ -47,4 +48,8 @@ equation
   OutPortA.P = RA;
   OutPortB.P = RB;
 
+  der(mu) = lambda;
+  der(angle) = mu;
+
 end FixedJoint;
+

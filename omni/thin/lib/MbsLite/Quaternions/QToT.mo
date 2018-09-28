@@ -1,4 +1,4 @@
-within MbsLite;
+within MbsLite.Quaternions;
 
 function QToT "Converts quaternion to Rotation matrix."
 
