@@ -4,6 +4,8 @@ model PendulumTest
 
   import MbsLite.Examples.Misc.Pendulum;
 
+  parameter Real expectedAngle = -0.111270;
+
   Pendulum p
     ( name = "Pendulum"
     , m = 1
@@ -13,16 +15,16 @@ model PendulumTest
     );
 
   annotation(experiment
-    ( StopTime = 0.011
+    ( StopTime = 10
     , NumberOfIntervals = 100
     , Tolerance = 1e-9
     , Algorithm = "Dassl"
     ));
 equation
-  when time > 0.01 then
+  when time == 10.0 then
     assert
-      ( MbsLite.CompareReal(0, 0)
-      , "zero should be zero, was: " + String(0)
+      ( MbsLite.CompareReal(expectedAngle, p.joint.angle)
+      , "angle should be " + String(expectedAngle) + ", was: " + String(p.joint.angle)
       );
   end when;
 end PendulumTest;
