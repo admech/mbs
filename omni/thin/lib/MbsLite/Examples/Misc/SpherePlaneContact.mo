@@ -14,10 +14,9 @@ model SpherePlaneContact
   Real[3] vA "velocity of the contacting point of the ball";
   Real[3] vB "velocity of the contacting point of the plane";
   Real[3] relV;
+  Real[3] DrelV;
   Real    relVN;
-  Real    DrelVN;
   Real[3] relVT;
-  Real[3] DrelVT;
 
 initial algorithm
   AssertInitializedS(name, name,  "name");
@@ -27,7 +26,6 @@ equation
 
   // contact point is always exactly under the center of the ball
   rc = InPortA.r - R * vertical;
-  OutPortA.P = rc;
 
   vA = Euler(InPortA.r, rc, InPortA.v, InPortA.omega);
   vB = Euler(InPortB.r, rc, InPortB.v, InPortB.omega);
@@ -38,14 +36,13 @@ equation
   // below conditions are applied to the acceleration for numerical tractability
 
   // make the ball keep itself on top of the plane and not fall through
-  der(relVN) = DrelVN;
-  DrelVN = 0;
   assert(CompareReal(relVN, 0), "the ball is falling down!");
 
   // disallow slippage
-  der(relVT) = DrelVT;
-  DrelVT = zeros(3);
   assert(CompareReal(norm(relVT), 0), "the ball is slipping!");
+
+  der(relV) = DrelV;
+  DrelV = zeros(3);
 
   // "export" force information
 

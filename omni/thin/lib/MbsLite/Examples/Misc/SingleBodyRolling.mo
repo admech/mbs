@@ -17,7 +17,7 @@ model SingleBodyRolling
     , I = I
     , N = 1
     , Gravity = { 0, -1, 0 }
-    , r(start = { 0, 0, 0 })
+    , r(start = { 0, R, 0 })
     , v(start = v0)
     , q(start = { 1, 0, 0, 0 })
     , omega(start = omega0)
@@ -40,10 +40,11 @@ initial algorithm
 
 equation
   
-  connect(body.OutPort, contact.InPortA);
-  connect(base.OutPort, contact.InPortB);
-
+  connect(body.OutPort,    contact.InPortA);
+  connect(base.OutPort,    contact.InPortB);
   connect(body.InPorts[1], contact.OutPortA);
+
+  assert(CompareReal(body.OutPort.r[2], R), "The ball fell down!");
 
 end SingleBodyRolling;
 
