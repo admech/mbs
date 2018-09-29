@@ -2,27 +2,17 @@ within MbsLite.Examples.OmniVehicle.PointContact;
 
 model OmniWheelGeneral
 
-  parameter Real pi = Modelica.Constants.pi;
-  parameter SI.Acceleration[3] Gravity = { 0, -1, 0 };
+  parameter SI.Acceleration[3] Gravity;
 
-  parameter Integer      n        = 4               "Number of rollers";
+  parameter Integer      n                          "Number of rollers";
   parameter Real         alpha    = pi / n          "Max angle of the half-sector";
-  parameter Real         R        = 1               "Omni wheel outer radius";
+  parameter Real         R                          "Omni wheel outer radius";
   parameter Real         R1       = R * cos(alpha)  "Omni wheel inner radius";
-  parameter Real[3]      r0       = { 0, R, 0 };
-  parameter Real[4]      q0       = { 1, 0, 0, 0 };
-  parameter Real[3]      v0       = { 1, 0, 0 };
-  parameter Real[3]      omega0   = { 0, 0, -1 };
-  parameter Real[3, 3]   T0       = identity(3);
-
-  annotation
-  ( experiment
-      ( StopTime=40
-      , NumberOfIntervals=50000
-      , Tolerance=1e-008
-      )
-  , experimentSetupOutput
-  );
+  parameter Real[3]      r0;
+  parameter Real[4]      q0;
+  parameter Real[3]      v0;
+  parameter Real[3]      omega0;
+  parameter Real[3, 3]   T0       = QToT(q0);
 
   parameter Real[n]     RollerAngles            = { (2 * alpha * (i - 1)) for i in 1 : n } "Angles between downward vertical { 0, -1, 0 } and roller center radius vectors";
   parameter Real[n, 3]  RollerCenterDirections  = { { sin(RollerAngles[i]), -cos(RollerAngles[i]), 0 } for i in 1 : n };

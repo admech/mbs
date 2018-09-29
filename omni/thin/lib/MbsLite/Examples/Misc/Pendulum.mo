@@ -7,21 +7,33 @@ model Pendulum
         | \
         |  \
         |   \
-        |    *
-        |     `
-        | pi/6 `
+        |    \
+        |     \
+        |      *
+        |       `
+        | angle0 `
   */
+
+  parameter String     name;
+  
+  parameter Real       m;
+  parameter Real[3, 3] I;
+  parameter Real       l;
+  parameter Real       angle0;
+
+  parameter Real[4]    q0 = QRot(angle0, { 0, 0, 1 });
+  parameter Real[3]    bodyAxisPositionLocal = { 0, l, 0 };
+  parameter Real[3]    bodyMassCenterGlobal = QToT(q0) * (-bodyAxisPositionLocal);
+  parameter Real[3]    userwardNormalToTheScreen = { 0, 0, 1 };
 
   Base base;
 
-  parameter Real[4] q0 = QRot(pi/6, { 0, 0, 1 });
-  parameter Real[3] bodyAxisPositionLocal = { 0, 1, 0 };
-  parameter Real[3] bodyMassCenterGlobal = QToT(q0) * (-bodyAxisPositionLocal);
-  parameter Real[3] userwardNormalToTheScreen = { 0, 0, 1 };
-
   NPortsHeavyBody body
-    ( N = 1
+    ( name = name + ".body"
+    , N = 1
     , Gravity = { 0, -1, 0 }
+    , m = m
+    , I = I
     , r(start = bodyMassCenterGlobal)
     , v(start = { 0, 0, 0 })
     , q(start = q0)
@@ -34,6 +46,15 @@ model Pendulum
     , rA = { 0, 0, 0 }
     , rB = bodyAxisPositionLocal
     );
+
+initial algorithm
+  AssertInitializedS(name, name,       "name");
+  AssertInitialized(name,  { m },      "m");
+  AssertInitialized(name,  I[1, :],    "I[1, :]");
+  AssertInitialized(name,  I[2, :],    "I[2, :]");
+  AssertInitialized(name,  I[3, :],    "I[3, :]");
+  AssertInitialized(name,  { l },      "l");
+  AssertInitialized(name,  { angle0 }, "angle0");
 
 equation
 

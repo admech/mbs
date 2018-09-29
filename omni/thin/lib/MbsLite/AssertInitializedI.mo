@@ -2,11 +2,12 @@ within MbsLite;
 
 function AssertInitializedI
   
+  input String modelName;
   input Integer value;
-  input String name;
+  input String parameterName;
 
 algorithm
   
-  assert(value > -Integer_inf, name + " is not initialized");
+  assert(value > -Integer_inf, modelName + ": " + parameterName + " is not initialized");
 
 end AssertInitializedI;

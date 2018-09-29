@@ -12,8 +12,8 @@ protected
   Real[N, 3] crosses;
 
 initial algorithm
-  AssertInitializedI(N, "N");
-  AssertInitialized(Gravity, "Gravity");
+  AssertInitializedI(name, N,       "N");
+  AssertInitialized(name,  Gravity, "Gravity");
 
 equation
 

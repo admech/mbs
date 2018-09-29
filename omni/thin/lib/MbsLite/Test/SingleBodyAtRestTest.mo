@@ -3,7 +3,10 @@ within MbsLite.Test;
 model SingleBodyAtRestTest
 
   MbsLite.NPortsHeavyBody b
-    ( N = 0
+    ( name = "body"
+    , m = 1
+    , I = identity(3)
+    , N = 0
     , Gravity = { 0, 0, 0 }
     , r(start = { 0, 0, 0 })
     , v(start = { 0, 0, 0 })

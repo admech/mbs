@@ -1,16 +1,10 @@
 within MbsLite.Test;
 
-model PendulumTest
+model OmniWheelTest
 
-  import MbsLite.Examples.Misc.Pendulum;
+  import MbsLite.Examples.OmniVehicle.PointContact.OmniWheelVertical;
 
-  Pendulum p
-    ( name = "Pendulum"
-    , m = 1
-    , I = identity(3)
-    , l = 1
-    , angle0 = pi / 6
-    );
+  OmniWheelVertical wheel;
 
   annotation(experiment
     ( StopTime = 0.011
@@ -25,5 +19,5 @@ equation
       , "zero should be zero, was: " + String(0)
       );
   end when;
-end PendulumTest;
 
+end OmniWheelTest;

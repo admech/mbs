@@ -4,8 +4,10 @@ partial model RigidBody
 
   replaceable KinematicPort OutPort;
 
-  parameter SI.Mass                   m = 1                                "Mass of the body";
-  parameter SI.MomentOfInertia[3, 3]  I = [ 1, 0, 0;  0, 1, 0;  0, 0, 1 ]  "Body's central tensor of inertia";
+  parameter String                    name = "NOT INITIALIZED";
+
+  parameter SI.Mass                   m (start = inf)      "Mass of the body";
+  parameter SI.MomentOfInertia[3, 3]  I (each start = inf) "Central tensor of inertia of the body";
 
   SI.Position[3]             r (each start = inf) "Radius vector of masscenter in global coords";
   SI.Velocity[3]             v (each start = inf) "Velocity vector of masscenter";
@@ -24,16 +26,21 @@ partial model RigidBody
   SI.Torque[3]               M (each start = inf) "Sum of all torques applied";
 
   Real[3, 3]                 T "Matrix of rotation. T * local = global, cols = coords of local base in global";
-  Real                       Active(start=1) "Flag of active dynamics";
+  Real                       Active (start=1) "Flag of active dynamics";
 
 initial algorithm
   assert(CompareReal(q * q, 1), "Quaternion of body orientation should have norm 1, was: " + String(q * q) + ", q = " + StringA(q) + ". Are the initial conditions specified?");
-  AssertInitialized(r, "r");
-  AssertInitialized(v, "v");
-  AssertInitialized(q, "q");
-  AssertInitialized(omega, "omega");
-  AssertInitialized(F, "F");
-  AssertInitialized(M, "M");
+  AssertInitializedS(name,  name, "name");
+  AssertInitialized(name,  { m }, "m");
+  AssertInitialized(name,  I[1, :], "I[1, :]");
+  AssertInitialized(name,  I[2, :], "I[2, :]");
+  AssertInitialized(name,  I[3, :], "I[3, :]");
+  AssertInitialized(name,  r, "r");
+  AssertInitialized(name,  v, "v");
+  AssertInitialized(name,  q, "q");
+  AssertInitialized(name,  omega, "omega");
+  AssertInitialized(name,  F, "F");
+  AssertInitialized(name,  M, "M");
 
 equation
 
