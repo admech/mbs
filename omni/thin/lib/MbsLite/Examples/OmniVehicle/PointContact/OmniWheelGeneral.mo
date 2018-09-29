@@ -4,7 +4,12 @@ model OmniWheelGeneral
 
   parameter SI.Acceleration[3] Gravity;
 
+  parameter String       name     = "NOT INITIALIZED";
+
   parameter Integer      n                          "Number of rollers";
+  parameter Real         rollerMass                 ;
+  parameter Real         rollerAxialMoi             "Roller moment of inertia wrt its axis";
+  parameter Real         rollerOrthogonalMoi        "Roller moment of inertia wrt any axis orthogonal to the main roller axis";
   parameter Real         alpha    = pi / n          "Max angle of the half-sector";
   parameter Real         R                          "Omni wheel outer radius";
   parameter Real         R1       = R * cos(alpha)  "Omni wheel inner radius";
@@ -23,7 +28,10 @@ model OmniWheelGeneral
   RollerPointContactForcesGeneral[n] Contacts;
 
   NPortsHeavyBody[n] Rollers
-      ( each N = 2
+      ( name = { name + ".Rollers[" + String(i) + "]" for i in 1 : n }
+      , m = rollerMass
+      , each I = diagonal({ rollerAxialMoi, rollerOrthogonalMoi, rollerOrthogonalMoi })
+      , each N = 2
       , each Gravity = Gravity
       , r(start = { r0 + T0 * RollerCenters[i] for i in 1 : n })
       , v(start = { v0 + T0 * cross(omega0, RollerCenters[i]) for i in 1 : n })
@@ -56,6 +64,19 @@ model OmniWheelGeneral
   KinematicPort  OutPortK;
 
   Real[3]        w; // fixme: why do we need this variable ?
+
+initial algorithm
+  AssertInitializedS(name,  name,     "name");
+  AssertInitializedI(name,  n,        "n");
+  AssertInitialized (name,  { rollerMass },          "rollerMass");
+  AssertInitialized (name,  { rollerAxialMoi },      "rollerAxialMoi");
+  AssertInitialized (name,  { rollerOrthogonalMoi }, "rollerOrthogonalMoi");
+  AssertInitialized (name,  { R },    "R");
+  AssertInitialized (name,  r0,       "r0");
+  AssertInitialized (name,  q0,       "q0");
+  AssertInitialized (name,  v0,       "v0");
+  AssertInitialized (name,  omega0,   "omega0");
+  AssertInitialized (name,  Gravity,  "Gravity");
 
 equation
 
