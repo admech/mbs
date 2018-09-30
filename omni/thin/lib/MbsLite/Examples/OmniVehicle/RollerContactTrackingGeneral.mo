@@ -20,7 +20,10 @@ partial model RollerContactTrackingGeneral
   parameter Real[3]  i = { 1, 0, 0 }                         "Roller axis of symmetry unit vector";
   // parameter Real     cos_of_max = 0.3820515; // For psi = 1.0
   // parameter Real     cos_of_max = 0.44; // For psi = 0.9
-  parameter Real     cos_of_max = 0.4927; // For psi = 0.8
+
+  parameter Real     cos_of_max = cos(alpha); // For psi = 0
+  // parameter Real     cos_of_max = 0.4927; // For psi = 0.8 ~= pi / 4
+
   // parameter Real     cos_of_max = 0.5408; // For psi = 0.7
   // parameter Real     cos_of_max = 0.584; // For psi = 0.6
   // parameter Real     cos_of_max = 0.62; // For psi = 0.5

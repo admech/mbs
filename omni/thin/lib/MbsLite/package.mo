@@ -10,6 +10,8 @@ package MbsLite
 
   import Modelica.Math.Vectors.norm;
 
-  import MbsLite.Quaternions.*;
+  import MbsLite.Util.*;
+  import MbsLite.Util.Assert.*;
+  import MbsLite.Util.Quaternions.*;
 
 end MbsLite;

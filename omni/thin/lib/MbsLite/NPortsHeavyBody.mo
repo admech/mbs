@@ -13,7 +13,7 @@ protected
 
 initial algorithm
   AssertInitializedI(name, N,       "N");
-  AssertInitialized(name,  Gravity, "Gravity");
+  AssertInitialized (name, Gravity, "Gravity");
 
 equation
 
