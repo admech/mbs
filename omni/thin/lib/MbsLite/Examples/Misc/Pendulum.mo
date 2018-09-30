@@ -26,6 +26,9 @@ model Pendulum
   parameter Real[3]    bodyMassCenterGlobal = QToT(q0) * (-bodyAxisPositionLocal);
   parameter Real[3]    userwardNormalToTheScreen = { 0, 0, 1 };
 
+  Real[3] F;
+  Real[3] M;
+
   Base base;
 
   NPortsHeavyBody body
@@ -59,12 +62,25 @@ initial algorithm
 equation
 
   connect(base.OutPort, joint.InPortA);
-  connect(body.OutPort, joint.InPortB);
+  joint.OutPortA.F = F;
+  joint.OutPortA.M = M;
+
+  connect(body.OutPort,    joint.InPortB);
   connect(body.InPorts[1], joint.OutPortB);
 
   assert
     ( CompareReal(1, norm(body.r))
     , "body should stay at distance of 1 from origin, was: " + String(norm(body.r))
+    );
+
+  assert
+    ( CompareReal(0, norm(joint.RA), absTol = 1e-8)
+    , "joint should be fixed at origin, was: " + StringA(joint.RA)
+    );
+
+  assert
+    ( CompareReal(0, norm(joint.RB), absTol = 1e-8)
+    , "joint fixture point in body should coincide with origin, was: " + StringA(joint.RB)
     );
 
 end Pendulum;

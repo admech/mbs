@@ -7,7 +7,7 @@ model OmniWheelAtRestTest
   OmniWheelAtRest m;
 
   annotation(experiment
-    ( StopTime = 1
+    ( StopTime = 10
     , NumberOfIntervals = 1000
     , Tolerance = 1e-9
     , Algorithm = "Dassl"

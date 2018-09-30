@@ -42,12 +42,16 @@ model OmniWheelAtRest
     , r0      = R * vertical
     , q0      = q0
     , v0      = v0vec
-    , omega0  = 1 / R * cross(vertical, v0vec)
+    , omega0  = { 0, 0, 1 } // 1 / R * cross(vertical, v0vec)
     );
 
 equation
 
-  connect(wheel.InPortK, base.OutPort);
+  for i in 1 : n loop
+    wheel.Rollers[i].InPorts[1].P = wheel.Rollers[i].OutPort.r;
+    wheel.Rollers[i].InPorts[1].F = zeros(3);
+    wheel.Rollers[i].InPorts[1].M = zeros(3);
+  end for;
 
   wheel.InPortF.P = wheel.OutPortK.r;
   wheel.InPortF.F = zeros(3);

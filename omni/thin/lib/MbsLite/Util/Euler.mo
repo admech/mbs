@@ -13,4 +13,6 @@ algorithm
 
   velocityOfPoint := velocityOfOrigin + cross(omega, point - origin);
 
+  annotation(Inline=true);
+
 end Euler;

@@ -12,9 +12,7 @@ partial model RigidBody
   SI.Position[3]             r (each start = inf) "Radius vector of masscenter in global coords";
   SI.Velocity[3]             v (each start = inf) "Velocity vector of masscenter";
   SI.Acceleration[3]         a                    "Acceleration vector of masscenter";
-  Real[4]                    q (each start = inf) "Quaternion of body orientation.
-    QToT(q) * local = global.
-    QRot(pi/6, { 0, 0, 1 }) => this body is rotated clockwise along the third axis (normal to the screen) by pi/6";
+  Real[4]                    q (each start = inf) "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6";
 
   SI.AngularVelocity[3]      omega   (each start = inf) "Vector of angular rate in local coords";
   SI.AngularAcceleration[3]  epsilon                    "Vector of angular acceleration";

@@ -8,7 +8,6 @@ model NPortsHeavyBody
 
   WrenchPort[N] InPorts;
 
-protected
   Real[N, 3] crosses;
 
 initial algorithm

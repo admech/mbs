@@ -19,4 +19,6 @@ algorithm
     , s * axis[3]
     };
 
+  annotation(Inline=true);
+
 end QRot;

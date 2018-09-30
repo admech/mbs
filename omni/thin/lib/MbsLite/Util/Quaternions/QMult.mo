@@ -25,4 +25,6 @@ algorithm
 
   q3 := { a1 * a2 - A1 * A2, A3[1], A3[2], A3[3] };
 
+  annotation(Inline=true);
+
 end QMult;

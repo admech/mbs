@@ -1,6 +1,6 @@
 within MbsLite.Examples.OmniVehicle.PointContact;
 
-model OmniWheel
+model OmniWheelOnPlane
 
   parameter SI.Acceleration[3] Gravity (each start = inf);
   constant  Real[3] rollerAxisLocal  = { 1, 0, 0 };
@@ -29,10 +29,23 @@ model OmniWheel
 
   parameter Real[nOne]     RollerAngles            = { (2 * alpha * (i - 1)) for i in 1 : nOne } "Angles between downward vertical { 0, -1, 0 } and roller center radius vectors";
   parameter Real[nOne, 4]  RollerQs                = { QMult(q0, QRot(RollerAngles[i], wheelAxis)) for i in 1 : nOne };
+  /*
+  parameter Real[nOne, 3]  RollerCenterDirections  = { { sin(RollerAngles[i]), -cos(RollerAngles[i]), 0 } for i in 1 : nOne };
+  parameter Real[nOne, 3]  RollerAxisDirections    = { { cos(RollerAngles[i]), sin(RollerAngles[i]),  0 } for i in 1 : nOne };
+  parameter Real[nOne, 3]  RollerCenters           = R1 * RollerCenterDirections;
+  parameter Real[nOne, 3]  VerticalInRollersAxes   = { { sin(RollerAngles[i]), cos(RollerAngles[i]),  0 } for i in 1 : nOne };
+  */
   parameter Real[nOne, 3]  VerticalInRollersAxes   = { QToT(RollerQs[i, :]) * vertical        for i in 1 : nOne };
   parameter Real[nOne, 3]  RollerCenterDirections  = -VerticalInRollersAxes;
   parameter Real[nOne, 3]  RollerAxisDirections    = { QToT(RollerQs[i, :]) * rollerAxisLocal for i in 1 : nOne };
   parameter Real[nOne, 3]  RollerCenters           = R1 * RollerCenterDirections;
+
+  RollerPointContactForcesGeneral[nOne] Contacts
+      ( name     = { name + ".Contacts[" + String(i) + "]" for i in 1 : nOne }
+      , each n   = n
+      , each R   = R
+      , each psi = psi
+      );
 
   NPortsHeavyBody[nOne] Rollers
       ( name = { name + ".Rollers[" + String(i) + "]" for i in 1 : nOne }
@@ -69,8 +82,11 @@ model OmniWheel
     , omega(start = omega0)
     );
 
+  KinematicPort  InPortK   "takes kinematics from base (which has only an OutPort and which needn't import any forces as it has no dynamics)";
   WrenchPort     InPortF   "imports forces from the platform or verticality constraint";
   KinematicPort  OutPortK  "exports kinematics to the platform or verticality constraint";
+
+  Real[3]        w; // fixme: why do we need this variable ?
 
 initial algorithm
   AssertInitializedS(name,  name,     "name");
@@ -92,6 +108,14 @@ initial algorithm
 equation
 
   for i in 1 : nOne loop
+    Contacts[i].n1k = Wheel.T * { 0, 0, 1 };
+    Contacts[i].rho = (Wheel.r - Rollers[i].r) / sqrt((Wheel.r - Rollers[i].r) * (Wheel.r - Rollers[i].r));
+
+    // interactions between Rollers and base (the floor) -- via Contacts
+    connect(InPortK,                 Contacts[i].InPortA);  // kinematics from base (floor) goes in via InPortK and is being passed into Contacts via their InPortA
+    connect(Rollers[i].OutPort,      Contacts[i].InPortB);  // similarly, kinematics from Rollers is fed in into Contacts via InPortB
+    connect(Rollers[i].InPorts[1],   Contacts[i].OutPortB); // then what forces are calculated within Contacts, are being exported to Rollers from the Contacts' OutPortB and via the Rollers' first InPorts
+
     // interactions between Rollers and the Wheel hub -- via Joints
     connect(Rollers[i].InPorts[2],   Joints[i].OutPortA); // as everywhere, forces come from inside the Joints into Rollers (via OutPortA and right into second InPorts, respectively)
     connect(Rollers[i].OutPort,      Joints[i].InPortA);  // conversely, kinematics of the Rollers is being exported into Joints
@@ -103,4 +127,6 @@ equation
   connect(Wheel.InPorts[1],  InPortF);  // forces come in
   connect(Wheel.OutPort,     OutPortK); // kinematics are exported
 
-end OmniWheel;
+  w = transpose(Wheel.OutPort.T) * (Rollers[1].r - Wheel.r);
+
+end OmniWheelOnPlane;
