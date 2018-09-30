@@ -1,12 +1,16 @@
 within MbsLite.Examples.OmniVehicle.PointContact;
 
-model OmniWheelGeneral
+model SingleRollerOmniWheel
 
-  parameter SI.Acceleration[3] Gravity;
+  parameter SI.Acceleration[3] Gravity (each start = inf);
 
-  parameter String       name     = "NOT INITIALIZED";
+  parameter String  name = "NOT INITIALIZED";
+
+  constant  Integer nOne = 1;
+  constant  Integer iOne = 1;
 
   parameter Integer      n        = -Integer_inf    "Number of rollers";
+  parameter Real         psi      = inf             "Roller mecanum angle";
   parameter Real         rollerMass            = inf  ;
   parameter Real         rollerAxialMoi        = inf  "Roller moment of inertia wrt its axis";
   parameter Real         rollerOrthogonalMoi   = inf  "Roller moment of inertia wrt any axis orthogonal to the main roller axis";
@@ -22,31 +26,36 @@ model OmniWheelGeneral
   parameter Real[3]      omega0   (each start = inf);
   parameter Real[3, 3]   T0       = QToT(q0);
 
-  parameter Real[n]     RollerAngles            = { (2 * alpha * (i - 1)) for i in 1 : n } "Angles between downward vertical { 0, -1, 0 } and roller center radius vectors";
-  parameter Real[n, 3]  RollerCenterDirections  = { { sin(RollerAngles[i]), -cos(RollerAngles[i]), 0 } for i in 1 : n };
-  parameter Real[n, 3]  RollerAxisDirections    = { { cos(RollerAngles[i]), sin(RollerAngles[i]),  0 } for i in 1 : n };
-  parameter Real[n, 3]  RollerCenters           = R1 * RollerCenterDirections;
-  parameter Real[n, 3]  VerticalInRollersAxes   = { { sin(RollerAngles[i]), cos(RollerAngles[i]),  0 } for i in 1 : n };
+  parameter Real[nOne]     RollerAngles            = { (2 * alpha * (i - 1)) for i in 1 : nOne } "Angles between downward vertical { 0, -1, 0 } and roller center radius vectors";
+  parameter Real[nOne, 3]  RollerCenterDirections  = { { sin(RollerAngles[i]), -cos(RollerAngles[i]), 0 } for i in 1 : nOne };
+  parameter Real[nOne, 3]  RollerAxisDirections    = { { cos(RollerAngles[i]), sin(RollerAngles[i]),  0 } for i in 1 : nOne };
+  parameter Real[nOne, 3]  RollerCenters           = R1 * RollerCenterDirections;
+  parameter Real[nOne, 3]  VerticalInRollersAxes   = { { sin(RollerAngles[i]), cos(RollerAngles[i]),  0 } for i in 1 : nOne };
 
-  RollerPointContactForcesGeneral[n] Contacts;
+  RollerPointContactForcesGeneral[nOne] Contacts
+      ( name     = { name + ".Contacts[" + String(i) + "]" for i in 1 : nOne }
+      , each n   = n
+      , each R   = R
+      , each psi = psi
+      );
 
-  NPortsHeavyBody[n] Rollers
-      ( name = { name + ".Rollers[" + String(i) + "]" for i in 1 : n }
+  NPortsHeavyBody[nOne] Rollers
+      ( name = { name + ".Rollers[" + String(i) + "]" for i in 1 : nOne }
       , m = rollerMass
       , each I = diagonal({ rollerAxialMoi, rollerOrthogonalMoi, rollerOrthogonalMoi })
       , each N = 2
       , each Gravity = Gravity
-      , r(start = { r0 + T0 * RollerCenters[i] for i in 1 : n })
-      , v(start = { v0 + T0 * cross(omega0, RollerCenters[i]) for i in 1 : n })
-      , q(start = { QMult(q0, { cos(RollerAngles[i] / 2), 0, 0, sin(RollerAngles[i] / 2) }) for i in 1 : n })
+      , r(start = { r0 + T0 * RollerCenters[i] for i in 1 : nOne })
+      , v(start = { v0 + T0 * cross(omega0, RollerCenters[i]) for i in 1 : nOne })
+      , q(start = { QMult(q0, { cos(RollerAngles[i] / 2), 0, 0, sin(RollerAngles[i] / 2) }) for i in 1 : nOne })
       , omega
           ( start
-            = { { 0, 0, omega0[3] } for i in 1 : n }
+            = { { 0, 0, omega0[3] } for i in 1 : nOne }
             + omega0[2] * VerticalInRollersAxes
           )
       );
 
-  FixedJoint[n] Joints
+  FixedJoint[nOne] Joints
     ( each nA = { 1, 0, 0 }
     , nB = RollerAxisDirections
     , each rA = { 0, 0, 0 }
@@ -57,7 +66,7 @@ model OmniWheelGeneral
     ( name = "wheel hub"
     , m = wheelHubMass
     , I = diagonal({ wheelHubOrthogonalMoi, wheelHubOrthogonalMoi, wheelHubAxialMoi })
-    , N = 1 + n
+    , N = 1 + nOne
     , Gravity = Gravity
     , r(start = r0)
     , v(start = v0)
@@ -74,6 +83,7 @@ model OmniWheelGeneral
 initial algorithm
   AssertInitializedS(name,  name,     "name");
   AssertInitializedI(name,  n,        "n");
+  AssertInitialized (name,  { psi },  "psi");
   AssertInitialized (name,  { rollerMass },            "rollerMass");
   AssertInitialized (name,  { rollerAxialMoi },        "rollerAxialMoi");
   AssertInitialized (name,  { rollerOrthogonalMoi },   "rollerOrthogonalMoi");
@@ -89,7 +99,7 @@ initial algorithm
 
 equation
 
-  for i in 1 : n loop
+  for i in 1 : nOne loop
     Contacts[i].n1k = Wheel.T * { 0, 0, 1 };
     Contacts[i].rho = (Wheel.r - Rollers[i].r) / sqrt((Wheel.r - Rollers[i].r) * (Wheel.r - Rollers[i].r));
 
@@ -111,13 +121,4 @@ equation
 
   w = transpose(Wheel.OutPort.T) * (Rollers[1].r - Wheel.r);
 
-  /*
-  // fixme: why is it not symmetric ???
-  connect(Wheel.InPort,  Joint0.OutPortB);
-  connect(Wheel.InPort1, Joint1.OutPortB);
-  connect(Wheel.InPort2, Joint2.OutPortB);
-  connect(Wheel.InPort3, Joint3.OutPortB);
-  connect(Wheel.InPort4, InPortF);
-  */
-
-end OmniWheelGeneral;
+end SingleRollerOmniWheel;

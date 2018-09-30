@@ -1,10 +1,10 @@
 within MbsLite.Test;
 
-model OmniWheelTest
+model SingleRollerOmniWheelTest
 
-  import MbsLite.Examples.OmniVehicle.PointContact.OmniWheelVertical;
+  import MbsLite.Examples.OmniVehicle.PointContact.SingleRollerOmniWheelVertical;
 
-  OmniWheelVertical wheel;
+  SingleRollerOmniWheelVertical wheel;
 
   annotation(experiment
     ( StopTime = 1
@@ -20,4 +20,4 @@ equation
       );
   end when;
 
-end OmniWheelTest;
+end SingleRollerOmniWheelTest;

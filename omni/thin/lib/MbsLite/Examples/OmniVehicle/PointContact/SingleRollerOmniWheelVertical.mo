@@ -1,6 +1,6 @@
 within MbsLite.Examples.OmniVehicle.PointContact;
 
-model OmniWheelVertical
+model SingleRollerOmniWheelVertical
 
   parameter Real R = 0.05 "'wheel radius' := distance from wheel axis to the floor";
   parameter Integer n = 5;
@@ -14,9 +14,11 @@ model OmniWheelVertical
 
   Base base;
 
-  OmniWheelGeneral wheel
+  SingleRollerOmniWheel wheel
     ( name    = "wheel"
+    , Gravity = { 0, -1, 0 }
     , n       = n
+    , psi     = pi / 4
     , rollerMass            = rollerMass
     , rollerAxialMoi        = rollerMass * (rollerRadiusForMoi^2) / 2
     , rollerOrthogonalMoi   = rollerMass / 12 * (3 * rollerRadiusForMoi^2 + rollerLength^2)
@@ -48,5 +50,5 @@ equation
   wheel.InPortF.F = zeros(3);
   wheel.InPortF.M = zeros(3);
 
-end OmniWheelVertical;
+end SingleRollerOmniWheelVertical;
 

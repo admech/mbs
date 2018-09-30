@@ -3,9 +3,11 @@ within MbsLite.Examples.OmniVehicle;
 partial model RollerContactTrackingGeneral
   extends Constraint;
 
-  parameter Integer  n = 4    "Number of rollers";
-  parameter Real     R = 1    "Omni wheel outer radius (ellipse small axis)";
-  parameter Real     psi = 1   "Angle of roller distortion (fixed axis turn)";
+  parameter String   name = "NOT INITIALIZED";
+
+  parameter Integer  n   = -Integer_inf  "Number of rollers";
+  parameter Real     R   = inf           "Omni wheel outer radius (ellipse small axis)";
+  parameter Real     psi = inf           "Angle of roller distortion (fixed axis turn)";
 
   parameter Real     alpha = Modelica.Constants.pi / n       "Max angle of the half-sector";
   parameter Real     Q = R / cos(psi)                        "Ellipse large axis";
@@ -16,9 +18,9 @@ partial model RollerContactTrackingGeneral
   parameter Real[2]  gradAtRollerTip = 2 * { L2 / Q^2, R1 / R^2 };
   parameter Real[2]  n_at_max = gradAtRollerTip / sqrt(gradAtRollerTip * gradAtRollerTip)   "Normal to ellipse in local coord (it is in vert plane)";
   parameter Real[3]  i = { 1, 0, 0 }                         "Roller axis of symmetry unit vector";
-  parameter Real     cos_of_max = 0.3820515; // For psi = 1.0
+  // parameter Real     cos_of_max = 0.3820515; // For psi = 1.0
   // parameter Real     cos_of_max = 0.44; // For psi = 0.9
-  // parameter Real     cos_of_max = 0.4927; // For psi = 0.8
+  parameter Real     cos_of_max = 0.4927; // For psi = 0.8
   // parameter Real     cos_of_max = 0.5408; // For psi = 0.7
   // parameter Real     cos_of_max = 0.584; // For psi = 0.6
   // parameter Real     cos_of_max = 0.62; // For psi = 0.5
@@ -42,6 +44,12 @@ partial model RollerContactTrackingGeneral
 
   Real               j;
   Real               cosBtwAxisAndVert;
+
+initial algorithm
+  AssertInitializedS(name, name,     "name");
+  AssertInitializedI(name, n,        "n");
+  AssertInitialized (name, { R },    "R");
+  AssertInitialized (name, { psi },  "psi");
 
 equation
 
