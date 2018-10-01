@@ -25,7 +25,7 @@ echo "----------------------------------------";
 echo "----------------------------------------";
 date;
 
-omc -d=initialization $tmp_file_name > run.log;
+omc -d=initialization -d=evaluateAllParameters $tmp_file_name > run.log;
 
 echo "----------------------------------------";
 echo "----------------------------------------";

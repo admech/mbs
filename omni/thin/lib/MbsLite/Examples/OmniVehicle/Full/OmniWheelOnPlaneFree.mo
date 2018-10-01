@@ -1,17 +1,18 @@
 within MbsLite.Examples.OmniVehicle.Full;
 
-model OmniWheelAtRest
+model OmniWheelOnPlaneFree
 
-  import MbsLite.Examples.OmniVehicle.PointContact.OmniWheel;
+  import MbsLite.Examples.OmniVehicle.PointContact.OmniWheelOnPlane;
 
-  constant Real[3] forward = { 1, 0, 0 };
-  constant Real[3] vertical = { 0, 1, 0 };
-  constant Real[3] Gravity  = { 0, -1, 0 };
+  constant Real[3] forward  = { 1,  0,  0 };
+  constant Real[3] vertical = { 0,  1,  0 };
+  constant Real[3] Gravity  = { 0, -1,  0 };
   
   parameter Boolean strict = false;
 
   parameter Real R = 0.05 "'wheel radius' := distance from wheel axis to the floor";
-  parameter Integer n = 5;
+  parameter Integer n    = 5;
+  parameter Integer nOne = 5;
   parameter Real wheelHubMass = 0.15;
   parameter Real rollerMass = 0.05;
 
@@ -23,14 +24,17 @@ model OmniWheelAtRest
   parameter Real    v0          = 0;
   parameter Real    v0dirAngle  = 0;
   parameter Real[4] q0          = QRot(v0dirAngle, vertical);
+  // fixme: initial orientation does not work. or does it ?
+  // parameter Real[4] q0          = QRot(2*pi/5, { 0, 0, 1 });
   parameter Real[3] v0vec       = QToT(q0) * v0 * { 1, 0, 0 };
 
   Base base;
 
-  OmniWheel wheel
+  OmniWheelOnPlane wheel
     ( name    = "wheel"
     , Gravity = Gravity
     , n       = n
+    , nOne    = nOne
     , psi     = 0
     , rollerMass            = rollerMass
     , rollerAxialMoi        = rollerMass * (rollerRadiusForMoi^2) / 2
@@ -42,20 +46,26 @@ model OmniWheelAtRest
     , r0      = R * vertical
     , q0      = q0
     , v0      = v0vec
-    , omega0  = { 0, 0, 1 } // 1 / R * cross(vertical, v0vec)
+    , omega0  = 1 / R * cross(vertical, v0vec)
     );
+
+  Real torque;
+  Real epsilonNaklon;
+  Real omegaNaklon;
 
 equation
 
-  for i in 1 : n loop
-    wheel.Rollers[i].InPorts[1].P = wheel.Rollers[i].OutPort.r;
-    wheel.Rollers[i].InPorts[1].F = zeros(3);
-    wheel.Rollers[i].InPorts[1].M = zeros(3);
-  end for;
-
   wheel.InPortF.P = wheel.OutPortK.r;
   wheel.InPortF.F = zeros(3);
+  /*
   wheel.InPortF.M = zeros(3);
+  */
+  wheel.InPortF.M = torque * wheel.OutPortK.T * forward;
+  omegaNaklon = wheel.OutPortK.omega * (wheel.OutPortK.T * forward);
+  der(omegaNaklon) = epsilonNaklon;
+  epsilonNaklon = 0;
+
+  connect(wheel.InPortK, base.OutPort);
 
   if strict then
     when wheel.OutPortK.r[2] < R then
@@ -72,5 +82,5 @@ equation
     end when;
   end if;
 
-end OmniWheelAtRest;
+end OmniWheelOnPlaneFree;
 

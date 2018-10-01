@@ -51,7 +51,8 @@ model OmniWheel
       );
 
   FixedJoint[nOne] Joints
-    ( each nA = { 1, 0, 0 }
+    ( name = { "joint" + String(i) for i in 1 : nOne }
+    , each nA = { 1, 0, 0 }
     , nB = RollerAxisDirections
     , each rA = { 0, 0, 0 }
     , rB = RollerCenters

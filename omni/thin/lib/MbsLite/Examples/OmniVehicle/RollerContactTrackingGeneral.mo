@@ -62,7 +62,7 @@ equation
   // Intermediate roller coordinates:
   ni = InPortB.T * i;
   crs = cross(ni, nA);
-  nk = crs / sqrt(crs * crs);
+  nk = crs / sqrt(crs * crs); // <<<<------------- will change direction
   cosBtwAxisAndVert = ni * nA;
 
   if noEvent(abs(cosBtwAxisAndVert) < cos_of_max and InPortB.r[2] < R) then

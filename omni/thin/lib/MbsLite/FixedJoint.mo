@@ -3,6 +3,8 @@ within MbsLite;
 model FixedJoint
   extends Constraint;
 
+  parameter String           name = "FIXME: UNDEFINED";
+
   parameter Real[3]          nA             "Axis in body A local";
   parameter Real[3]          nB             "Axis in body B local";
   parameter SI.Position[3]   rA             "Axis position in body A local";
@@ -31,8 +33,7 @@ equation
   RA = InPortA.r + InPortA.T * rA;
   RB = InPortB.r + InPortB.T * rB;
   vA = Euler(InPortA.r, RA, InPortA.v, InPortA.omega);
-  vB = Euler(InPortB.r, RB, InPortB.v, InPortB.omega);
-  vA = vB;
+  vB = Euler(InPortB.r, RB, InPortB.v, InPortB.omega); vA = vB;
   // vr = vB - vA;
   // der(vr) = ar;
   // ar = zeros(3);
@@ -40,7 +41,13 @@ equation
   nAi = InPortA.T * nA;
   nBi = InPortB.T * nB;
   for i in 1 : 3 loop
-    assert(CompareReal(nAi[i], nBi[i]), "normals should be same, were: nAi = " + StringA(nAi) + ", nBi = " + StringA(nBi));
+    assert
+      ( CompareReal(nAi[i], nBi[i], absTol = 1e-8)
+      , "looks like joint " + name + " is getting worse... axes in inertial coords should be same, but were:"
+        +  " nAi = " + StringA(nAi)
+        + ", nBi = " + StringA(nBi)
+        + ", nBi - nAi = " + StringA(nBi - nAi)
+      );
   end for;
 
   //  InPortA.epsilon = InPortB.epsilon;
