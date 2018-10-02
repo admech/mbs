@@ -3,7 +3,7 @@ within MbsLite;
 model FixedJoint
   extends Constraint;
 
-  parameter String           name = "FIXME: UNDEFINED";
+  parameter String           name = "NOT INITIALIZED";
 
   parameter Real[3]          nA             "Axis in body A local";
   parameter Real[3]          nB             "Axis in body B local";
@@ -27,6 +27,9 @@ model FixedJoint
   Real[3]                    nBi            "Unit vector of joint axis w.r.t. the inertial frame, def by body B";
 
   SI.Torque                  M              "Torque about joint axis";
+
+initial equation
+  AssertInitializedS(name, name, "name");
 
 equation
 

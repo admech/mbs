@@ -11,11 +11,76 @@ true
 Loading MbsLite
 true
 ====================================
-Loading MbsLite.Test.Constraints.JointTest
+Loading MbsLite.Test.Constraints.ContactTest
 true
 ====================================
-Instantiating MbsLite.Test.Constraints.JointTest
-"function MbsLite.Util.CompareReal
+Instantiating MbsLite.Test.Constraints.ContactTest
+"function MbsLite.Util.Assert.Assert
+  input Boolean condition;
+  input String message;
+  input Boolean silent = false;
+algorithm
+  if not condition then
+    assert(false, message);
+    Modelica.Utilities.System.exit(-1);
+  else
+    if not silent then
+      Modelica.Utilities.Streams.print(\"Assertion passed: \" + message, \"\");
+    end if;
+  end if;
+end MbsLite.Util.Assert.Assert;
+
+function MbsLite.Util.Assert.AssertInitialized
+  input String modelName;
+  input Real[:] value;
+  input String parameterName;
+algorithm
+  assert(max(value) < 9.999999999999999e+59, modelName + \": \" + parameterName + \" is not initialized\");
+end MbsLite.Util.Assert.AssertInitialized;
+
+function MbsLite.Util.Assert.AssertInitializedI
+  input String modelName;
+  input Integer value;
+  input String parameterName;
+algorithm
+  assert(value > -4611686018427387903, modelName + \": \" + parameterName + \" is not initialized\");
+end MbsLite.Util.Assert.AssertInitializedI;
+
+function MbsLite.Util.Assert.AssertInitializedS
+  input String modelName;
+  input String value;
+  input String parameterName;
+algorithm
+  assert(value <> \"NOT INITIALIZED\", modelName + \": \" + parameterName + \" is not initialized\");
+end MbsLite.Util.Assert.AssertInitializedS;
+
+function MbsLite.Util.Assert.AssertReal
+  input Real expected;
+  input Real actual;
+  input String name;
+  input Boolean silent = false;
+algorithm
+  MbsLite.Util.Assert.Assert(MbsLite.Util.CompareReal(expected, actual, 1e-10, 1e-05), name + \" should be: \" + String(expected, 0, true, 6) + \", but was: \" + String(actual, 0, true, 6), silent);
+end MbsLite.Util.Assert.AssertReal;
+
+function MbsLite.Util.Assert.AssertReals
+  input Real[:] expected;
+  input Real[:] actual;
+  input String name;
+  protected Boolean passed = true;
+  protected String message = name + \" should be: \" + MbsLite.Util.StringA(expected, \", \") + \", but was: \" + MbsLite.Util.StringA(actual, \", \");
+algorithm
+  MbsLite.Util.Assert.AssertReal(/*Real*/(size(expected, 1)), /*Real*/(size(actual, 1)), \"sizes of expected and actual\", true);
+  for i in 1:size(actual, 1) loop
+    passed := passed and MbsLite.Util.CompareReal(expected[i], actual[i], 1e-10, 1e-05);
+    MbsLite.Util.Assert.Assert(passed, message, true);
+  end for;
+  if passed then
+    Modelica.Utilities.Streams.print(\"Assertion passed: \" + message, \"\");
+  end if;
+end MbsLite.Util.Assert.AssertReals;
+
+function MbsLite.Util.CompareReal
   input Real a;
   input Real b;
   input Real absTol = 1e-10 \"Absolute tolerance.\";
@@ -89,353 +154,688 @@ algorithm
   render := \"{ \" + accumulator + \" }\";
 end MbsLite.Util.StringA;
 
-class MbsLite.Test.Constraints.JointTest
-  parameter Integer joint.ConstraintNo = 1;
-  Real joint.InPortA.r[1](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
-  Real joint.InPortA.r[2](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
-  Real joint.InPortA.r[3](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
-  Real joint.InPortA.v[1](quantity = \"Velocity\", unit = \"m/s\") \"Velocity vector of masscenter\";
-  Real joint.InPortA.v[2](quantity = \"Velocity\", unit = \"m/s\") \"Velocity vector of masscenter\";
-  Real joint.InPortA.v[3](quantity = \"Velocity\", unit = \"m/s\") \"Velocity vector of masscenter\";
-  Real joint.InPortA.a[1](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
-  Real joint.InPortA.a[2](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
-  Real joint.InPortA.a[3](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
-  Real joint.InPortA.T[1,1] \"Matrix of rotation\";
-  Real joint.InPortA.T[1,2] \"Matrix of rotation\";
-  Real joint.InPortA.T[1,3] \"Matrix of rotation\";
-  Real joint.InPortA.T[2,1] \"Matrix of rotation\";
-  Real joint.InPortA.T[2,2] \"Matrix of rotation\";
-  Real joint.InPortA.T[2,3] \"Matrix of rotation\";
-  Real joint.InPortA.T[3,1] \"Matrix of rotation\";
-  Real joint.InPortA.T[3,2] \"Matrix of rotation\";
-  Real joint.InPortA.T[3,3] \"Matrix of rotation\";
-  Real joint.InPortA.omega[1](quantity = \"AngularVelocity\", unit = \"rad/s\") \"Vector of angular rate\";
-  Real joint.InPortA.omega[2](quantity = \"AngularVelocity\", unit = \"rad/s\") \"Vector of angular rate\";
-  Real joint.InPortA.omega[3](quantity = \"AngularVelocity\", unit = \"rad/s\") \"Vector of angular rate\";
-  Real joint.InPortA.epsilon[1](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
-  Real joint.InPortA.epsilon[2](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
-  Real joint.InPortA.epsilon[3](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
-  Real joint.OutPortA.P[1](quantity = \"Length\", unit = \"m\");
-  Real joint.OutPortA.P[2](quantity = \"Length\", unit = \"m\");
-  Real joint.OutPortA.P[3](quantity = \"Length\", unit = \"m\");
-  Real joint.OutPortA.F[1](quantity = \"Force\", unit = \"N\");
-  Real joint.OutPortA.F[2](quantity = \"Force\", unit = \"N\");
-  Real joint.OutPortA.F[3](quantity = \"Force\", unit = \"N\");
-  Real joint.OutPortA.M[1](quantity = \"Torque\", unit = \"N.m\");
-  Real joint.OutPortA.M[2](quantity = \"Torque\", unit = \"N.m\");
-  Real joint.OutPortA.M[3](quantity = \"Torque\", unit = \"N.m\");
-  Real joint.InPortB.r[1](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
-  Real joint.InPortB.r[2](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
-  Real joint.InPortB.r[3](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
-  Real joint.InPortB.v[1](quantity = \"Velocity\", unit = \"m/s\") \"Velocity vector of masscenter\";
-  Real joint.InPortB.v[2](quantity = \"Velocity\", unit = \"m/s\") \"Velocity vector of masscenter\";
-  Real joint.InPortB.v[3](quantity = \"Velocity\", unit = \"m/s\") \"Velocity vector of masscenter\";
-  Real joint.InPortB.a[1](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
-  Real joint.InPortB.a[2](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
-  Real joint.InPortB.a[3](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
-  Real joint.InPortB.T[1,1] \"Matrix of rotation\";
-  Real joint.InPortB.T[1,2] \"Matrix of rotation\";
-  Real joint.InPortB.T[1,3] \"Matrix of rotation\";
-  Real joint.InPortB.T[2,1] \"Matrix of rotation\";
-  Real joint.InPortB.T[2,2] \"Matrix of rotation\";
-  Real joint.InPortB.T[2,3] \"Matrix of rotation\";
-  Real joint.InPortB.T[3,1] \"Matrix of rotation\";
-  Real joint.InPortB.T[3,2] \"Matrix of rotation\";
-  Real joint.InPortB.T[3,3] \"Matrix of rotation\";
-  Real joint.InPortB.omega[1](quantity = \"AngularVelocity\", unit = \"rad/s\") \"Vector of angular rate\";
-  Real joint.InPortB.omega[2](quantity = \"AngularVelocity\", unit = \"rad/s\") \"Vector of angular rate\";
-  Real joint.InPortB.omega[3](quantity = \"AngularVelocity\", unit = \"rad/s\") \"Vector of angular rate\";
-  Real joint.InPortB.epsilon[1](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
-  Real joint.InPortB.epsilon[2](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
-  Real joint.InPortB.epsilon[3](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
-  Real joint.OutPortB.P[1](quantity = \"Length\", unit = \"m\");
-  Real joint.OutPortB.P[2](quantity = \"Length\", unit = \"m\");
-  Real joint.OutPortB.P[3](quantity = \"Length\", unit = \"m\");
-  Real joint.OutPortB.F[1](quantity = \"Force\", unit = \"N\");
-  Real joint.OutPortB.F[2](quantity = \"Force\", unit = \"N\");
-  Real joint.OutPortB.F[3](quantity = \"Force\", unit = \"N\");
-  Real joint.OutPortB.M[1](quantity = \"Torque\", unit = \"N.m\");
-  Real joint.OutPortB.M[2](quantity = \"Torque\", unit = \"N.m\");
-  Real joint.OutPortB.M[3](quantity = \"Torque\", unit = \"N.m\");
-  parameter String joint.name = \"joint\";
-  parameter Real joint.nA[1] = 1.0 \"Axis in body A local\";
-  parameter Real joint.nA[2] = 0.0 \"Axis in body A local\";
-  parameter Real joint.nA[3] = 0.0 \"Axis in body A local\";
-  parameter Real joint.nB[1] = 1.0 \"Axis in body B local\";
-  parameter Real joint.nB[2] = 0.0 \"Axis in body B local\";
-  parameter Real joint.nB[3] = 0.0 \"Axis in body B local\";
-  parameter Real joint.rA[1](quantity = \"Length\", unit = \"m\") = 0.0 \"Axis position in body A local\";
-  parameter Real joint.rA[2](quantity = \"Length\", unit = \"m\") = 0.0 \"Axis position in body A local\";
-  parameter Real joint.rA[3](quantity = \"Length\", unit = \"m\") = 0.0 \"Axis position in body A local\";
-  parameter Real joint.rB[1](quantity = \"Length\", unit = \"m\") = 0.0 \"Axis position in body B local\";
-  parameter Real joint.rB[2](quantity = \"Length\", unit = \"m\") = 0.0 \"Axis position in body B local\";
-  parameter Real joint.rB[3](quantity = \"Length\", unit = \"m\") = 0.0 \"Axis position in body B local\";
-  Real joint.RA[1](quantity = \"Length\", unit = \"m\") \"Axis position in body A global\";
-  Real joint.RA[2](quantity = \"Length\", unit = \"m\") \"Axis position in body A global\";
-  Real joint.RA[3](quantity = \"Length\", unit = \"m\") \"Axis position in body A global\";
-  Real joint.RB[1](quantity = \"Length\", unit = \"m\") \"Axis position in body B global\";
-  Real joint.RB[2](quantity = \"Length\", unit = \"m\") \"Axis position in body B global\";
-  Real joint.RB[3](quantity = \"Length\", unit = \"m\") \"Axis position in body B global\";
-  Real joint.vA[1](quantity = \"Velocity\", unit = \"m/s\") \"Velocity of axis point in body A global\";
-  Real joint.vA[2](quantity = \"Velocity\", unit = \"m/s\") \"Velocity of axis point in body A global\";
-  Real joint.vA[3](quantity = \"Velocity\", unit = \"m/s\") \"Velocity of axis point in body A global\";
-  Real joint.vB[1](quantity = \"Velocity\", unit = \"m/s\") \"Velocity of axis point in body B global\";
-  Real joint.vB[2](quantity = \"Velocity\", unit = \"m/s\") \"Velocity of axis point in body B global\";
-  Real joint.vB[3](quantity = \"Velocity\", unit = \"m/s\") \"Velocity of axis point in body B global\";
-  Real joint.lambda(quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Relative angular acceleration along the axis\";
-  Real joint.mu(quantity = \"AngularVelocity\", unit = \"rad/s\") \"Relative angular velocity along the axis\";
-  Real joint.angle \"Relative angle. Beware numerical error accumulation!\";
-  Real joint.epsilonr[1](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Relative angular acceleration\";
-  Real joint.epsilonr[2](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Relative angular acceleration\";
-  Real joint.epsilonr[3](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Relative angular acceleration\";
-  Real joint.nAi[1] \"Unit vector of joint axis w.r.t. the inertial frame, def by body A\";
-  Real joint.nAi[2] \"Unit vector of joint axis w.r.t. the inertial frame, def by body A\";
-  Real joint.nAi[3] \"Unit vector of joint axis w.r.t. the inertial frame, def by body A\";
-  Real joint.nBi[1] \"Unit vector of joint axis w.r.t. the inertial frame, def by body B\";
-  Real joint.nBi[2] \"Unit vector of joint axis w.r.t. the inertial frame, def by body B\";
-  Real joint.nBi[3] \"Unit vector of joint axis w.r.t. the inertial frame, def by body B\";
-  Real joint.M(quantity = \"Torque\", unit = \"N.m\") \"Torque about joint axis\";
-  Real rA[1](start = 0.0);
-  Real rA[2](start = 0.0);
-  Real rA[3](start = 0.0);
-  Real vA[1](start = 0.0);
-  Real vA[2](start = 0.0);
-  Real vA[3](start = 0.0);
-  Real qA[1](start = 1.0);
-  Real qA[2](start = 0.0);
-  Real qA[3](start = 0.0);
-  Real qA[4](start = 0.0);
-  Real omegaA[1](start = 0.0);
-  Real omegaA[2](start = 0.0);
-  Real omegaA[3](start = 0.0);
-  Real TA[1,1];
-  Real TA[1,2];
-  Real TA[1,3];
-  Real TA[2,1];
-  Real TA[2,2];
-  Real TA[2,3];
-  Real TA[3,1];
-  Real TA[3,2];
-  Real TA[3,3];
-  Real FA[1];
-  Real FA[2];
-  Real FA[3];
-  Real MA[1];
-  Real MA[2];
-  Real MA[3];
-  Real aA[1];
-  Real aA[2];
-  Real aA[3];
-  Real epsilonA[1];
-  Real epsilonA[2];
-  Real epsilonA[3];
-  Real rB[1](start = 0.0);
-  Real rB[2](start = 0.0);
-  Real rB[3](start = 0.0);
-  Real vB[1](start = 0.0);
-  Real vB[2](start = 0.0);
-  Real vB[3](start = 0.0);
-  Real qB[1](start = 1.0);
-  Real qB[2](start = 0.0);
-  Real qB[3](start = 0.0);
-  Real qB[4](start = 0.0);
-  Real omegaB[1](start = 0.0);
-  Real omegaB[2](start = 0.0);
-  Real omegaB[3](start = 0.0);
-  Real TB[1,1];
-  Real TB[1,2];
-  Real TB[1,3];
-  Real TB[2,1];
-  Real TB[2,2];
-  Real TB[2,3];
-  Real TB[3,1];
-  Real TB[3,2];
-  Real TB[3,3];
-  Real FB[1];
-  Real FB[2];
-  Real FB[3];
-  Real MB[1];
-  Real MB[2];
-  Real MB[3];
-  Real aB[1];
-  Real aB[2];
-  Real aB[3];
-  Real epsilonB[1];
-  Real epsilonB[2];
-  Real epsilonB[3];
+function Modelica.Math.Vectors.length \"Inline before index reduction\" \"Return length of a vector (better as norm(), if further symbolic processing is performed)\"
+  input Real[:] v \"Real vector\";
+  output Real result \"Length of vector v\";
+algorithm
+  result := sqrt(v * v);
+end Modelica.Math.Vectors.length;
+
+function Modelica.Math.Vectors.norm \"Return the p-norm of a vector\"
+  input Real[:] v \"Real vector\";
+  input Real p(min = 1.0) = 2.0 \"Type of p-norm (often used: 1, 2, or Modelica.Constants.inf)\";
+  output Real result = 0.0 \"p-norm of vector v\";
+  protected Real eps = 1e-14;
+algorithm
+  if size(v, 1) > 0 then
+    if p >= 2.0 - eps and p <= 2.0 + eps then
+      result := sqrt(v * v);
+    elseif p >= 9.999999999999999e+59 then
+      result := max(array(abs($tmpVar0) for $tmpVar0 in v));
+    elseif p >= 1.0 - eps and p <= 1.0 + eps then
+      result := sum(array(abs($tmpVar3) for $tmpVar3 in v));
+    elseif p >= 1.0 then
+      result := sum(abs(v[i]) ^ p for i in 1:size(v, 1)) ^ (1.0 / p);
+    else
+      assert(false, \"Optional argument \\\"p\\\" (= \" + String(p, 0, true, 6) + \") of function \\\"norm\\\" >= 1 required\");
+    end if;
+  end if;
+end Modelica.Math.Vectors.norm;
+
+function Modelica.Math.Vectors.normalize \"Inline before index reduction\" \"Return normalized vector such that length = 1 and prevent zero-division for zero vector\"
+  input Real[:] v \"Real vector\";
+  input Real eps(min = 0.0) = 1e-13 \"if |v| < eps then result = v/eps\";
+  output Real[size(v, 1)] result \"Input vector v normalized to length=1\";
+algorithm
+  result := smooth(0, if Modelica.Math.Vectors.length(v) >= eps then v / Modelica.Math.Vectors.length(v) else v / eps);
+end Modelica.Math.Vectors.normalize;
+
+function Modelica.Utilities.Streams.print \"Print string to terminal or file\"
+  input String string = \"\" \"String to be printed\";
+  input String fileName = \"\" \"File where to print (empty string is the terminal)\";
+
+  external \"C\" ModelicaInternal_print(string, fileName);
+end Modelica.Utilities.Streams.print;
+
+function Modelica.Utilities.System.exit \"Terminate execution of Modelica environment\"
+  input Integer status = 0 \"Result to be returned by environment (0 means success)\";
+
+  external \"C\" exit(status);
+end Modelica.Utilities.System.exit;
+
+class MbsLite.Test.Constraints.ContactTest
+  constant Real forward[1] = 1.0;
+  constant Real forward[2] = 0.0;
+  constant Real forward[3] = 0.0;
+  constant Real vertical[1] = 0.0;
+  constant Real vertical[2] = 1.0;
+  constant Real vertical[3] = 0.0;
+  constant Real userward[1] = 0.0;
+  constant Real userward[2] = 0.0;
+  constant Real userward[3] = 1.0;
+  parameter Integer n = 5;
+  parameter Integer nOne = 5;
+  parameter Real psi = 0.0;
+  parameter Real wheelHubMass = 0.15;
+  parameter Real rollerMass = 0.05;
+  parameter Real R = 0.05 \"'wheel radius' := distance from wheel axis to the floor\";
+  parameter Real halfRollerAngle = 0.6283185307179586;
+  parameter Real wheelHubRadius = 0.04045084971874738;
+  parameter Real rollerRadius = 0.009549150281252625;
+  parameter Real rollerLength = 0.05877852522924731;
+  parameter Real rollerRadiusForMoi = 0.004774575140626312;
+  parameter Real wheelR[1] = 0.0;
+  parameter Real wheelR[2] = 0.05;
+  parameter Real wheelR[3] = 0.0;
+  parameter Real rollerAxialMoi = 5.699141943371693e-07;
+  parameter Real rollerOrthogonalMoi = 1.468043638102385e-05;
+  parameter Real omega0 = 1.0;
+  parameter Real v0 = 0.009549150281252625;
+  parameter Real omega0vec[1] = 0.0;
+  parameter Real omega0vec[2] = 0.0;
+  parameter Real omega0vec[3] = -1.0;
+  parameter Real r0[1] = 0.0;
+  parameter Real r0[2] = 0.009549150281252625;
+  parameter Real r0[3] = 0.0;
+  parameter Real v0vec[1] = 0.009549150281252625;
+  parameter Real v0vec[2] = 0.0;
+  parameter Real v0vec[3] = 0.0;
+  Real roller.OutPort.r[1](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
+  Real roller.OutPort.r[2](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
+  Real roller.OutPort.r[3](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
+  Real roller.OutPort.v[1](quantity = \"Velocity\", unit = \"m/s\") \"Velocity vector of masscenter\";
+  Real roller.OutPort.v[2](quantity = \"Velocity\", unit = \"m/s\") \"Velocity vector of masscenter\";
+  Real roller.OutPort.v[3](quantity = \"Velocity\", unit = \"m/s\") \"Velocity vector of masscenter\";
+  Real roller.OutPort.a[1](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
+  Real roller.OutPort.a[2](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
+  Real roller.OutPort.a[3](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
+  Real roller.OutPort.T[1,1] \"Matrix of rotation\";
+  Real roller.OutPort.T[1,2] \"Matrix of rotation\";
+  Real roller.OutPort.T[1,3] \"Matrix of rotation\";
+  Real roller.OutPort.T[2,1] \"Matrix of rotation\";
+  Real roller.OutPort.T[2,2] \"Matrix of rotation\";
+  Real roller.OutPort.T[2,3] \"Matrix of rotation\";
+  Real roller.OutPort.T[3,1] \"Matrix of rotation\";
+  Real roller.OutPort.T[3,2] \"Matrix of rotation\";
+  Real roller.OutPort.T[3,3] \"Matrix of rotation\";
+  Real roller.OutPort.omega[1](quantity = \"AngularVelocity\", unit = \"rad/s\") \"Vector of angular rate\";
+  Real roller.OutPort.omega[2](quantity = \"AngularVelocity\", unit = \"rad/s\") \"Vector of angular rate\";
+  Real roller.OutPort.omega[3](quantity = \"AngularVelocity\", unit = \"rad/s\") \"Vector of angular rate\";
+  Real roller.OutPort.epsilon[1](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
+  Real roller.OutPort.epsilon[2](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
+  Real roller.OutPort.epsilon[3](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
+  parameter String roller.name = \"roller\";
+  parameter Real roller.m(quantity = \"Mass\", unit = \"kg\", min = 0.0, start = 9.999999999999999e+59) = 0.05 \"Mass of the body\";
+  parameter Real roller.I[1,1](quantity = \"MomentOfInertia\", unit = \"kg.m2\", start = 9.999999999999999e+59) = 5.699141943371693e-07 \"Central tensor of inertia of the body\";
+  parameter Real roller.I[1,2](quantity = \"MomentOfInertia\", unit = \"kg.m2\", start = 9.999999999999999e+59) = 0.0 \"Central tensor of inertia of the body\";
+  parameter Real roller.I[1,3](quantity = \"MomentOfInertia\", unit = \"kg.m2\", start = 9.999999999999999e+59) = 0.0 \"Central tensor of inertia of the body\";
+  parameter Real roller.I[2,1](quantity = \"MomentOfInertia\", unit = \"kg.m2\", start = 9.999999999999999e+59) = 0.0 \"Central tensor of inertia of the body\";
+  parameter Real roller.I[2,2](quantity = \"MomentOfInertia\", unit = \"kg.m2\", start = 9.999999999999999e+59) = 1.468043638102385e-05 \"Central tensor of inertia of the body\";
+  parameter Real roller.I[2,3](quantity = \"MomentOfInertia\", unit = \"kg.m2\", start = 9.999999999999999e+59) = 0.0 \"Central tensor of inertia of the body\";
+  parameter Real roller.I[3,1](quantity = \"MomentOfInertia\", unit = \"kg.m2\", start = 9.999999999999999e+59) = 0.0 \"Central tensor of inertia of the body\";
+  parameter Real roller.I[3,2](quantity = \"MomentOfInertia\", unit = \"kg.m2\", start = 9.999999999999999e+59) = 0.0 \"Central tensor of inertia of the body\";
+  parameter Real roller.I[3,3](quantity = \"MomentOfInertia\", unit = \"kg.m2\", start = 9.999999999999999e+59) = 1.468043638102385e-05 \"Central tensor of inertia of the body\";
+  Real roller.r[1](quantity = \"Length\", unit = \"m\", start = 0.0) \"Radius vector of masscenter in global coords\";
+  Real roller.r[2](quantity = \"Length\", unit = \"m\", start = 0.009549150281252625) \"Radius vector of masscenter in global coords\";
+  Real roller.r[3](quantity = \"Length\", unit = \"m\", start = 0.0) \"Radius vector of masscenter in global coords\";
+  Real roller.v[1](quantity = \"Velocity\", unit = \"m/s\", start = 0.009549150281252625) \"Velocity vector of masscenter\";
+  Real roller.v[2](quantity = \"Velocity\", unit = \"m/s\", start = 0.0) \"Velocity vector of masscenter\";
+  Real roller.v[3](quantity = \"Velocity\", unit = \"m/s\", start = 0.0) \"Velocity vector of masscenter\";
+  Real roller.a[1](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
+  Real roller.a[2](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
+  Real roller.a[3](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
+  Real roller.q[1](start = 1.0) \"Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6\";
+  Real roller.q[2](start = 0.0) \"Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6\";
+  Real roller.q[3](start = 0.0) \"Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6\";
+  Real roller.q[4](start = 0.0) \"Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6\";
+  Real roller.omega[1](quantity = \"AngularVelocity\", unit = \"rad/s\", start = 0.0) \"Vector of angular rate in local coords\";
+  Real roller.omega[2](quantity = \"AngularVelocity\", unit = \"rad/s\", start = 0.0) \"Vector of angular rate in local coords\";
+  Real roller.omega[3](quantity = \"AngularVelocity\", unit = \"rad/s\", start = -1.0) \"Vector of angular rate in local coords\";
+  Real roller.epsilon[1](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
+  Real roller.epsilon[2](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
+  Real roller.epsilon[3](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
+  Real roller.F[1](quantity = \"Force\", unit = \"N\") \"Sum of all forces applied\";
+  Real roller.F[2](quantity = \"Force\", unit = \"N\") \"Sum of all forces applied\";
+  Real roller.F[3](quantity = \"Force\", unit = \"N\") \"Sum of all forces applied\";
+  Real roller.M[1](quantity = \"Torque\", unit = \"N.m\") \"Sum of all torques applied\";
+  Real roller.M[2](quantity = \"Torque\", unit = \"N.m\") \"Sum of all torques applied\";
+  Real roller.M[3](quantity = \"Torque\", unit = \"N.m\") \"Sum of all torques applied\";
+  Real roller.T[1,1] \"Matrix of rotation. T * local = global, cols = coords of local base in global\";
+  Real roller.T[1,2] \"Matrix of rotation. T * local = global, cols = coords of local base in global\";
+  Real roller.T[1,3] \"Matrix of rotation. T * local = global, cols = coords of local base in global\";
+  Real roller.T[2,1] \"Matrix of rotation. T * local = global, cols = coords of local base in global\";
+  Real roller.T[2,2] \"Matrix of rotation. T * local = global, cols = coords of local base in global\";
+  Real roller.T[2,3] \"Matrix of rotation. T * local = global, cols = coords of local base in global\";
+  Real roller.T[3,1] \"Matrix of rotation. T * local = global, cols = coords of local base in global\";
+  Real roller.T[3,2] \"Matrix of rotation. T * local = global, cols = coords of local base in global\";
+  Real roller.T[3,3] \"Matrix of rotation. T * local = global, cols = coords of local base in global\";
+  Real roller.Active(start = 1.0) \"Flag of active dynamics\";
+  parameter Integer roller.N = 1;
+  parameter Real roller.Gravity[1](quantity = \"Acceleration\", unit = \"m/s2\") = -0.0;
+  parameter Real roller.Gravity[2](quantity = \"Acceleration\", unit = \"m/s2\") = -1.0;
+  parameter Real roller.Gravity[3](quantity = \"Acceleration\", unit = \"m/s2\") = -0.0;
+  Real roller.InPorts[1].P[1](quantity = \"Length\", unit = \"m\");
+  Real roller.InPorts[1].P[2](quantity = \"Length\", unit = \"m\");
+  Real roller.InPorts[1].P[3](quantity = \"Length\", unit = \"m\");
+  Real roller.InPorts[1].F[1](quantity = \"Force\", unit = \"N\");
+  Real roller.InPorts[1].F[2](quantity = \"Force\", unit = \"N\");
+  Real roller.InPorts[1].F[3](quantity = \"Force\", unit = \"N\");
+  Real roller.InPorts[1].M[1](quantity = \"Torque\", unit = \"N.m\");
+  Real roller.InPorts[1].M[2](quantity = \"Torque\", unit = \"N.m\");
+  Real roller.InPorts[1].M[3](quantity = \"Torque\", unit = \"N.m\");
+  Real roller.crosses[1,1];
+  Real roller.crosses[1,2];
+  Real roller.crosses[1,3];
+  parameter Integer contact.ConstraintNo = 1;
+  Real contact.InPortA.r[1](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
+  Real contact.InPortA.r[2](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
+  Real contact.InPortA.r[3](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
+  Real contact.InPortA.v[1](quantity = \"Velocity\", unit = \"m/s\") \"Velocity vector of masscenter\";
+  Real contact.InPortA.v[2](quantity = \"Velocity\", unit = \"m/s\") \"Velocity vector of masscenter\";
+  Real contact.InPortA.v[3](quantity = \"Velocity\", unit = \"m/s\") \"Velocity vector of masscenter\";
+  Real contact.InPortA.a[1](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
+  Real contact.InPortA.a[2](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
+  Real contact.InPortA.a[3](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
+  Real contact.InPortA.T[1,1] \"Matrix of rotation\";
+  Real contact.InPortA.T[1,2] \"Matrix of rotation\";
+  Real contact.InPortA.T[1,3] \"Matrix of rotation\";
+  Real contact.InPortA.T[2,1] \"Matrix of rotation\";
+  Real contact.InPortA.T[2,2] \"Matrix of rotation\";
+  Real contact.InPortA.T[2,3] \"Matrix of rotation\";
+  Real contact.InPortA.T[3,1] \"Matrix of rotation\";
+  Real contact.InPortA.T[3,2] \"Matrix of rotation\";
+  Real contact.InPortA.T[3,3] \"Matrix of rotation\";
+  Real contact.InPortA.omega[1](quantity = \"AngularVelocity\", unit = \"rad/s\") \"Vector of angular rate\";
+  Real contact.InPortA.omega[2](quantity = \"AngularVelocity\", unit = \"rad/s\") \"Vector of angular rate\";
+  Real contact.InPortA.omega[3](quantity = \"AngularVelocity\", unit = \"rad/s\") \"Vector of angular rate\";
+  Real contact.InPortA.epsilon[1](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
+  Real contact.InPortA.epsilon[2](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
+  Real contact.InPortA.epsilon[3](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
+  Real contact.OutPortA.P[1](quantity = \"Length\", unit = \"m\");
+  Real contact.OutPortA.P[2](quantity = \"Length\", unit = \"m\");
+  Real contact.OutPortA.P[3](quantity = \"Length\", unit = \"m\");
+  Real contact.OutPortA.F[1](quantity = \"Force\", unit = \"N\");
+  Real contact.OutPortA.F[2](quantity = \"Force\", unit = \"N\");
+  Real contact.OutPortA.F[3](quantity = \"Force\", unit = \"N\");
+  Real contact.OutPortA.M[1](quantity = \"Torque\", unit = \"N.m\");
+  Real contact.OutPortA.M[2](quantity = \"Torque\", unit = \"N.m\");
+  Real contact.OutPortA.M[3](quantity = \"Torque\", unit = \"N.m\");
+  Real contact.InPortB.r[1](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
+  Real contact.InPortB.r[2](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
+  Real contact.InPortB.r[3](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
+  Real contact.InPortB.v[1](quantity = \"Velocity\", unit = \"m/s\") \"Velocity vector of masscenter\";
+  Real contact.InPortB.v[2](quantity = \"Velocity\", unit = \"m/s\") \"Velocity vector of masscenter\";
+  Real contact.InPortB.v[3](quantity = \"Velocity\", unit = \"m/s\") \"Velocity vector of masscenter\";
+  Real contact.InPortB.a[1](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
+  Real contact.InPortB.a[2](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
+  Real contact.InPortB.a[3](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
+  Real contact.InPortB.T[1,1] \"Matrix of rotation\";
+  Real contact.InPortB.T[1,2] \"Matrix of rotation\";
+  Real contact.InPortB.T[1,3] \"Matrix of rotation\";
+  Real contact.InPortB.T[2,1] \"Matrix of rotation\";
+  Real contact.InPortB.T[2,2] \"Matrix of rotation\";
+  Real contact.InPortB.T[2,3] \"Matrix of rotation\";
+  Real contact.InPortB.T[3,1] \"Matrix of rotation\";
+  Real contact.InPortB.T[3,2] \"Matrix of rotation\";
+  Real contact.InPortB.T[3,3] \"Matrix of rotation\";
+  Real contact.InPortB.omega[1](quantity = \"AngularVelocity\", unit = \"rad/s\") \"Vector of angular rate\";
+  Real contact.InPortB.omega[2](quantity = \"AngularVelocity\", unit = \"rad/s\") \"Vector of angular rate\";
+  Real contact.InPortB.omega[3](quantity = \"AngularVelocity\", unit = \"rad/s\") \"Vector of angular rate\";
+  Real contact.InPortB.epsilon[1](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
+  Real contact.InPortB.epsilon[2](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
+  Real contact.InPortB.epsilon[3](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
+  Real contact.OutPortB.P[1](quantity = \"Length\", unit = \"m\");
+  Real contact.OutPortB.P[2](quantity = \"Length\", unit = \"m\");
+  Real contact.OutPortB.P[3](quantity = \"Length\", unit = \"m\");
+  Real contact.OutPortB.F[1](quantity = \"Force\", unit = \"N\");
+  Real contact.OutPortB.F[2](quantity = \"Force\", unit = \"N\");
+  Real contact.OutPortB.F[3](quantity = \"Force\", unit = \"N\");
+  Real contact.OutPortB.M[1](quantity = \"Torque\", unit = \"N.m\");
+  Real contact.OutPortB.M[2](quantity = \"Torque\", unit = \"N.m\");
+  Real contact.OutPortB.M[3](quantity = \"Torque\", unit = \"N.m\");
+  parameter String contact.name = \"contact\";
+  parameter Integer contact.n = 5 \"Number of rollers\";
+  parameter Real contact.R = 0.05 \"Omni wheel outer radius (ellipse small axis)\";
+  parameter Real contact.psi = 0.0 \"Angle of roller distortion (fixed axis turn)\";
+  parameter Real contact.alpha = 0.6283185307179586 \"Max angle of the half-sector\";
+  parameter Real contact.Q = 0.05 \"Ellipse large axis\";
+  parameter Real contact.R1 = 0.04045084971874738 \"Omni wheel inner radius\";
+  parameter Real contact.L1 = 0.02938926261462366 \"Half roller visible (projection) length\";
+  parameter Real contact.L2 = 0.02938926261462366 \"Half roller length\";
+  parameter Real contact.nA[1] = 0.0 \"Roller over horizontal surface: vertical unit vector (in global coordinates)\";
+  parameter Real contact.nA[2] = 1.0 \"Roller over horizontal surface: vertical unit vector (in global coordinates)\";
+  parameter Real contact.nA[3] = 0.0 \"Roller over horizontal surface: vertical unit vector (in global coordinates)\";
+  parameter Real contact.gradAtRollerTip[1] = 23.51141009169892;
+  parameter Real contact.gradAtRollerTip[2] = 32.3606797749979;
+  parameter Real contact.n_at_max[1] = 0.587785252292473 \"Normal to ellipse in local coord (it is in vert plane)\";
+  parameter Real contact.n_at_max[2] = 0.8090169943749475 \"Normal to ellipse in local coord (it is in vert plane)\";
+  parameter Real contact.i[1] = 1.0 \"Roller axis of symmetry unit vector\";
+  parameter Real contact.i[2] = 0.0 \"Roller axis of symmetry unit vector\";
+  parameter Real contact.i[3] = 0.0 \"Roller axis of symmetry unit vector\";
+  parameter Real contact.cos_of_max = 0.8090169943749475;
+  Real contact.rA[1](quantity = \"Length\", unit = \"m\");
+  Real contact.rA[2](quantity = \"Length\", unit = \"m\");
+  Real contact.rA[3](quantity = \"Length\", unit = \"m\");
+  Real contact.rB[1](quantity = \"Length\", unit = \"m\");
+  Real contact.rB[2](quantity = \"Length\", unit = \"m\");
+  Real contact.rB[3](quantity = \"Length\", unit = \"m\");
+  Real contact.ni[1] \"Roller axis in global coords\";
+  Real contact.ni[2] \"Roller axis in global coords\";
+  Real contact.ni[3] \"Roller axis in global coords\";
+  Real contact.crs[1] \"horizontal ni cross vertical\";
+  Real contact.crs[2] \"horizontal ni cross vertical\";
+  Real contact.crs[3] \"horizontal ni cross vertical\";
+  Real contact.nk[1] \"Horizontal (along crs)\";
+  Real contact.nk[2] \"Horizontal (along crs)\";
+  Real contact.nk[3] \"Horizontal (along crs)\";
+  Real contact.n1j[1] \"In vertical direction (= nA)\";
+  Real contact.n1j[2] \"In vertical direction (= nA)\";
+  Real contact.n1j[3] \"In vertical direction (= nA)\";
+  Real contact.n1k[1] \"Horizontal wheel axis, delivered from above\";
+  Real contact.n1k[2] \"Horizontal wheel axis, delivered from above\";
+  Real contact.n1k[3] \"Horizontal wheel axis, delivered from above\";
+  Real contact.lambda \"Parameter to be computed\";
+  Real contact.rho[1] \"Unit vector between mass centers\";
+  Real contact.rho[2] \"Unit vector between mass centers\";
+  Real contact.rho[3] \"Unit vector between mass centers\";
+  Real contact.OBPB[1];
+  Real contact.OBPB[2];
+  Real contact.OBPB[3];
+  Real contact.j;
+  Real contact.cosBtwAxisAndVert;
+  Real contact.vA[1];
+  Real contact.vA[2];
+  Real contact.vA[3];
+  Real contact.vB[1];
+  Real contact.vB[2];
+  Real contact.vB[3];
+  Real contact.relv[1];
+  Real contact.relv[2];
+  Real contact.relv[3];
+  Real contact.relvn;
+  Real contact.vAn;
+  Real contact.vBn;
+  Real contact.vAt[1];
+  Real contact.vAt[2];
+  Real contact.vAt[3];
+  Real contact.vBt[1];
+  Real contact.vBt[2];
+  Real contact.vBt[3];
+  Real contact.relvt[1];
+  Real contact.relvt[2];
+  Real contact.relvt[3];
+  Real contact.relvtsqrt;
+  parameter Real contact.delta = 1e-06;
+  parameter Real contact.fric = 0.1;
+  Real contact.mu;
+  Real contact.Forcet[1];
+  Real contact.Forcet[2];
+  Real contact.Forcet[3];
+  Real contact.Drelvn;
+  Real contact.Forcen;
+  Real contact.isInContact;
+  Real base.OutPort.r[1](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
+  Real base.OutPort.r[2](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
+  Real base.OutPort.r[3](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
+  Real base.OutPort.v[1](quantity = \"Velocity\", unit = \"m/s\") \"Velocity vector of masscenter\";
+  Real base.OutPort.v[2](quantity = \"Velocity\", unit = \"m/s\") \"Velocity vector of masscenter\";
+  Real base.OutPort.v[3](quantity = \"Velocity\", unit = \"m/s\") \"Velocity vector of masscenter\";
+  Real base.OutPort.a[1](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
+  Real base.OutPort.a[2](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
+  Real base.OutPort.a[3](quantity = \"Acceleration\", unit = \"m/s2\") \"Acceleration vector of masscenter\";
+  Real base.OutPort.T[1,1] \"Matrix of rotation\";
+  Real base.OutPort.T[1,2] \"Matrix of rotation\";
+  Real base.OutPort.T[1,3] \"Matrix of rotation\";
+  Real base.OutPort.T[2,1] \"Matrix of rotation\";
+  Real base.OutPort.T[2,2] \"Matrix of rotation\";
+  Real base.OutPort.T[2,3] \"Matrix of rotation\";
+  Real base.OutPort.T[3,1] \"Matrix of rotation\";
+  Real base.OutPort.T[3,2] \"Matrix of rotation\";
+  Real base.OutPort.T[3,3] \"Matrix of rotation\";
+  Real base.OutPort.omega[1](quantity = \"AngularVelocity\", unit = \"rad/s\") \"Vector of angular rate\";
+  Real base.OutPort.omega[2](quantity = \"AngularVelocity\", unit = \"rad/s\") \"Vector of angular rate\";
+  Real base.OutPort.omega[3](quantity = \"AngularVelocity\", unit = \"rad/s\") \"Vector of angular rate\";
+  Real base.OutPort.epsilon[1](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
+  Real base.OutPort.epsilon[2](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
+  Real base.OutPort.epsilon[3](quantity = \"AngularAcceleration\", unit = \"rad/s2\") \"Vector of angular acceleration\";
+  constant Real expectedForcen = 0.05;
+  constant Real expectedFport[1] = 0.0;
+  constant Real expectedFport[2] = 0.05;
+  constant Real expectedFport[3] = 0.0;
+  constant Real expectedF[1] = 0.0;
+  constant Real expectedF[2] = 0.0;
+  constant Real expectedF[3] = 0.0;
+  constant Real expectedM[1] = 0.0;
+  constant Real expectedM[2] = 0.0;
+  constant Real expectedM[3] = 0.0;
+  constant Real expectedContactPoint[1] = 0.0;
+  constant Real expectedContactPoint[2] = 0.0;
+  constant Real expectedContactPoint[3] = 0.0;
+  constant Real expectedContactPointVelocity[1] = 0.0;
+  constant Real expectedContactPointVelocity[2] = 0.0;
+  constant Real expectedContactPointVelocity[3] = 0.0;
+initial equation
+  UNKNOWN EQUATION TYPE
+  UNKNOWN EQUATION TYPE
+  UNKNOWN EQUATION TYPE
+  UNKNOWN EQUATION TYPE
+  UNKNOWN EQUATION TYPE
+  UNKNOWN EQUATION TYPE
+  UNKNOWN EQUATION TYPE
+  UNKNOWN EQUATION TYPE
+  UNKNOWN EQUATION TYPE
+  UNKNOWN EQUATION TYPE
+  UNKNOWN EQUATION TYPE
+  UNKNOWN EQUATION TYPE
+  UNKNOWN EQUATION TYPE
+  if not MbsLite.Util.CompareReal(0.05, contact.Forcen, 1e-10, 1e-05) then
+    UNKNOWN EQUATION TYPE
+  else
+    UNKNOWN EQUATION TYPE
+  end if;
+  UNKNOWN EQUATION TYPE
+  UNKNOWN EQUATION TYPE
+  terminate(\"passed\");
+initial algorithm
+
+initial algorithm
+  assert(MbsLite.Util.CompareReal(roller.q[1] ^ 2.0 + roller.q[2] ^ 2.0 + roller.q[3] ^ 2.0 + roller.q[4] ^ 2.0, 1.0, 1e-10, 1e-05), \"Quaternion of body orientation should have norm 1, was: \" + String(roller.q[1] ^ 2.0 + roller.q[2] ^ 2.0 + roller.q[3] ^ 2.0 + roller.q[4] ^ 2.0, 0, true, 6) + \", q = \" + MbsLite.Util.StringA({roller.q[1], roller.q[2], roller.q[3], roller.q[4]}, \", \") + \". Are the initial conditions specified?\");
+  MbsLite.Util.Assert.AssertInitialized(\"roller\", {roller.r[1], roller.r[2], roller.r[3]}, \"r\");
+  MbsLite.Util.Assert.AssertInitialized(\"roller\", {roller.v[1], roller.v[2], roller.v[3]}, \"v\");
+  MbsLite.Util.Assert.AssertInitialized(\"roller\", {roller.q[1], roller.q[2], roller.q[3], roller.q[4]}, \"q\");
+  MbsLite.Util.Assert.AssertInitialized(\"roller\", {roller.omega[1], roller.omega[2], roller.omega[3]}, \"omega\");
+initial algorithm
 equation
-  joint.RA[1] = joint.InPortA.r[1];
-  joint.RA[2] = joint.InPortA.r[2];
-  joint.RA[3] = joint.InPortA.r[3];
-  joint.RB[1] = joint.InPortB.r[1];
-  joint.RB[2] = joint.InPortB.r[2];
-  joint.RB[3] = joint.InPortB.r[3];
-  joint.vA = MbsLite.Util.Euler({joint.InPortA.r[1], joint.InPortA.r[2], joint.InPortA.r[3]}, {joint.RA[1], joint.RA[2], joint.RA[3]}, {joint.InPortA.v[1], joint.InPortA.v[2], joint.InPortA.v[3]}, {joint.InPortA.omega[1], joint.InPortA.omega[2], joint.InPortA.omega[3]});
-  joint.vB = MbsLite.Util.Euler({joint.InPortB.r[1], joint.InPortB.r[2], joint.InPortB.r[3]}, {joint.RB[1], joint.RB[2], joint.RB[3]}, {joint.InPortB.v[1], joint.InPortB.v[2], joint.InPortB.v[3]}, {joint.InPortB.omega[1], joint.InPortB.omega[2], joint.InPortB.omega[3]});
-  joint.vA[1] = joint.vB[1];
-  joint.vA[2] = joint.vB[2];
-  joint.vA[3] = joint.vB[3];
-  joint.nAi[1] = joint.InPortA.T[1,1];
-  joint.nAi[2] = joint.InPortA.T[2,1];
-  joint.nAi[3] = joint.InPortA.T[3,1];
-  joint.nBi[1] = joint.InPortB.T[1,1];
-  joint.nBi[2] = joint.InPortB.T[2,1];
-  joint.nBi[3] = joint.InPortB.T[3,1];
-  assert(MbsLite.Util.CompareReal(joint.nAi[1], joint.nBi[1], 1e-08, 1e-05), \"looks like joint joint is getting worse... axes in inertial coords should be same, but were: nAi = \" + MbsLite.Util.StringA({joint.nAi[1], joint.nAi[2], joint.nAi[3]}, \", \") + \", nBi = \" + MbsLite.Util.StringA({joint.nBi[1], joint.nBi[2], joint.nBi[3]}, \", \") + \", nBi - nAi = \" + MbsLite.Util.StringA({joint.nBi[1] - joint.nAi[1], joint.nBi[2] - joint.nAi[2], joint.nBi[3] - joint.nAi[3]}, \", \"));
-  assert(MbsLite.Util.CompareReal(joint.nAi[2], joint.nBi[2], 1e-08, 1e-05), \"looks like joint joint is getting worse... axes in inertial coords should be same, but were: nAi = \" + MbsLite.Util.StringA({joint.nAi[1], joint.nAi[2], joint.nAi[3]}, \", \") + \", nBi = \" + MbsLite.Util.StringA({joint.nBi[1], joint.nBi[2], joint.nBi[3]}, \", \") + \", nBi - nAi = \" + MbsLite.Util.StringA({joint.nBi[1] - joint.nAi[1], joint.nBi[2] - joint.nAi[2], joint.nBi[3] - joint.nAi[3]}, \", \"));
-  assert(MbsLite.Util.CompareReal(joint.nAi[3], joint.nBi[3], 1e-08, 1e-05), \"looks like joint joint is getting worse... axes in inertial coords should be same, but were: nAi = \" + MbsLite.Util.StringA({joint.nAi[1], joint.nAi[2], joint.nAi[3]}, \", \") + \", nBi = \" + MbsLite.Util.StringA({joint.nBi[1], joint.nBi[2], joint.nBi[3]}, \", \") + \", nBi - nAi = \" + MbsLite.Util.StringA({joint.nBi[1] - joint.nAi[1], joint.nBi[2] - joint.nAi[2], joint.nBi[3] - joint.nAi[3]}, \", \"));
-  joint.epsilonr[1] = joint.InPortB.epsilon[1] - joint.InPortA.epsilon[1] - (joint.InPortA.omega[2] * joint.InPortB.omega[3] - joint.InPortA.omega[3] * joint.InPortB.omega[2]);
-  joint.epsilonr[2] = joint.InPortB.epsilon[2] - joint.InPortA.epsilon[2] - (joint.InPortA.omega[3] * joint.InPortB.omega[1] - joint.InPortA.omega[1] * joint.InPortB.omega[3]);
-  joint.epsilonr[3] = joint.InPortB.epsilon[3] - joint.InPortA.epsilon[3] - (joint.InPortA.omega[1] * joint.InPortB.omega[2] - joint.InPortA.omega[2] * joint.InPortB.omega[1]);
-  joint.epsilonr[1] = joint.nAi[1] * joint.lambda;
-  joint.epsilonr[2] = joint.nAi[2] * joint.lambda;
-  joint.epsilonr[3] = joint.nAi[3] * joint.lambda;
-  joint.M = joint.OutPortA.M[1] * joint.nAi[1] + joint.OutPortA.M[2] * joint.nAi[2] + joint.OutPortA.M[3] * joint.nAi[3];
-  joint.M = 0.0;
-  joint.OutPortA.P[1] = joint.RA[1];
-  joint.OutPortA.P[2] = joint.RA[2];
-  joint.OutPortA.P[3] = joint.RA[3];
-  joint.OutPortB.P[1] = joint.RB[1];
-  joint.OutPortB.P[2] = joint.RB[2];
-  joint.OutPortB.P[3] = joint.RB[3];
-  der(joint.mu) = joint.lambda;
-  der(joint.angle) = joint.mu;
-  joint.OutPortA.F[1] + joint.OutPortB.F[1] = 0.0;
-  joint.OutPortA.F[2] + joint.OutPortB.F[2] = 0.0;
-  joint.OutPortA.F[3] + joint.OutPortB.F[3] = 0.0;
-  joint.OutPortA.M[1] + joint.OutPortB.M[1] = 0.0;
-  joint.OutPortA.M[2] + joint.OutPortB.M[2] = 0.0;
-  joint.OutPortA.M[3] + joint.OutPortB.M[3] = 0.0;
-  TA = MbsLite.Util.Quaternions.QToT({qA[1], qA[2], qA[3], qA[4]});
-  TB = MbsLite.Util.Quaternions.QToT({qB[1], qB[2], qB[3], qB[4]});
-  der(rA[1]) = vA[1];
-  der(rA[2]) = vA[2];
-  der(rA[3]) = vA[3];
-  der(vA[1]) = aA[1];
-  der(vA[2]) = aA[2];
-  der(vA[3]) = aA[3];
-  aA[1] = FA[1];
-  aA[2] = FA[2];
-  aA[3] = FA[3];
-  {der(qA[1]), der(qA[2]), der(qA[3]), der(qA[4])} = MbsLite.Util.Quaternions.QMult({qA[1], qA[2], qA[3], qA[4]}, {0.0, omegaA[1], omegaA[2], omegaA[3]}) * 0.5;
-  der(omegaA[1]) = epsilonA[1];
-  der(omegaA[2]) = epsilonA[2];
-  der(omegaA[3]) = epsilonA[3];
-  epsilonA[1] = TA[1,1] * MA[1] + TA[2,1] * MA[2] + TA[3,1] * MA[3];
-  epsilonA[2] = TA[1,2] * MA[1] + TA[2,2] * MA[2] + TA[3,2] * MA[3];
-  epsilonA[3] = TA[1,3] * MA[1] + TA[2,3] * MA[2] + TA[3,3] * MA[3];
-  der(rB[1]) = vB[1];
-  der(rB[2]) = vB[2];
-  der(rB[3]) = vB[3];
-  der(vB[1]) = aB[1];
-  der(vB[2]) = aB[2];
-  der(vB[3]) = aB[3];
-  aB[1] = FB[1];
-  aB[2] = FB[2];
-  aB[3] = FB[3];
-  {der(qB[1]), der(qB[2]), der(qB[3]), der(qB[4])} = MbsLite.Util.Quaternions.QMult({qB[1], qB[2], qB[3], qB[4]}, {0.0, omegaB[1], omegaB[2], omegaB[3]}) * 0.5;
-  der(omegaB[1]) = epsilonB[1];
-  der(omegaB[2]) = epsilonB[2];
-  der(omegaB[3]) = epsilonB[3];
-  epsilonB[1] = TB[1,1] * MB[1] + TB[2,1] * MB[2] + TB[3,1] * MB[3];
-  epsilonB[2] = TB[1,2] * MB[1] + TB[2,2] * MB[2] + TB[3,2] * MB[3];
-  epsilonB[3] = TB[1,3] * MB[1] + TB[2,3] * MB[2] + TB[3,3] * MB[3];
-  joint.InPortA.r[1] = rA[1];
-  joint.InPortA.r[2] = rA[2];
-  joint.InPortA.r[3] = rA[3];
-  joint.InPortA.v[1] = vA[1];
-  joint.InPortA.v[2] = vA[2];
-  joint.InPortA.v[3] = vA[3];
-  joint.InPortA.a[1] = aA[1];
-  joint.InPortA.a[2] = aA[2];
-  joint.InPortA.a[3] = aA[3];
-  joint.InPortA.T[1,1] = TA[1,1];
-  joint.InPortA.T[1,2] = TA[1,2];
-  joint.InPortA.T[1,3] = TA[1,3];
-  joint.InPortA.T[2,1] = TA[2,1];
-  joint.InPortA.T[2,2] = TA[2,2];
-  joint.InPortA.T[2,3] = TA[2,3];
-  joint.InPortA.T[3,1] = TA[3,1];
-  joint.InPortA.T[3,2] = TA[3,2];
-  joint.InPortA.T[3,3] = TA[3,3];
-  joint.InPortA.omega[1] = omegaA[1];
-  joint.InPortA.omega[2] = omegaA[2];
-  joint.InPortA.omega[3] = omegaA[3];
-  joint.InPortA.epsilon[1] = epsilonA[1];
-  joint.InPortA.epsilon[2] = epsilonA[2];
-  joint.InPortA.epsilon[3] = epsilonA[3];
-  joint.InPortB.r[1] = rB[1];
-  joint.InPortB.r[2] = rB[2];
-  joint.InPortB.r[3] = rB[3];
-  joint.InPortB.v[1] = vB[1];
-  joint.InPortB.v[2] = vB[2];
-  joint.InPortB.v[3] = vB[3];
-  joint.InPortB.a[1] = aB[1];
-  joint.InPortB.a[2] = aB[2];
-  joint.InPortB.a[3] = aB[3];
-  joint.InPortB.T[1,1] = TB[1,1];
-  joint.InPortB.T[1,2] = TB[1,2];
-  joint.InPortB.T[1,3] = TB[1,3];
-  joint.InPortB.T[2,1] = TB[2,1];
-  joint.InPortB.T[2,2] = TB[2,2];
-  joint.InPortB.T[2,3] = TB[2,3];
-  joint.InPortB.T[3,1] = TB[3,1];
-  joint.InPortB.T[3,2] = TB[3,2];
-  joint.InPortB.T[3,3] = TB[3,3];
-  joint.InPortB.omega[1] = omegaB[1];
-  joint.InPortB.omega[2] = omegaB[2];
-  joint.InPortB.omega[3] = omegaB[3];
-  joint.InPortB.epsilon[1] = epsilonB[1];
-  joint.InPortB.epsilon[2] = epsilonB[2];
-  joint.InPortB.epsilon[3] = epsilonB[3];
-  rA[1] = joint.OutPortA.P[1];
-  rA[2] = joint.OutPortA.P[2];
-  rA[3] = joint.OutPortA.P[3];
-  FA[1] = joint.OutPortA.F[1];
-  FA[2] = joint.OutPortA.F[2];
-  FA[3] = joint.OutPortA.F[3];
-  MA[1] = joint.OutPortA.M[1];
-  MA[2] = joint.OutPortA.M[2];
-  MA[3] = joint.OutPortA.M[3];
-  rB[1] = joint.OutPortB.P[1];
-  rB[2] = joint.OutPortB.P[2];
-  rB[3] = joint.OutPortB.P[3];
-  FB[1] = joint.OutPortB.F[1];
-  FB[2] = joint.OutPortB.F[2];
-  FB[3] = joint.OutPortB.F[3];
-  MB[1] = joint.OutPortB.M[1];
-  MB[2] = joint.OutPortB.M[2];
-  MB[3] = joint.OutPortB.M[3];
-  when initial() then
-    terminate(\"passed\");
-  end when;
+  roller.crosses[1,1] = (roller.InPorts[1].P[2] - roller.r[2]) * roller.InPorts[1].F[3] - (roller.InPorts[1].P[3] - roller.r[3]) * roller.InPorts[1].F[2];
+  roller.crosses[1,2] = (roller.InPorts[1].P[3] - roller.r[3]) * roller.InPorts[1].F[1] - (roller.InPorts[1].P[1] - roller.r[1]) * roller.InPorts[1].F[3];
+  roller.crosses[1,3] = (roller.InPorts[1].P[1] - roller.r[1]) * roller.InPorts[1].F[2] - (roller.InPorts[1].P[2] - roller.r[2]) * roller.InPorts[1].F[1];
+  roller.F[1] = roller.InPorts[1].F[1];
+  roller.F[2] = -0.05 + roller.InPorts[1].F[2];
+  roller.F[3] = roller.InPorts[1].F[3];
+  roller.M[1] = roller.InPorts[1].M[1] + roller.crosses[1,1];
+  roller.M[2] = roller.InPorts[1].M[2] + roller.crosses[1,2];
+  roller.M[3] = roller.InPorts[1].M[3] + roller.crosses[1,3];
+  der(roller.Active) = 0.0;
+  der(roller.r[1]) = roller.v[1] * roller.Active;
+  der(roller.r[2]) = roller.v[2] * roller.Active;
+  der(roller.r[3]) = roller.v[3] * roller.Active;
+  der(roller.v[1]) = roller.a[1] * roller.Active;
+  der(roller.v[2]) = roller.a[2] * roller.Active;
+  der(roller.v[3]) = roller.a[3] * roller.Active;
+  roller.a[1] * 0.05 = roller.F[1];
+  roller.a[2] * 0.05 = roller.F[2];
+  roller.a[3] * 0.05 = roller.F[3];
+  {der(roller.q[1]), der(roller.q[2]), der(roller.q[3]), der(roller.q[4])} = MbsLite.Util.Quaternions.QMult({roller.q[1], roller.q[2], roller.q[3], roller.q[4]}, {0.0, roller.omega[1], roller.omega[2], roller.omega[3]}) * 0.5 * roller.Active;
+  der(roller.omega[1]) = roller.epsilon[1] * roller.Active;
+  der(roller.omega[2]) = roller.epsilon[2] * roller.Active;
+  der(roller.omega[3]) = roller.epsilon[3] * roller.Active;
+  roller.T = MbsLite.Util.Quaternions.QToT({roller.q[1], roller.q[2], roller.q[3], roller.q[4]});
+  5.699141943371693e-07 * roller.epsilon[1] = roller.T[1,1] * roller.M[1] + roller.T[2,1] * roller.M[2] + roller.T[3,1] * roller.M[3];
+  1.468043638102385e-05 * roller.epsilon[2] + roller.omega[3] * 5.699141943371693e-07 * roller.omega[1] - roller.omega[1] * 1.468043638102385e-05 * roller.omega[3] = roller.T[1,2] * roller.M[1] + roller.T[2,2] * roller.M[2] + roller.T[3,2] * roller.M[3];
+  1.468043638102385e-05 * roller.epsilon[3] + roller.omega[1] * 1.468043638102385e-05 * roller.omega[2] - roller.omega[2] * 5.699141943371693e-07 * roller.omega[1] = roller.T[1,3] * roller.M[1] + roller.T[2,3] * roller.M[2] + roller.T[3,3] * roller.M[3];
+  roller.OutPort.r[1] = roller.r[1];
+  roller.OutPort.r[2] = roller.r[2];
+  roller.OutPort.r[3] = roller.r[3];
+  roller.OutPort.v[1] = roller.v[1];
+  roller.OutPort.v[2] = roller.v[2];
+  roller.OutPort.v[3] = roller.v[3];
+  roller.OutPort.a[1] = roller.a[1];
+  roller.OutPort.a[2] = roller.a[2];
+  roller.OutPort.a[3] = roller.a[3];
+  roller.OutPort.T[1,1] = roller.T[1,1];
+  roller.OutPort.T[1,2] = roller.T[1,2];
+  roller.OutPort.T[1,3] = roller.T[1,3];
+  roller.OutPort.T[2,1] = roller.T[2,1];
+  roller.OutPort.T[2,2] = roller.T[2,2];
+  roller.OutPort.T[2,3] = roller.T[2,3];
+  roller.OutPort.T[3,1] = roller.T[3,1];
+  roller.OutPort.T[3,2] = roller.T[3,2];
+  roller.OutPort.T[3,3] = roller.T[3,3];
+  roller.OutPort.omega[1] = roller.T[1,1] * roller.omega[1] + roller.T[1,2] * roller.omega[2] + roller.T[1,3] * roller.omega[3];
+  roller.OutPort.omega[2] = roller.T[2,1] * roller.omega[1] + roller.T[2,2] * roller.omega[2] + roller.T[2,3] * roller.omega[3];
+  roller.OutPort.omega[3] = roller.T[3,1] * roller.omega[1] + roller.T[3,2] * roller.omega[2] + roller.T[3,3] * roller.omega[3];
+  roller.OutPort.epsilon[1] = roller.T[1,1] * roller.epsilon[1] + roller.T[1,2] * roller.epsilon[2] + roller.T[1,3] * roller.epsilon[3];
+  roller.OutPort.epsilon[2] = roller.T[2,1] * roller.epsilon[1] + roller.T[2,2] * roller.epsilon[2] + roller.T[2,3] * roller.epsilon[3];
+  roller.OutPort.epsilon[3] = roller.T[3,1] * roller.epsilon[1] + roller.T[3,2] * roller.epsilon[2] + roller.T[3,3] * roller.epsilon[3];
+  if noEvent(abs(contact.cosBtwAxisAndVert) < 0.8090169943749475) and noEvent(contact.InPortB.r[2] < 0.05) then
+    contact.isInContact = 1.0;
+    contact.Drelvn = 0.0;
+    contact.Forcet[1] = (-contact.relvt[1]) * 0.1 * (if noEvent(contact.relvtsqrt <= 1e-06) then 1000000.0 else 1.0 / contact.relvtsqrt) * contact.Forcen;
+    contact.Forcet[2] = contact.mu - contact.relvt[2] * 0.1 * (if noEvent(contact.relvtsqrt <= 1e-06) then 1000000.0 else 1.0 / contact.relvtsqrt) * contact.Forcen;
+    contact.Forcet[3] = (-contact.relvt[3]) * 0.1 * (if noEvent(contact.relvtsqrt <= 1e-06) then 1000000.0 else 1.0 / contact.relvtsqrt) * contact.Forcen;
+  else
+    contact.isInContact = 0.0;
+    contact.Forcen = 0.0;
+    contact.Forcet[1] = 0.0;
+    contact.Forcet[2] = 0.0;
+    contact.Forcet[3] = 0.0;
+  end if;
+  contact.Drelvn = der(contact.relvn);
+  contact.Forcen = contact.OutPortB.F[2];
+  contact.OutPortB.F[1] = contact.Forcet[1];
+  contact.OutPortB.F[2] = contact.Forcet[2] + contact.Forcen;
+  contact.OutPortB.F[3] = contact.Forcet[3];
+  contact.OutPortB.M[1] = 0.0;
+  contact.OutPortB.M[2] = 0.0;
+  contact.OutPortB.M[3] = 0.0;
+  contact.vA = MbsLite.Util.Euler({contact.InPortA.r[1], contact.InPortA.r[2], contact.InPortA.r[3]}, {contact.rA[1], contact.rA[2], contact.rA[3]}, {contact.InPortA.v[1], contact.InPortA.v[2], contact.InPortA.v[3]}, {contact.InPortA.omega[1], contact.InPortA.omega[2], contact.InPortA.omega[3]});
+  contact.vB = MbsLite.Util.Euler({contact.InPortB.r[1], contact.InPortB.r[2], contact.InPortB.r[3]}, {contact.rB[1], contact.rB[2], contact.rB[3]}, {contact.InPortB.v[1], contact.InPortB.v[2], contact.InPortB.v[3]}, {contact.InPortB.omega[1], contact.InPortB.omega[2], contact.InPortB.omega[3]});
+  contact.relv[1] = contact.vB[1] - contact.vA[1];
+  contact.relv[2] = contact.vB[2] - contact.vA[2];
+  contact.relv[3] = contact.vB[3] - contact.vA[3];
+  contact.vAn = contact.vA[2];
+  contact.vBn = contact.vB[2];
+  contact.relvn = contact.relv[2];
+  contact.vAt[1] = contact.vA[1];
+  contact.vAt[2] = contact.vA[2] - contact.vAn;
+  contact.vAt[3] = contact.vA[3];
+  contact.vBt[1] = contact.vB[1];
+  contact.vBt[2] = contact.vB[2] - contact.vBn;
+  contact.vBt[3] = contact.vB[3];
+  contact.relvt[1] = contact.vBt[1] - contact.vAt[1];
+  contact.relvt[2] = contact.vBt[2] - contact.vAt[2];
+  contact.relvt[3] = contact.vBt[3] - contact.vAt[3];
+  contact.relvtsqrt = Modelica.Math.Vectors.norm({contact.relvt[1], contact.relvt[2], contact.relvt[3]}, 2.0);
+  contact.OutPortA.P[1] = contact.rA[1];
+  contact.OutPortA.P[2] = contact.rA[2];
+  contact.OutPortA.P[3] = contact.rA[3];
+  contact.OutPortB.P[1] = contact.rB[1];
+  contact.OutPortB.P[2] = contact.rB[2];
+  contact.OutPortB.P[3] = contact.rB[3];
+  contact.n1j[1] = 0.0;
+  contact.n1j[2] = 1.0;
+  contact.n1j[3] = 0.0;
+  contact.ni[1] = contact.InPortB.T[1,1];
+  contact.ni[2] = contact.InPortB.T[2,1];
+  contact.ni[3] = contact.InPortB.T[3,1];
+  contact.crs[1] = -contact.ni[3];
+  contact.crs[2] = 0.0;
+  contact.crs[3] = contact.ni[1];
+  contact.nk[1] = contact.crs[1] / sqrt(contact.crs[1] ^ 2.0 + contact.crs[2] ^ 2.0 + contact.crs[3] ^ 2.0);
+  contact.nk[2] = contact.crs[2] / sqrt(contact.crs[1] ^ 2.0 + contact.crs[2] ^ 2.0 + contact.crs[3] ^ 2.0);
+  contact.nk[3] = contact.crs[3] / sqrt(contact.crs[1] ^ 2.0 + contact.crs[2] ^ 2.0 + contact.crs[3] ^ 2.0);
+  contact.cosBtwAxisAndVert = contact.ni[2];
+  if noEvent(abs(contact.cosBtwAxisAndVert) < 0.8090169943749475) and noEvent(contact.InPortB.r[2] < 0.05) then
+    contact.lambda = (0.05 * (contact.n1j[1] * contact.nk[1] + contact.n1j[2] * contact.nk[2] + contact.n1j[3] * contact.nk[3]) + -0.04045084971874738 * (contact.rho[1] * contact.nk[1] + contact.rho[2] * contact.nk[2] + contact.rho[3] * contact.nk[3])) / (contact.n1k[1] * contact.nk[1] + contact.n1k[2] * contact.nk[2] + contact.n1k[3] * contact.nk[3]);
+    contact.OBPB[1] = contact.n1k[1] * contact.lambda - contact.n1j[1] * 0.05 + contact.rho[1] * 0.04045084971874738;
+    contact.OBPB[2] = contact.n1k[2] * contact.lambda - contact.n1j[2] * 0.05 + contact.rho[2] * 0.04045084971874738;
+    contact.OBPB[3] = contact.n1k[3] * contact.lambda - contact.n1j[3] * 0.05 + contact.rho[3] * 0.04045084971874738;
+    contact.rB[1] = contact.InPortB.r[1] + contact.OBPB[1];
+    contact.rB[2] = contact.InPortB.r[2] + contact.OBPB[2];
+    contact.rB[3] = contact.InPortB.r[3] + contact.OBPB[3];
+    contact.j = 1.0;
+  else
+    contact.lambda = 0.05 * (contact.n1j[1] * contact.nk[1] + contact.n1j[2] * contact.nk[2] + contact.n1j[3] * contact.nk[3]) / (contact.n1k[1] * contact.nk[1] + contact.n1k[2] * contact.nk[2] + contact.n1k[3] * contact.nk[3]);
+    contact.OBPB[1] = (-contact.n1j[1]) * 0.05;
+    contact.OBPB[2] = (-contact.n1j[2]) * 0.05;
+    contact.OBPB[3] = (-contact.n1j[3]) * 0.05;
+    if noEvent(contact.cosBtwAxisAndVert > 0.0) then
+      contact.rB[1] = contact.InPortB.r[1] - contact.ni[1] * 0.02938926261462366;
+      contact.rB[2] = contact.InPortB.r[2] - contact.ni[2] * 0.02938926261462366;
+      contact.rB[3] = contact.InPortB.r[3] - contact.ni[3] * 0.02938926261462366;
+      contact.j = 2.0;
+    else
+      contact.rB[1] = contact.InPortB.r[1] + contact.ni[1] * 0.02938926261462366;
+      contact.rB[2] = contact.InPortB.r[2] + contact.ni[2] * 0.02938926261462366;
+      contact.rB[3] = contact.InPortB.r[3] + contact.ni[3] * 0.02938926261462366;
+      contact.j = 3.0;
+    end if;
+  end if;
+  contact.rA[1] = contact.rB[1];
+  contact.rA[2] = 0.0;
+  contact.rA[3] = contact.rB[3];
+  contact.OutPortA.F[1] + contact.OutPortB.F[1] = 0.0;
+  contact.OutPortA.F[2] + contact.OutPortB.F[2] = 0.0;
+  contact.OutPortA.F[3] + contact.OutPortB.F[3] = 0.0;
+  contact.OutPortA.M[1] + contact.OutPortB.M[1] = 0.0;
+  contact.OutPortA.M[2] + contact.OutPortB.M[2] = 0.0;
+  contact.OutPortA.M[3] + contact.OutPortB.M[3] = 0.0;
+  base.OutPort.r[1] = 0.0;
+  base.OutPort.r[2] = 0.0;
+  base.OutPort.r[3] = 0.0;
+  base.OutPort.v[1] = 0.0;
+  base.OutPort.v[2] = 0.0;
+  base.OutPort.v[3] = 0.0;
+  base.OutPort.a[1] = 0.0;
+  base.OutPort.a[2] = 0.0;
+  base.OutPort.a[3] = 0.0;
+  base.OutPort.T[1,1] = 1.0;
+  base.OutPort.T[1,2] = 0.0;
+  base.OutPort.T[1,3] = 0.0;
+  base.OutPort.T[2,1] = 0.0;
+  base.OutPort.T[2,2] = 1.0;
+  base.OutPort.T[2,3] = 0.0;
+  base.OutPort.T[3,1] = 0.0;
+  base.OutPort.T[3,2] = 0.0;
+  base.OutPort.T[3,3] = 1.0;
+  base.OutPort.omega[1] = 0.0;
+  base.OutPort.omega[2] = 0.0;
+  base.OutPort.omega[3] = 0.0;
+  base.OutPort.epsilon[1] = 0.0;
+  base.OutPort.epsilon[2] = 0.0;
+  base.OutPort.epsilon[3] = 0.0;
+  contact.n1k[1] = roller.T[1,3];
+  contact.n1k[2] = roller.T[2,3];
+  contact.n1k[3] = roller.T[3,3];
+  contact.rho = Modelica.Math.Vectors.normalize({-roller.r[1], 0.05 - roller.r[2], -roller.r[3]}, 1e-13);
   when time > 0.0 then
-    assert(false, \"should have terminated after checking the solution to the initial problem\");
+    MbsLite.Util.Assert.Assert(false, \"should have terminated after checking the solution to the initial problem\", false);
   end when;
-end MbsLite.Test.Constraints.JointTest;
+  contact.InPortB.T[1,1] = roller.OutPort.T[1,1];
+  contact.InPortB.T[1,2] = roller.OutPort.T[1,2];
+  contact.InPortB.T[1,3] = roller.OutPort.T[1,3];
+  contact.InPortB.T[2,1] = roller.OutPort.T[2,1];
+  contact.InPortB.T[2,2] = roller.OutPort.T[2,2];
+  contact.InPortB.T[2,3] = roller.OutPort.T[2,3];
+  contact.InPortB.T[3,1] = roller.OutPort.T[3,1];
+  contact.InPortB.T[3,2] = roller.OutPort.T[3,2];
+  contact.InPortB.T[3,3] = roller.OutPort.T[3,3];
+  contact.InPortB.a[1] = roller.OutPort.a[1];
+  contact.InPortB.a[2] = roller.OutPort.a[2];
+  contact.InPortB.a[3] = roller.OutPort.a[3];
+  contact.InPortB.epsilon[1] = roller.OutPort.epsilon[1];
+  contact.InPortB.epsilon[2] = roller.OutPort.epsilon[2];
+  contact.InPortB.epsilon[3] = roller.OutPort.epsilon[3];
+  contact.InPortB.omega[1] = roller.OutPort.omega[1];
+  contact.InPortB.omega[2] = roller.OutPort.omega[2];
+  contact.InPortB.omega[3] = roller.OutPort.omega[3];
+  contact.InPortB.r[1] = roller.OutPort.r[1];
+  contact.InPortB.r[2] = roller.OutPort.r[2];
+  contact.InPortB.r[3] = roller.OutPort.r[3];
+  contact.InPortB.v[1] = roller.OutPort.v[1];
+  contact.InPortB.v[2] = roller.OutPort.v[2];
+  contact.InPortB.v[3] = roller.OutPort.v[3];
+  contact.OutPortB.F[1] = roller.InPorts[1].F[1];
+  contact.OutPortB.F[2] = roller.InPorts[1].F[2];
+  contact.OutPortB.F[3] = roller.InPorts[1].F[3];
+  contact.OutPortB.M[1] = roller.InPorts[1].M[1];
+  contact.OutPortB.M[2] = roller.InPorts[1].M[2];
+  contact.OutPortB.M[3] = roller.InPorts[1].M[3];
+  contact.OutPortB.P[1] = roller.InPorts[1].P[1];
+  contact.OutPortB.P[2] = roller.InPorts[1].P[2];
+  contact.OutPortB.P[3] = roller.InPorts[1].P[3];
+  base.OutPort.T[1,1] = contact.InPortA.T[1,1];
+  base.OutPort.T[1,2] = contact.InPortA.T[1,2];
+  base.OutPort.T[1,3] = contact.InPortA.T[1,3];
+  base.OutPort.T[2,1] = contact.InPortA.T[2,1];
+  base.OutPort.T[2,2] = contact.InPortA.T[2,2];
+  base.OutPort.T[2,3] = contact.InPortA.T[2,3];
+  base.OutPort.T[3,1] = contact.InPortA.T[3,1];
+  base.OutPort.T[3,2] = contact.InPortA.T[3,2];
+  base.OutPort.T[3,3] = contact.InPortA.T[3,3];
+  base.OutPort.a[1] = contact.InPortA.a[1];
+  base.OutPort.a[2] = contact.InPortA.a[2];
+  base.OutPort.a[3] = contact.InPortA.a[3];
+  base.OutPort.epsilon[1] = contact.InPortA.epsilon[1];
+  base.OutPort.epsilon[2] = contact.InPortA.epsilon[2];
+  base.OutPort.epsilon[3] = contact.InPortA.epsilon[3];
+  base.OutPort.omega[1] = contact.InPortA.omega[1];
+  base.OutPort.omega[2] = contact.InPortA.omega[2];
+  base.OutPort.omega[3] = contact.InPortA.omega[3];
+  base.OutPort.r[1] = contact.InPortA.r[1];
+  base.OutPort.r[2] = contact.InPortA.r[2];
+  base.OutPort.r[3] = contact.InPortA.r[3];
+  base.OutPort.v[1] = contact.InPortA.v[1];
+  base.OutPort.v[2] = contact.InPortA.v[2];
+  base.OutPort.v[3] = contact.InPortA.v[3];
+end MbsLite.Test.Constraints.ContactTest;
 "
 ====================================
-Checking MbsLite.Test.Constraints.JointTest
-"Check of MbsLite.Test.Constraints.JointTest completed successfully.
-Class MbsLite.Test.Constraints.JointTest has 165 equation(s) and 159 variable(s).
-120 of these are trivial equation(s)."
+Checking MbsLite.Test.Constraints.ContactTest
+"Check of MbsLite.Test.Constraints.ContactTest completed successfully.
+Class MbsLite.Test.Constraints.ContactTest has 220 equation(s) and 220 variable(s).
+144 of these are trivial equation(s)."
 ====================================
-Simulating MbsLite.Test.Constraints.JointTest
+Simulating MbsLite.Test.Constraints.ContactTest
 record SimulationResult
     resultFile = "",
-    simulationOptions = "startTime = 0.0, stopTime = 1.0, numberOfIntervals = 100, tolerance = 1e-09, method = 'dassl', fileNamePrefix = 'MbsLite.Test.Constraints.JointTest', options = '', outputFormat = 'csv', variableFilter = '.*', cflags = '', simflags = ''",
-    messages = "Failed to build model: MbsLite.Test.Constraints.JointTest",
-    timeFrontend = 0.0,
-    timeBackend = 0.0,
-    timeSimCode = 0.0,
-    timeTemplates = 0.0,
-    timeCompile = 0.0,
-    timeSimulation = 0.0,
-    timeTotal = 0.0
+    simulationOptions = "startTime = 0.0, stopTime = 1.0, numberOfIntervals = 100, tolerance = 1e-09, method = 'dassl', fileNamePrefix = 'MbsLite.Test.Constraints.ContactTest', options = '', outputFormat = 'csv', variableFilter = '.*', cflags = '', simflags = ''",
+    messages = "Simulation execution failed for model: MbsLite.Test.Constraints.ContactTest
+stdout            | info    | Assertion passed: Roller torque should be: { 0, 0, 0 }, but was: { 0, -0, 0 }
+stdout            | info    | Assertion passed: Roller angular acceleration should be: { 0, 0, 0 }, but was: { 0, 0, 0 }
+stdout            | info    | Assertion passed: crosses[1] should be: { 0, 0, 0 }, but was: { 0, -0, 0 }
+stdout            | info    | Assertion passed: mu should be: 0, but was: 0
+stdout            | info    | Assertion passed: Forcet should be: { 0, 0, 0 }, but was: { -0, -0, -0 }
+stdout            | info    | Assertion passed: Drelvn should be: 0, but was: -4.16334e-17
+stdout            | info    | Assertion passed: relvn should be: 0, but was: 0
+stdout            | info    | Assertion passed: relvt should be: { 0, 0, 0 }, but was: { 0, 0, 0 }
+stdout            | info    | Assertion passed: Contact point velocity should be: { 0, 0, 0 }, but was: { 0, 0, 0 }
+stdout            | info    | Assertion passed: Contact point velocity Euler should be: { 0, 0, 0 }, but was: { 0, 0, 0 }
+stdout            | info    | Assertion passed: Roller isInContact should be: 1, but was: 1
+stdout            | info    | Assertion passed: Roller angular velocity should be: { 0, 0, -1 }, but was: { 0, 0, -1 }
+stdout            | info    | Assertion passed: Roller velocity should be: { 0.00954915, 0, 0 }, but was: { 0.00954915, 0, 0 }
+stdout            | info    | Assertion passed: Roller center should be: { 0, 0.00954915, 0 }, but was: { 0, 0.00954915, 0 }
+stdout            | info    | Assertion passed: Contact point should be: { 0, 0, 0 }, but was: { 0, 0, 0 }
+stdout            | info    | The initialization finished successfully without homotopy method.
+[/home/vf/om/models/omni/thin/lib/MbsLite/Test/Constraints/ContactTest.mo:152:3-152:22:writable]
+stdout            | info    | Simulation call terminate() at initialization (time 0.000000)
+|                 | |       | Message : passed
+",
+    timeFrontend = 0.625653305,
+    timeBackend = 0.994901869,
+    timeSimCode = 0.131475074,
+    timeTemplates = 0.1479074589999999,
+    timeCompile = 9.432459421000001
 end SimulationResult;
 "[/home/vf/om/models/omni/thin/lib/MbsLite/KinematicPort.mo:3:1-12:18:writable] Warning: Connector .MbsLite.KinematicPort is not balanced: The number of potential variables (24) is not equal to the number of flow variables (0).
 [/home/vf/om/models/omni/thin/lib/MbsLite/WrenchPort.mo:3:1-9:15:writable] Warning: Connector .MbsLite.WrenchPort is not balanced: The number of potential variables (9) is not equal to the number of flow variables (0).
 [/home/vf/om/models/omni/thin/lib/MbsLite/KinematicPort.mo:3:1-12:18:writable] Warning: Connector .MbsLite.KinematicPort is not balanced: The number of potential variables (24) is not equal to the number of flow variables (0).
 [/home/vf/om/models/omni/thin/lib/MbsLite/WrenchPort.mo:3:1-9:15:writable] Warning: Connector .MbsLite.WrenchPort is not balanced: The number of potential variables (9) is not equal to the number of flow variables (0).
-Error: Too many equations, over-determined system. The model has 165 equation(s) and 159 variable(s).
+[/home/vf/om/models/omni/thin/lib/MbsLite/KinematicPort.mo:3:1-12:18:writable] Warning: Connector .MbsLite.KinematicPort is not balanced: The number of potential variables (24) is not equal to the number of flow variables (0).
+[/home/vf/om/models/omni/thin/lib/MbsLite/WrenchPort.mo:3:1-9:15:writable] Warning: Connector .MbsLite.WrenchPort is not balanced: The number of potential variables (9) is not equal to the number of flow variables (0).
+Warning: Assuming fixed start value for the following 14 variables:
+         contact.relvn:VARIABLE()  type: Real 
+         roller.Active:VARIABLE(start = 1.0 )  "Flag of active dynamics" type: Real 
+         roller.omega[3]:VARIABLE(start = -1.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [3]
+         roller.omega[2]:VARIABLE(start = 0.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [3]
+         roller.omega[1]:VARIABLE(start = 0.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [3]
+         roller.q[4]:VARIABLE(start = 0.0 )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [4]
+         roller.q[3]:VARIABLE(start = 0.0 )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [4]
+         roller.q[2]:VARIABLE(start = 0.0 )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [4]
+         roller.q[1]:VARIABLE(start = 1.0 )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [4]
+         roller.v[3]:VARIABLE(start = 0.0 unit = "m/s" )  "Velocity vector of masscenter" type: Real  [3]
+         roller.v[1]:VARIABLE(start = 0.009549150281252625 unit = "m/s" )  "Velocity vector of masscenter" type: Real  [3]
+         roller.r[3]:VARIABLE(start = 0.0 unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [3]
+         roller.r[1]:VARIABLE(start = 0.0 unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [3]
+         roller.r[2]:VARIABLE(start = 0.009549150281252625 unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [3]
 "
