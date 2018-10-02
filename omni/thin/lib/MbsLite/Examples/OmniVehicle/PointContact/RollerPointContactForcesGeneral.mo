@@ -55,14 +55,5 @@ equation
   OutPortB.F = Forcet + Forcen * nA;
   OutPortB.M = zeros(3);
 
-  annotation
-    ( experiment
-      ( StopTime=10
-      , NumberOfIntervals=50000
-      , Tolerance=1e-009
-      )
-    , experimentSetupOutput
-    );
-
 end RollerPointContactForcesGeneral;
 

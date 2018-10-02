@@ -6,7 +6,7 @@ model OmniWheelOnPlaneFree
 
   constant Real[3] forward  = { 1,  0,  0 };
   constant Real[3] vertical = { 0,  1,  0 };
-  constant Real[3] Gravity  = { 0, -1,  0 };
+  constant Real[3] Gravity  = -vertical;
   
   parameter Boolean strict = false;
 

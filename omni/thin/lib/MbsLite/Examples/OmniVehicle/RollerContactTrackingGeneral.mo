@@ -84,14 +84,4 @@ equation
 
   rA = { rB[1], 0, rB[3] };
 
-  annotation
-    ( experiment
-        ( StopTime=10
-        , NumberOfIntervals=50000
-        , Tolerance=1e-009
-        , Algorithm="Dassl"
-        )
-    , experimentSetupOutput
-    );
-
 end RollerContactTrackingGeneral;

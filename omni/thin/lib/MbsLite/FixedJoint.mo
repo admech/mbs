@@ -33,7 +33,8 @@ equation
   RA = InPortA.r + InPortA.T * rA;
   RB = InPortB.r + InPortB.T * rB;
   vA = Euler(InPortA.r, RA, InPortA.v, InPortA.omega);
-  vB = Euler(InPortB.r, RB, InPortB.v, InPortB.omega); vA = vB;
+  vB = Euler(InPortB.r, RB, InPortB.v, InPortB.omega);
+  vA = vB;
   // vr = vB - vA;
   // der(vr) = ar;
   // ar = zeros(3);

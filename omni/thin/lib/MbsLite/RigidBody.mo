@@ -20,8 +20,11 @@ partial model RigidBody
   // SI.Acceleration a[3](stateSelect = StateSelect.never) "Acceleration vector of masscenter";
   // SI.AngularAcceleration[3]  epsilon(stateSelect = StateSelect.never) "Vector of angular acceleration";
 
-  SI.Force[3]                F (each start = inf) "Sum of all forces applied";
-  SI.Torque[3]               M (each start = inf) "Sum of all torques applied";
+  // should we really specify this explicitly ?
+  // SI.Force[3]                F (each start = inf) "Sum of all forces applied";
+  // SI.Torque[3]               M (each start = inf) "Sum of all torques applied";
+  SI.Force[3]                F "Sum of all forces applied";
+  SI.Torque[3]               M "Sum of all torques applied";
 
   Real[3, 3]                 T "Matrix of rotation. T * local = global, cols = coords of local base in global";
   Real                       Active (start=1) "Flag of active dynamics";
@@ -37,8 +40,8 @@ initial algorithm
   AssertInitialized(name,  v, "v");
   AssertInitialized(name,  q, "q");
   AssertInitialized(name,  omega, "omega");
-  AssertInitialized(name,  F, "F");
-  AssertInitialized(name,  M, "M");
+  // AssertInitialized(name,  F, "F");
+  // AssertInitialized(name,  M, "M");
 
 equation
 
