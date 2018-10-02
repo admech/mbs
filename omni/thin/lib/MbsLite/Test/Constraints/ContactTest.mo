@@ -53,12 +53,13 @@ model ContactTest
 
   Base base;
 
-constant Real    expectedForcen = 0.0495225;
-constant Real[3] expectedF     = expectedForcen * vertical; // why ?
-constant Real[3] expectedFport = expectedF;
-constant Real[3] expectedM     = { 0, 0, 0 };
-constant Real[3] expectedContactPoint = { 0, 0, 0 };
-constant Real[3] expectedContactPointVelocity = { 0, 0, 0 };
+constant  Real    expectedForcen = 0.0495225; // why ?
+constant  Real    expectedAn = -0.00954915; // why ?
+parameter Real[3] expectedF     = -0.000477458 * vertical; // why not Fn - mg ?
+parameter Real[3] expectedFport = expectedForcen * vertical;
+constant  Real[3] expectedM     = { 0, 0, 0 };
+constant  Real[3] expectedContactPoint = { 0, 0, 0 };
+constant  Real[3] expectedContactPointVelocity = { 0, 0, 0 };
 initial equation
   AssertReals
     ( expectedContactPoint
@@ -118,7 +119,7 @@ initial equation
     , "Forcen"
     );
   AssertReals
-    ( expectedForcen * vertical
+    ( expectedAn * vertical
     , roller.a
     , "Roller acceleration"
     );
