@@ -4,50 +4,36 @@ model OmniWheelAtRest
 
   import MbsLite.Examples.OmniVehicle.PointContact.OmniWheel;
 
-  constant Real[3] forward = { 1, 0, 0 };
-  constant Real[3] vertical = { 0, 1, 0 };
-  constant Real[3] Gravity  = { 0, -1, 0 };
-  
+  parameter String  name   = "OmniWheelAtRest";
   parameter Boolean strict = false;
 
-  parameter Real R = 0.05 "'wheel radius' := distance from wheel axis to the floor";
-  parameter Integer n = 5;
-  parameter Real wheelHubMass = 0.15;
-  parameter Real rollerMass = 0.05;
-
-  parameter Real halfRollerAngle = pi / n;
-  parameter Real wheelHubRadius = R * cos(halfRollerAngle);
-  parameter Real rollerLength = 2 * R * sin(halfRollerAngle);
-  parameter Real rollerRadiusForMoi = (R - wheelHubRadius) / 2;
-  
-  parameter Real    v0          = 0;
-  parameter Real    v0dirAngle  = 0;
-  parameter Real[4] q0          = QRot(v0dirAngle, vertical);
-  parameter Real[3] v0vec       = QToT(q0) * v0 * { 1, 0, 0 };
+  parameter Real[3]  Gravity (each start = inf);
+  parameter Integer  nActual = -Integer_inf;
+  parameter Real[3]  r0      (each start = inf);
+  parameter Real[4]  q0      (each start = inf);
+  parameter Params   params;
+  parameter Initials initials;
 
   Base base;
 
   OmniWheel wheel
-    ( name    = "wheel"
-    , Gravity = Gravity
-    , n       = n
-    , psi     = 0
-    , rollerMass            = rollerMass
-    , rollerAxialMoi        = rollerMass * (rollerRadiusForMoi^2) / 2
-    , rollerOrthogonalMoi   = rollerMass / 12 * (3 * rollerRadiusForMoi^2 + rollerLength^2)
-    , wheelHubMass          = wheelHubMass
-    , wheelHubAxialMoi      = wheelHubMass * (wheelHubRadius^2) / 2
-    , wheelHubOrthogonalMoi = wheelHubMass / 12 * (3 * wheelHubRadius^2 + 0.01^2)
-    , R       = R
-    , r0      = R * vertical
-    , q0      = q0
-    , v0      = v0vec
-    , omega0  = { 0, 0, 1 } // 1 / R * cross(vertical, v0vec)
+    ( name     = "wheel"
+    , nActual  = nActual
+    , Gravity  = Gravity
+    , r0       = params.wheelRadius * vertical
+    , q0       = q0
+    , params   = params
+    , initials = initials
     );
+
+initial algorithm
+  AssertInitialized (name, q0,      "q0");
+  AssertInitialized (name, r0,      "r0");
+  AssertInitialized (name, Gravity, "Gravity");
 
 equation
 
-  for i in 1 : n loop
+  for i in 1 : nActual loop
     wheel.Rollers[i].InPorts[1].P = wheel.Rollers[i].OutPort.r;
     wheel.Rollers[i].InPorts[1].F = zeros(3);
     wheel.Rollers[i].InPorts[1].M = zeros(3);

@@ -1,6 +1,6 @@
 within MbsLite.Util.Quaternions;
 
-function QRot
+function QRot "quaternion of rotation by angle about axis CW+ looking along the axis"
 
   input  Real    angle;
   input  Real[3] axis;

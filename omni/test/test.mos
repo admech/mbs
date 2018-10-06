@@ -28,13 +28,13 @@ checkModel(SPECIFY_MODEL_NAME);
 
 print("===================================="); 
 print("Simulating SPECIFY_MODEL_NAME"); 
+/*
+print("na samom dele net"); 
+*/
 simulate
     ( SPECIFY_MODEL_NAME
     , outputFormat = "csv"
     , stopTime = 1
     );
-/*
-print("na samom dele net"); 
-*/
 
 getErrorString();

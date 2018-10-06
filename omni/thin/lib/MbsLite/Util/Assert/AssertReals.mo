@@ -7,8 +7,8 @@ function AssertReals
   input String name;
 
 protected
-  Boolean passed := true;
-  String message := name
+  Boolean passed = true;
+  String message = name
     + " should be: " + StringA(expected)
     + ", but was: " + StringA(actual);
 
