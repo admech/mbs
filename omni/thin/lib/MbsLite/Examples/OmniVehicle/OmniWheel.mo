@@ -1,4 +1,4 @@
-within MbsLite.Examples.OmniVehicle.PointContact;
+within MbsLite.Examples.OmniVehicle;
 
 model OmniWheel
 
@@ -10,9 +10,9 @@ model OmniWheel
 
   parameter String       name        = "NOT INITIALIZED";
   parameter Integer      nActual     = -Integer_inf "actual number of rollers on the wheel";
-  parameter Real[3]      Gravity     (each start = inf);
-  parameter Real[3]      r0          (each start = inf);
-  parameter Real[4]      q0          (each start = inf);
+  parameter Real[3]      Gravity     = fill(inf, 3);
+  parameter Real[3]      r0          = fill(inf, 3);
+  parameter Real[4]      q0          = fill(inf, 4);
   parameter Real[3, 3]   T0          = QToT(q0);
 
 
@@ -27,15 +27,15 @@ model OmniWheel
   parameter Real[nActual, 3]  RollerCenters           = params.wheelHubRadius * RollerCenterDirections;
 
   NPortsHeavyBody[nActual] Rollers
-      ( name = { name + ".Rollers[" + String(i) + "]" for i in 1 : nActual }
-      , each m = params.rollerMass
-      , each I = diagonal({ params.rollerAxialMoi, params.rollerOrthogonalMoi, params.rollerOrthogonalMoi })
-      , each N = 2
-      , each Gravity = Gravity
-      , r(start = { r0 + T0 * RollerCenters[i] for i in 1 : nActual })
-      , v(start = { initials.vVec + T0 * cross(initials.omegaVec, RollerCenters[i]) for i in 1 : nActual })
-      , q(start = { RollerQs[i,:] for i in 1 : nActual })
-      , omega
+      ( final name = { name + ".Rollers[" + String(i) + "]" for i in 1 : nActual }
+      , each final m = params.rollerMass
+      , each final I = diagonal({ params.rollerAxialMoi, params.rollerOrthogonalMoi, params.rollerOrthogonalMoi })
+      , each final N = 2
+      , each final Gravity = Gravity
+      , final r(start = { r0 + T0 * RollerCenters[i] for i in 1 : nActual })
+      , final v(start = { initials.vVec + T0 * cross(initials.omegaVec, RollerCenters[i]) for i in 1 : nActual })
+      , final q(start = { RollerQs[i,:] for i in 1 : nActual })
+      , final omega
           ( start
             = { { 0, 0, initials.omegaVec[3] } for i in 1 : nActual }
             + initials.omegaVec[2] * VerticalInRollersAxes
@@ -43,23 +43,23 @@ model OmniWheel
       );
 
   FixedJoint[nActual] Joints
-    ( name = { "joint" + String(i) for i in 1 : nActual }
-    , each nA = { 1, 0, 0 }
-    , nB = RollerAxisDirections
-    , each rA = { 0, 0, 0 }
-    , rB = RollerCenters
+    ( final name = { "joint" + String(i) for i in 1 : nActual }
+    , each final nA = { 1, 0, 0 }
+    , final nB = RollerAxisDirections
+    , each final rA = { 0, 0, 0 }
+    , final rB = RollerCenters
     );
 
   NPortsHeavyBody Wheel
-    ( name = "wheel hub"
-    , m = params.wheelHubMass
-    , I = diagonal({ params.wheelHubOrthogonalMoi, params.wheelHubOrthogonalMoi, params.wheelHubAxialMoi })
-    , N = 1 + nActual
-    , Gravity = Gravity
-    , r(start = r0)
-    , v(start = initials.vVec)
-    , q(start = q0)
-    , omega(start = initials.omegaVec)
+    ( final name = "wheel hub"
+    , final m = params.wheelHubMass
+    , final I = diagonal({ params.wheelHubOrthogonalMoi, params.wheelHubOrthogonalMoi, params.wheelHubAxialMoi })
+    , final N = 1 + nActual
+    , final Gravity = Gravity
+    , final r(start = r0)
+    , final v(start = initials.vVec)
+    , final q(start = q0)
+    , final omega(start = initials.omegaVec)
     );
 
   WrenchPort     InPortF   "imports forces from the platform or verticality constraint";

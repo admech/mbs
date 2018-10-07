@@ -1,29 +1,33 @@
 within MbsLite.Examples.OmniVehicle.Full;
 
-model OmniWheelAtRest
+model OmniWheelOnPlane
 
   import MbsLite.Examples.OmniVehicle.OmniWheel;
+  import MbsLite.Examples.OmniVehicle.Contact.PlaneContact;
 
   parameter String  name   = "OmniWheelAtRest";
   parameter Boolean strict = false;
 
-  parameter Real[3]  Gravity (each start = inf);
+  parameter Real[3]  Gravity = fill(inf, 3);
   parameter Integer  nActual = -Integer_inf;
-  parameter Real[3]  r0      (each start = inf);
-  parameter Real[4]  q0      (each start = inf);
+  parameter Real[3]  r0      = fill(inf, 3);
+  parameter Real[4]  q0      = fill(inf, 3);
   parameter Params   params;
   parameter Initials initials;
 
-  Base base;
-
   OmniWheel wheel
-    ( name     = "wheel"
-    , nActual  = nActual
-    , Gravity  = Gravity
-    , r0       = params.wheelRadius * vertical
-    , q0       = q0
-    , params   = params
-    , initials = initials
+    ( final name     = "wheel"
+    , final nActual  = nActual
+    , final Gravity  = Gravity
+    , final r0       = params.wheelRadius * vertical
+    , final q0       = q0
+    , final params   = params
+    , final initials = initials
+    );
+
+  PlaneContact contact
+    ( final params   = params
+    , final nActual  = nActual
     );
 
 initial algorithm
@@ -32,16 +36,13 @@ initial algorithm
   AssertInitialized (name, Gravity, "Gravity");
 
 equation
-
+ 
+  connect(contact.wheelOutPort,     wheel.OutPortK);
+  connect(contact.wheelInPort,      wheel.InPortF);
   for i in 1 : nActual loop
-    wheel.Rollers[i].InPorts[1].P = wheel.Rollers[i].OutPort.r;
-    wheel.Rollers[i].InPorts[1].F = zeros(3);
-    wheel.Rollers[i].InPorts[1].M = zeros(3);
+    connect(contact.rollerOutPorts[i],   wheel.Rollers[i].OutPort);
+    connect(contact.rollerInPorts[i],    wheel.Rollers[i].InPorts[1]);
   end for;
-
-  wheel.InPortF.P = wheel.OutPortK.r;
-  wheel.InPortF.F = zeros(3);
-  wheel.InPortF.M = zeros(3);
 
   if strict then
     when wheel.OutPortK.r[2] < R then
@@ -58,5 +59,5 @@ equation
     end when;
   end if;
 
-end OmniWheelAtRest;
+end OmniWheelOnPlane;
 

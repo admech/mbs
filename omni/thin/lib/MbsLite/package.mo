@@ -14,7 +14,7 @@ package MbsLite
   import Modelica.Math.Vectors.normalize;
 
   import MbsLite.Util.*;
-  import MbsLite.Util.Assert.*;
+  import MbsLite.Util.Asserts.*;
   import MbsLite.Util.Quaternions.*;
   import MbsLite.Util.MassGeometry.*;
   import MbsLite.Util.Constants.*;

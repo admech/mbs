@@ -25,7 +25,7 @@ echo "----------------------------------------";
 echo "----------------------------------------";
 date;
 
-omc -d=initialization,evaluateAllParameters $tmp_file_name > run.log;
+omc -d=initialization,evaluateAllParameters $tmp_file_name | grep -v "Warning.*Connector.*\(KinematicPort\|WrenchPort\) is not balanced" > run.log;
 
 echo "----------------------------------------";
 echo "----------------------------------------";

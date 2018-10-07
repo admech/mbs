@@ -1,15 +1,22 @@
 within MbsLite.Test.Omni;
 
-model OmniWheelOnPlaneTest
+model OmniWheelOnPlaneFreeTest
 
   import MbsLite.Examples.OmniVehicle.Params;
   import MbsLite.Examples.OmniVehicle.Initials;
-  import MbsLite.Examples.OmniVehicle.Full.OmniWheelOnPlane;
+  import MbsLite.Examples.OmniVehicle.Full.OmniWheelOnPlaneFree;
 
   constant Params   params   = TestParams.pmm;
-  constant Initials initials = TestInitials.wheelStill;
+  constant Initials initials = Initials
+    ( name = "wheel rolling"
+    , omega = 0 // -params.wheelRadius * 1
+    , vAbs = 0 // 1
+    , vDirAngle = 0
+    , vVec = zeros(3) // 1 * forward
+    , omegaVec = zeros(3) // -params.wheelRadius * 1 * userward
+    );
 
-  OmniWheelOnPlane m
+  OmniWheelOnPlaneFree m
     ( Gravity  = zeros(3)
     , nActual  = params.nRollers
     , r0       = params.wheelRadius * vertical
@@ -32,4 +39,4 @@ equation
       );
   end when;
 
-end OmniWheelOnPlaneTest;
+end OmniWheelOnPlaneFreeTest;
