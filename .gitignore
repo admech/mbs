@@ -3,4 +3,5 @@
 **/__pycache__/**
 **/*.swp
 **/test/out/*
+**/test/out/run.log
 
