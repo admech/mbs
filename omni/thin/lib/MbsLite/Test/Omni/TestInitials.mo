@@ -40,13 +40,22 @@ package TestInitials
     , omegaVec = zeros(3)
     );
 
-  constant Initials wheelRolling = Initials
-    ( name = "wheel rolling"
-    , omega = -params.wheelRadius * 1
+  constant Initials wheelSelfRotatingInPlace = Initials
+    ( name = "wheel rotating CW looking from user"
+    , omega = -1
+    , vAbs = 0
+    , vDirAngle = 0
+    , vVec = zeros(3)
+    , omegaVec = -1 * userward
+    );
+
+  constant Initials wheelSelfRotatingAndSliding = Initials
+    ( name = "wheel rotating CW looking from user and sliding forward"
+    , omega = -1
     , vAbs = 1
     , vDirAngle = 0
     , vVec = 1 * forward
-    , omegaVec = -params.wheelRadius * 1 * userward
+    , omegaVec = -1 * userward
     );
 
 end TestInitials;

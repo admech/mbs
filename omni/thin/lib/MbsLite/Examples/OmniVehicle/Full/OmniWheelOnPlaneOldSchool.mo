@@ -30,6 +30,7 @@ model OmniWheelOnPlaneOldSchool
   PlaneContactOldSchool[nActual] contacts
     ( each final params = params
     );
+  Integer indexOfRollerInContact "for visualization only! likely to spoil index reduction";
 
 initial algorithm
   AssertInitialized (name, q0,      "q0");
@@ -46,6 +47,11 @@ equation
     connect(contacts[i].InPortB,    wheel.Rollers[i].OutPort);
     connect(contacts[i].OutPortB,   wheel.Rollers[i].InPorts[1]);
   end for;
+  indexOfRollerInContact = Argmin
+    ( { (if contacts[i].isInContact then -1 else 0)
+      for i in 1 : nActual
+      }
+    );
 
   if strict then
     when wheel.OutPortK.r[2] < R then

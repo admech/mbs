@@ -7,7 +7,10 @@ model OmniWheelOnPlaneOldSchoolTest
   import MbsLite.Examples.OmniVehicle.Full.OmniWheelOnPlaneOldSchool;
 
   constant Params   params   = TestParams.pmm;
-  constant Initials initials = TestInitials.wheelStill;
+  constant Initials initials
+    // = TestInitials.wheelStill;
+    // = TestInitials.wheelSelfRotatingInPlace;
+    = TestInitials.wheelSelfRotatingAndSliding;
 
   OmniWheelOnPlaneOldSchool m
     ( Gravity  = -vertical

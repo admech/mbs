@@ -25,6 +25,7 @@ equation
     = cosBetweenRollerVerticalAndGlobalVertical > cos(params.rollerHalfAngle)
       and InPortB.r[2] < params.wheelRadius;
   
+  // CONTACT POINT COORDS
   contactPointCoords = if isInContact
       then InPortB.r                                        // start from roller center, 
            + params.wheelHubRadius * (InPortB.T * vertical) // go to wheel center
@@ -41,6 +42,7 @@ equation
       );
   end when;
 
+  // CONTACT POINT VELOCITY
   contactPointVelocity = if isInContact
     then Euler
            ( InPortB.r
@@ -50,6 +52,7 @@ equation
            )
     else zeros(3);
 
+  // SIGNORINI'S LAW
   normalVelocity = contactPointVelocity[2];
   der(normalVelocity) = DnormalVelocity;
   if isInContact then
