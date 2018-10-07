@@ -1709,6 +1709,9 @@ class MbsLite.Test.Omni.OmniWheelOnPlaneOldSchoolTest
   protected Real m.contacts[1].contactPointVelocity[3];
   protected Real m.contacts[1].cosBetweenRollerVerticalAndGlobalVertical;
   protected Boolean m.contacts[1].isInContact;
+  protected Real m.contacts[1].normalVelocity;
+  protected Real m.contacts[1].DnormalVelocity;
+  protected Real m.contacts[1].normalReaction;
   parameter Integer m.contacts[2].ConstraintNo = 1;
   Real m.contacts[2].InPortA.r[1](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
   Real m.contacts[2].InPortA.r[2](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
@@ -1803,6 +1806,9 @@ class MbsLite.Test.Omni.OmniWheelOnPlaneOldSchoolTest
   protected Real m.contacts[2].contactPointVelocity[3];
   protected Real m.contacts[2].cosBetweenRollerVerticalAndGlobalVertical;
   protected Boolean m.contacts[2].isInContact;
+  protected Real m.contacts[2].normalVelocity;
+  protected Real m.contacts[2].DnormalVelocity;
+  protected Real m.contacts[2].normalReaction;
   parameter Integer m.contacts[3].ConstraintNo = 1;
   Real m.contacts[3].InPortA.r[1](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
   Real m.contacts[3].InPortA.r[2](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
@@ -1897,6 +1903,9 @@ class MbsLite.Test.Omni.OmniWheelOnPlaneOldSchoolTest
   protected Real m.contacts[3].contactPointVelocity[3];
   protected Real m.contacts[3].cosBetweenRollerVerticalAndGlobalVertical;
   protected Boolean m.contacts[3].isInContact;
+  protected Real m.contacts[3].normalVelocity;
+  protected Real m.contacts[3].DnormalVelocity;
+  protected Real m.contacts[3].normalReaction;
   parameter Integer m.contacts[4].ConstraintNo = 1;
   Real m.contacts[4].InPortA.r[1](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
   Real m.contacts[4].InPortA.r[2](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
@@ -1991,6 +2000,9 @@ class MbsLite.Test.Omni.OmniWheelOnPlaneOldSchoolTest
   protected Real m.contacts[4].contactPointVelocity[3];
   protected Real m.contacts[4].cosBetweenRollerVerticalAndGlobalVertical;
   protected Boolean m.contacts[4].isInContact;
+  protected Real m.contacts[4].normalVelocity;
+  protected Real m.contacts[4].DnormalVelocity;
+  protected Real m.contacts[4].normalReaction;
   parameter Integer m.contacts[5].ConstraintNo = 1;
   Real m.contacts[5].InPortA.r[1](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
   Real m.contacts[5].InPortA.r[2](quantity = \"Length\", unit = \"m\") \"Radius vector of masscenter\";
@@ -2085,6 +2097,9 @@ class MbsLite.Test.Omni.OmniWheelOnPlaneOldSchoolTest
   protected Real m.contacts[5].contactPointVelocity[3];
   protected Real m.contacts[5].cosBetweenRollerVerticalAndGlobalVertical;
   protected Boolean m.contacts[5].isInContact;
+  protected Real m.contacts[5].normalVelocity;
+  protected Real m.contacts[5].DnormalVelocity;
+  protected Real m.contacts[5].normalReaction;
 initial equation
   UNKNOWN EQUATION TYPE
   UNKNOWN EQUATION TYPE
@@ -2723,7 +2738,14 @@ equation
     reinit(m.contacts[1].contactPointCoords[2], if m.contacts[1].isInContact then m.contacts[1].InPortB.r[2] + m.contacts[1].InPortB.T[2,2] * 0.04045084971874738 - 0.05 else 0.0);
     reinit(m.contacts[1].contactPointCoords[3], if m.contacts[1].isInContact then m.contacts[1].InPortB.r[3] + m.contacts[1].InPortB.T[3,2] * 0.04045084971874738 else 0.0);
   end when;
-  m.contacts[1].contactPointVelocity = MbsLite.Util.Euler({m.contacts[1].InPortB.r[1], m.contacts[1].InPortB.r[2], m.contacts[1].InPortB.r[3]}, {m.contacts[1].contactPointCoords[1], m.contacts[1].contactPointCoords[2], m.contacts[1].contactPointCoords[3]}, {m.contacts[1].InPortB.v[1], m.contacts[1].InPortB.v[2], m.contacts[1].InPortB.v[3]}, {m.contacts[1].InPortB.omega[1], m.contacts[1].InPortB.omega[2], m.contacts[1].InPortB.omega[3]});
+  m.contacts[1].contactPointVelocity = if m.contacts[1].isInContact then MbsLite.Util.Euler({m.contacts[1].InPortB.r[1], m.contacts[1].InPortB.r[2], m.contacts[1].InPortB.r[3]}, {m.contacts[1].contactPointCoords[1], m.contacts[1].contactPointCoords[2], m.contacts[1].contactPointCoords[3]}, {m.contacts[1].InPortB.v[1], m.contacts[1].InPortB.v[2], m.contacts[1].InPortB.v[3]}, {m.contacts[1].InPortB.omega[1], m.contacts[1].InPortB.omega[2], m.contacts[1].InPortB.omega[3]}) else {0.0, 0.0, 0.0};
+  m.contacts[1].normalVelocity = m.contacts[1].contactPointVelocity[2];
+  der(m.contacts[1].normalVelocity) = m.contacts[1].DnormalVelocity;
+  if m.contacts[1].isInContact then
+    m.contacts[1].DnormalVelocity = 0.0;
+  else
+    m.contacts[1].normalReaction = 0.0;
+  end if;
   m.contacts[1].OutPortA.P[1] = m.contacts[1].contactPointCoords[1];
   m.contacts[1].OutPortA.P[2] = m.contacts[1].contactPointCoords[2];
   m.contacts[1].OutPortA.P[3] = m.contacts[1].contactPointCoords[3];
@@ -2731,7 +2753,7 @@ equation
   m.contacts[1].OutPortB.P[2] = m.contacts[1].contactPointCoords[2];
   m.contacts[1].OutPortB.P[3] = m.contacts[1].contactPointCoords[3];
   m.contacts[1].OutPortB.F[1] = 0.0;
-  m.contacts[1].OutPortB.F[2] = 0.0;
+  m.contacts[1].OutPortB.F[2] = m.contacts[1].normalReaction;
   m.contacts[1].OutPortB.F[3] = 0.0;
   m.contacts[1].OutPortB.M[1] = 0.0;
   m.contacts[1].OutPortB.M[2] = 0.0;
@@ -2752,7 +2774,14 @@ equation
     reinit(m.contacts[2].contactPointCoords[2], if m.contacts[2].isInContact then m.contacts[2].InPortB.r[2] + m.contacts[2].InPortB.T[2,2] * 0.04045084971874738 - 0.05 else 0.0);
     reinit(m.contacts[2].contactPointCoords[3], if m.contacts[2].isInContact then m.contacts[2].InPortB.r[3] + m.contacts[2].InPortB.T[3,2] * 0.04045084971874738 else 0.0);
   end when;
-  m.contacts[2].contactPointVelocity = MbsLite.Util.Euler({m.contacts[2].InPortB.r[1], m.contacts[2].InPortB.r[2], m.contacts[2].InPortB.r[3]}, {m.contacts[2].contactPointCoords[1], m.contacts[2].contactPointCoords[2], m.contacts[2].contactPointCoords[3]}, {m.contacts[2].InPortB.v[1], m.contacts[2].InPortB.v[2], m.contacts[2].InPortB.v[3]}, {m.contacts[2].InPortB.omega[1], m.contacts[2].InPortB.omega[2], m.contacts[2].InPortB.omega[3]});
+  m.contacts[2].contactPointVelocity = if m.contacts[2].isInContact then MbsLite.Util.Euler({m.contacts[2].InPortB.r[1], m.contacts[2].InPortB.r[2], m.contacts[2].InPortB.r[3]}, {m.contacts[2].contactPointCoords[1], m.contacts[2].contactPointCoords[2], m.contacts[2].contactPointCoords[3]}, {m.contacts[2].InPortB.v[1], m.contacts[2].InPortB.v[2], m.contacts[2].InPortB.v[3]}, {m.contacts[2].InPortB.omega[1], m.contacts[2].InPortB.omega[2], m.contacts[2].InPortB.omega[3]}) else {0.0, 0.0, 0.0};
+  m.contacts[2].normalVelocity = m.contacts[2].contactPointVelocity[2];
+  der(m.contacts[2].normalVelocity) = m.contacts[2].DnormalVelocity;
+  if m.contacts[2].isInContact then
+    m.contacts[2].DnormalVelocity = 0.0;
+  else
+    m.contacts[2].normalReaction = 0.0;
+  end if;
   m.contacts[2].OutPortA.P[1] = m.contacts[2].contactPointCoords[1];
   m.contacts[2].OutPortA.P[2] = m.contacts[2].contactPointCoords[2];
   m.contacts[2].OutPortA.P[3] = m.contacts[2].contactPointCoords[3];
@@ -2760,7 +2789,7 @@ equation
   m.contacts[2].OutPortB.P[2] = m.contacts[2].contactPointCoords[2];
   m.contacts[2].OutPortB.P[3] = m.contacts[2].contactPointCoords[3];
   m.contacts[2].OutPortB.F[1] = 0.0;
-  m.contacts[2].OutPortB.F[2] = 0.0;
+  m.contacts[2].OutPortB.F[2] = m.contacts[2].normalReaction;
   m.contacts[2].OutPortB.F[3] = 0.0;
   m.contacts[2].OutPortB.M[1] = 0.0;
   m.contacts[2].OutPortB.M[2] = 0.0;
@@ -2781,7 +2810,14 @@ equation
     reinit(m.contacts[3].contactPointCoords[2], if m.contacts[3].isInContact then m.contacts[3].InPortB.r[2] + m.contacts[3].InPortB.T[2,2] * 0.04045084971874738 - 0.05 else 0.0);
     reinit(m.contacts[3].contactPointCoords[3], if m.contacts[3].isInContact then m.contacts[3].InPortB.r[3] + m.contacts[3].InPortB.T[3,2] * 0.04045084971874738 else 0.0);
   end when;
-  m.contacts[3].contactPointVelocity = MbsLite.Util.Euler({m.contacts[3].InPortB.r[1], m.contacts[3].InPortB.r[2], m.contacts[3].InPortB.r[3]}, {m.contacts[3].contactPointCoords[1], m.contacts[3].contactPointCoords[2], m.contacts[3].contactPointCoords[3]}, {m.contacts[3].InPortB.v[1], m.contacts[3].InPortB.v[2], m.contacts[3].InPortB.v[3]}, {m.contacts[3].InPortB.omega[1], m.contacts[3].InPortB.omega[2], m.contacts[3].InPortB.omega[3]});
+  m.contacts[3].contactPointVelocity = if m.contacts[3].isInContact then MbsLite.Util.Euler({m.contacts[3].InPortB.r[1], m.contacts[3].InPortB.r[2], m.contacts[3].InPortB.r[3]}, {m.contacts[3].contactPointCoords[1], m.contacts[3].contactPointCoords[2], m.contacts[3].contactPointCoords[3]}, {m.contacts[3].InPortB.v[1], m.contacts[3].InPortB.v[2], m.contacts[3].InPortB.v[3]}, {m.contacts[3].InPortB.omega[1], m.contacts[3].InPortB.omega[2], m.contacts[3].InPortB.omega[3]}) else {0.0, 0.0, 0.0};
+  m.contacts[3].normalVelocity = m.contacts[3].contactPointVelocity[2];
+  der(m.contacts[3].normalVelocity) = m.contacts[3].DnormalVelocity;
+  if m.contacts[3].isInContact then
+    m.contacts[3].DnormalVelocity = 0.0;
+  else
+    m.contacts[3].normalReaction = 0.0;
+  end if;
   m.contacts[3].OutPortA.P[1] = m.contacts[3].contactPointCoords[1];
   m.contacts[3].OutPortA.P[2] = m.contacts[3].contactPointCoords[2];
   m.contacts[3].OutPortA.P[3] = m.contacts[3].contactPointCoords[3];
@@ -2789,7 +2825,7 @@ equation
   m.contacts[3].OutPortB.P[2] = m.contacts[3].contactPointCoords[2];
   m.contacts[3].OutPortB.P[3] = m.contacts[3].contactPointCoords[3];
   m.contacts[3].OutPortB.F[1] = 0.0;
-  m.contacts[3].OutPortB.F[2] = 0.0;
+  m.contacts[3].OutPortB.F[2] = m.contacts[3].normalReaction;
   m.contacts[3].OutPortB.F[3] = 0.0;
   m.contacts[3].OutPortB.M[1] = 0.0;
   m.contacts[3].OutPortB.M[2] = 0.0;
@@ -2810,7 +2846,14 @@ equation
     reinit(m.contacts[4].contactPointCoords[2], if m.contacts[4].isInContact then m.contacts[4].InPortB.r[2] + m.contacts[4].InPortB.T[2,2] * 0.04045084971874738 - 0.05 else 0.0);
     reinit(m.contacts[4].contactPointCoords[3], if m.contacts[4].isInContact then m.contacts[4].InPortB.r[3] + m.contacts[4].InPortB.T[3,2] * 0.04045084971874738 else 0.0);
   end when;
-  m.contacts[4].contactPointVelocity = MbsLite.Util.Euler({m.contacts[4].InPortB.r[1], m.contacts[4].InPortB.r[2], m.contacts[4].InPortB.r[3]}, {m.contacts[4].contactPointCoords[1], m.contacts[4].contactPointCoords[2], m.contacts[4].contactPointCoords[3]}, {m.contacts[4].InPortB.v[1], m.contacts[4].InPortB.v[2], m.contacts[4].InPortB.v[3]}, {m.contacts[4].InPortB.omega[1], m.contacts[4].InPortB.omega[2], m.contacts[4].InPortB.omega[3]});
+  m.contacts[4].contactPointVelocity = if m.contacts[4].isInContact then MbsLite.Util.Euler({m.contacts[4].InPortB.r[1], m.contacts[4].InPortB.r[2], m.contacts[4].InPortB.r[3]}, {m.contacts[4].contactPointCoords[1], m.contacts[4].contactPointCoords[2], m.contacts[4].contactPointCoords[3]}, {m.contacts[4].InPortB.v[1], m.contacts[4].InPortB.v[2], m.contacts[4].InPortB.v[3]}, {m.contacts[4].InPortB.omega[1], m.contacts[4].InPortB.omega[2], m.contacts[4].InPortB.omega[3]}) else {0.0, 0.0, 0.0};
+  m.contacts[4].normalVelocity = m.contacts[4].contactPointVelocity[2];
+  der(m.contacts[4].normalVelocity) = m.contacts[4].DnormalVelocity;
+  if m.contacts[4].isInContact then
+    m.contacts[4].DnormalVelocity = 0.0;
+  else
+    m.contacts[4].normalReaction = 0.0;
+  end if;
   m.contacts[4].OutPortA.P[1] = m.contacts[4].contactPointCoords[1];
   m.contacts[4].OutPortA.P[2] = m.contacts[4].contactPointCoords[2];
   m.contacts[4].OutPortA.P[3] = m.contacts[4].contactPointCoords[3];
@@ -2818,7 +2861,7 @@ equation
   m.contacts[4].OutPortB.P[2] = m.contacts[4].contactPointCoords[2];
   m.contacts[4].OutPortB.P[3] = m.contacts[4].contactPointCoords[3];
   m.contacts[4].OutPortB.F[1] = 0.0;
-  m.contacts[4].OutPortB.F[2] = 0.0;
+  m.contacts[4].OutPortB.F[2] = m.contacts[4].normalReaction;
   m.contacts[4].OutPortB.F[3] = 0.0;
   m.contacts[4].OutPortB.M[1] = 0.0;
   m.contacts[4].OutPortB.M[2] = 0.0;
@@ -2839,7 +2882,14 @@ equation
     reinit(m.contacts[5].contactPointCoords[2], if m.contacts[5].isInContact then m.contacts[5].InPortB.r[2] + m.contacts[5].InPortB.T[2,2] * 0.04045084971874738 - 0.05 else 0.0);
     reinit(m.contacts[5].contactPointCoords[3], if m.contacts[5].isInContact then m.contacts[5].InPortB.r[3] + m.contacts[5].InPortB.T[3,2] * 0.04045084971874738 else 0.0);
   end when;
-  m.contacts[5].contactPointVelocity = MbsLite.Util.Euler({m.contacts[5].InPortB.r[1], m.contacts[5].InPortB.r[2], m.contacts[5].InPortB.r[3]}, {m.contacts[5].contactPointCoords[1], m.contacts[5].contactPointCoords[2], m.contacts[5].contactPointCoords[3]}, {m.contacts[5].InPortB.v[1], m.contacts[5].InPortB.v[2], m.contacts[5].InPortB.v[3]}, {m.contacts[5].InPortB.omega[1], m.contacts[5].InPortB.omega[2], m.contacts[5].InPortB.omega[3]});
+  m.contacts[5].contactPointVelocity = if m.contacts[5].isInContact then MbsLite.Util.Euler({m.contacts[5].InPortB.r[1], m.contacts[5].InPortB.r[2], m.contacts[5].InPortB.r[3]}, {m.contacts[5].contactPointCoords[1], m.contacts[5].contactPointCoords[2], m.contacts[5].contactPointCoords[3]}, {m.contacts[5].InPortB.v[1], m.contacts[5].InPortB.v[2], m.contacts[5].InPortB.v[3]}, {m.contacts[5].InPortB.omega[1], m.contacts[5].InPortB.omega[2], m.contacts[5].InPortB.omega[3]}) else {0.0, 0.0, 0.0};
+  m.contacts[5].normalVelocity = m.contacts[5].contactPointVelocity[2];
+  der(m.contacts[5].normalVelocity) = m.contacts[5].DnormalVelocity;
+  if m.contacts[5].isInContact then
+    m.contacts[5].DnormalVelocity = 0.0;
+  else
+    m.contacts[5].normalReaction = 0.0;
+  end if;
   m.contacts[5].OutPortA.P[1] = m.contacts[5].contactPointCoords[1];
   m.contacts[5].OutPortA.P[2] = m.contacts[5].contactPointCoords[2];
   m.contacts[5].OutPortA.P[3] = m.contacts[5].contactPointCoords[3];
@@ -2847,7 +2897,7 @@ equation
   m.contacts[5].OutPortB.P[2] = m.contacts[5].contactPointCoords[2];
   m.contacts[5].OutPortB.P[3] = m.contacts[5].contactPointCoords[3];
   m.contacts[5].OutPortB.F[1] = 0.0;
-  m.contacts[5].OutPortB.F[2] = 0.0;
+  m.contacts[5].OutPortB.F[2] = m.contacts[5].normalReaction;
   m.contacts[5].OutPortB.F[3] = 0.0;
   m.contacts[5].OutPortB.M[1] = 0.0;
   m.contacts[5].OutPortB.M[2] = 0.0;
@@ -3520,23 +3570,13 @@ equation
   m.contacts[5].OutPortB.P[3] = m.wheel.Rollers[5].InPorts[1].P[3];
 end MbsLite.Test.Omni.OmniWheelOnPlaneOldSchoolTest;
 "
-[/home/vf/om/models/omni/thin/lib/MbsLite/Examples/OmniVehicle/Full/OmniWheelOnPlaneOldSchool.mo:31:13-32:5:writable] Warning: Non-array modification 'MbsLite.Examples.OmniVehicle.Params("params used in the PMM paper", 3, 5, 0.0, 0.15, 0.05, 1.0, 0.15, 0.05, 0.6283185307179586, 0.04045084971874738, 0.004774575140626312, 0.02938926261462366, 0.01125, 0.005633333333333334, 0.0001227203432226514, 6.261017161132568e-05, 5.699141943371693e-07, 3.8838269181324e-06)' for array component, possibly due to missing 'each'.
-[/home/vf/om/models/omni/thin/lib/MbsLite/Examples/OmniVehicle/Full/OmniWheelOnPlaneOldSchool.mo:31:13-32:5:writable] Warning: Non-array modification 'MbsLite.Examples.OmniVehicle.Params("params used in the PMM paper", 3, 5, 0.0, 0.15, 0.05, 1.0, 0.15, 0.05, 0.6283185307179586, 0.04045084971874738, 0.004774575140626312, 0.02938926261462366, 0.01125, 0.005633333333333334, 0.0001227203432226514, 6.261017161132568e-05, 5.699141943371693e-07, 3.8838269181324e-06)' for array component, possibly due to missing 'each'.
-[/home/vf/om/models/omni/thin/lib/MbsLite/Examples/OmniVehicle/Full/OmniWheelOnPlaneOldSchool.mo:31:13-32:5:writable] Warning: Non-array modification 'MbsLite.Examples.OmniVehicle.Params("params used in the PMM paper", 3, 5, 0.0, 0.15, 0.05, 1.0, 0.15, 0.05, 0.6283185307179586, 0.04045084971874738, 0.004774575140626312, 0.02938926261462366, 0.01125, 0.005633333333333334, 0.0001227203432226514, 6.261017161132568e-05, 5.699141943371693e-07, 3.8838269181324e-06)' for array component, possibly due to missing 'each'.
-[/home/vf/om/models/omni/thin/lib/MbsLite/Examples/OmniVehicle/Full/OmniWheelOnPlaneOldSchool.mo:31:13-32:5:writable] Warning: Non-array modification 'MbsLite.Examples.OmniVehicle.Params("params used in the PMM paper", 3, 5, 0.0, 0.15, 0.05, 1.0, 0.15, 0.05, 0.6283185307179586, 0.04045084971874738, 0.004774575140626312, 0.02938926261462366, 0.01125, 0.005633333333333334, 0.0001227203432226514, 6.261017161132568e-05, 5.699141943371693e-07, 3.8838269181324e-06)' for array component, possibly due to missing 'each'.
-[/home/vf/om/models/omni/thin/lib/MbsLite/Examples/OmniVehicle/Full/OmniWheelOnPlaneOldSchool.mo:31:13-32:5:writable] Warning: Non-array modification 'MbsLite.Examples.OmniVehicle.Params("params used in the PMM paper", 3, 5, 0.0, 0.15, 0.05, 1.0, 0.15, 0.05, 0.6283185307179586, 0.04045084971874738, 0.004774575140626312, 0.02938926261462366, 0.01125, 0.005633333333333334, 0.0001227203432226514, 6.261017161132568e-05, 5.699141943371693e-07, 3.8838269181324e-06)' for array component, possibly due to missing 'each'.
 [/home/vf/om/models/omni/thin/lib/MbsLite/Test/Omni/OmniWheelOnPlaneOldSchoolTest.mo:28:3-33:11:writable] Warning: In component <NO COMPONENT>, in relation time == 1.0,  ==  on Real numbers is only allowed inside functions.
 "
 ====================================
 Checking MbsLite.Test.Omni.OmniWheelOnPlaneOldSchoolTest
 "Check of MbsLite.Test.Omni.OmniWheelOnPlaneOldSchoolTest completed successfully.
-Class MbsLite.Test.Omni.OmniWheelOnPlaneOldSchoolTest has 1428 equation(s) and 1428 variable(s).
-1013 of these are trivial equation(s)."
-[/home/vf/om/models/omni/thin/lib/MbsLite/Examples/OmniVehicle/Full/OmniWheelOnPlaneOldSchool.mo:31:13-32:5:writable] Warning: Non-array modification 'MbsLite.Examples.OmniVehicle.Params("params used in the PMM paper", 3, 5, 0.0, 0.15, 0.05, 1.0, 0.15, 0.05, 0.6283185307179586, 0.04045084971874738, 0.004774575140626312, 0.02938926261462366, 0.01125, 0.005633333333333334, 0.0001227203432226514, 6.261017161132568e-05, 5.699141943371693e-07, 3.8838269181324e-06)' for array component, possibly due to missing 'each'.
-[/home/vf/om/models/omni/thin/lib/MbsLite/Examples/OmniVehicle/Full/OmniWheelOnPlaneOldSchool.mo:31:13-32:5:writable] Warning: Non-array modification 'MbsLite.Examples.OmniVehicle.Params("params used in the PMM paper", 3, 5, 0.0, 0.15, 0.05, 1.0, 0.15, 0.05, 0.6283185307179586, 0.04045084971874738, 0.004774575140626312, 0.02938926261462366, 0.01125, 0.005633333333333334, 0.0001227203432226514, 6.261017161132568e-05, 5.699141943371693e-07, 3.8838269181324e-06)' for array component, possibly due to missing 'each'.
-[/home/vf/om/models/omni/thin/lib/MbsLite/Examples/OmniVehicle/Full/OmniWheelOnPlaneOldSchool.mo:31:13-32:5:writable] Warning: Non-array modification 'MbsLite.Examples.OmniVehicle.Params("params used in the PMM paper", 3, 5, 0.0, 0.15, 0.05, 1.0, 0.15, 0.05, 0.6283185307179586, 0.04045084971874738, 0.004774575140626312, 0.02938926261462366, 0.01125, 0.005633333333333334, 0.0001227203432226514, 6.261017161132568e-05, 5.699141943371693e-07, 3.8838269181324e-06)' for array component, possibly due to missing 'each'.
-[/home/vf/om/models/omni/thin/lib/MbsLite/Examples/OmniVehicle/Full/OmniWheelOnPlaneOldSchool.mo:31:13-32:5:writable] Warning: Non-array modification 'MbsLite.Examples.OmniVehicle.Params("params used in the PMM paper", 3, 5, 0.0, 0.15, 0.05, 1.0, 0.15, 0.05, 0.6283185307179586, 0.04045084971874738, 0.004774575140626312, 0.02938926261462366, 0.01125, 0.005633333333333334, 0.0001227203432226514, 6.261017161132568e-05, 5.699141943371693e-07, 3.8838269181324e-06)' for array component, possibly due to missing 'each'.
-[/home/vf/om/models/omni/thin/lib/MbsLite/Examples/OmniVehicle/Full/OmniWheelOnPlaneOldSchool.mo:31:13-32:5:writable] Warning: Non-array modification 'MbsLite.Examples.OmniVehicle.Params("params used in the PMM paper", 3, 5, 0.0, 0.15, 0.05, 1.0, 0.15, 0.05, 0.6283185307179586, 0.04045084971874738, 0.004774575140626312, 0.02938926261462366, 0.01125, 0.005633333333333334, 0.0001227203432226514, 6.261017161132568e-05, 5.699141943371693e-07, 3.8838269181324e-06)' for array component, possibly due to missing 'each'.
+Class MbsLite.Test.Omni.OmniWheelOnPlaneOldSchoolTest has 1443 equation(s) and 1443 variable(s).
+1023 of these are trivial equation(s)."
 [/home/vf/om/models/omni/thin/lib/MbsLite/Test/Omni/OmniWheelOnPlaneOldSchoolTest.mo:28:3-33:11:writable] Warning: In component <NO COMPONENT>, in relation time == 1.0,  ==  on Real numbers is only allowed inside functions.
 "
 ====================================
@@ -3547,19 +3587,14 @@ record SimulationResult
     messages = "stdout            | info    | The initialization finished successfully without homotopy method.
 stdout            | info    | The simulation finished successfully.
 ",
-    timeFrontend = 1.878720082,
-    timeBackend = 3.166763169,
-    timeSimCode = 0.4030321699999999,
-    timeTemplates = 1.226023509,
-    timeCompile = 15.283584668,
-    timeSimulation = 3.025603791,
-    timeTotal = 24.984622455
+    timeFrontend = 1.955914925,
+    timeBackend = 4.864544365,
+    timeSimCode = 1.013219384,
+    timeTemplates = 1.385085498,
+    timeCompile = 13.78724443,
+    timeSimulation = 4.024094551,
+    timeTotal = 27.031497594
 end SimulationResult;
-[/home/vf/om/models/omni/thin/lib/MbsLite/Examples/OmniVehicle/Full/OmniWheelOnPlaneOldSchool.mo:31:13-32:5:writable] Warning: Non-array modification 'MbsLite.Examples.OmniVehicle.Params("params used in the PMM paper", 3, 5, 0.0, 0.15, 0.05, 1.0, 0.15, 0.05, 0.6283185307179586, 0.04045084971874738, 0.004774575140626312, 0.02938926261462366, 0.01125, 0.005633333333333334, 0.0001227203432226514, 6.261017161132568e-05, 5.699141943371693e-07, 3.8838269181324e-06)' for array component, possibly due to missing 'each'.
-[/home/vf/om/models/omni/thin/lib/MbsLite/Examples/OmniVehicle/Full/OmniWheelOnPlaneOldSchool.mo:31:13-32:5:writable] Warning: Non-array modification 'MbsLite.Examples.OmniVehicle.Params("params used in the PMM paper", 3, 5, 0.0, 0.15, 0.05, 1.0, 0.15, 0.05, 0.6283185307179586, 0.04045084971874738, 0.004774575140626312, 0.02938926261462366, 0.01125, 0.005633333333333334, 0.0001227203432226514, 6.261017161132568e-05, 5.699141943371693e-07, 3.8838269181324e-06)' for array component, possibly due to missing 'each'.
-[/home/vf/om/models/omni/thin/lib/MbsLite/Examples/OmniVehicle/Full/OmniWheelOnPlaneOldSchool.mo:31:13-32:5:writable] Warning: Non-array modification 'MbsLite.Examples.OmniVehicle.Params("params used in the PMM paper", 3, 5, 0.0, 0.15, 0.05, 1.0, 0.15, 0.05, 0.6283185307179586, 0.04045084971874738, 0.004774575140626312, 0.02938926261462366, 0.01125, 0.005633333333333334, 0.0001227203432226514, 6.261017161132568e-05, 5.699141943371693e-07, 3.8838269181324e-06)' for array component, possibly due to missing 'each'.
-[/home/vf/om/models/omni/thin/lib/MbsLite/Examples/OmniVehicle/Full/OmniWheelOnPlaneOldSchool.mo:31:13-32:5:writable] Warning: Non-array modification 'MbsLite.Examples.OmniVehicle.Params("params used in the PMM paper", 3, 5, 0.0, 0.15, 0.05, 1.0, 0.15, 0.05, 0.6283185307179586, 0.04045084971874738, 0.004774575140626312, 0.02938926261462366, 0.01125, 0.005633333333333334, 0.0001227203432226514, 6.261017161132568e-05, 5.699141943371693e-07, 3.8838269181324e-06)' for array component, possibly due to missing 'each'.
-[/home/vf/om/models/omni/thin/lib/MbsLite/Examples/OmniVehicle/Full/OmniWheelOnPlaneOldSchool.mo:31:13-32:5:writable] Warning: Non-array modification 'MbsLite.Examples.OmniVehicle.Params("params used in the PMM paper", 3, 5, 0.0, 0.15, 0.05, 1.0, 0.15, 0.05, 0.6283185307179586, 0.04045084971874738, 0.004774575140626312, 0.02938926261462366, 0.01125, 0.005633333333333334, 0.0001227203432226514, 6.261017161132568e-05, 5.699141943371693e-07, 3.8838269181324e-06)' for array component, possibly due to missing 'each'.
 [/home/vf/om/models/omni/thin/lib/MbsLite/Test/Omni/OmniWheelOnPlaneOldSchoolTest.mo:28:3-33:11:writable] Warning: In component <NO COMPONENT>, in relation time == 1.0,  ==  on Real numbers is only allowed inside functions.
 Warning: Assuming fixed start value for the following 84 variables:
          m.wheel.Joints[5].angle:VARIABLE()  "Relative angle. Beware numerical error accumulation!" type: Real  [5]

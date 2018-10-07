@@ -12,6 +12,10 @@ protected
   Real    cosBetweenRollerVerticalAndGlobalVertical;
   Boolean isInContact;
 
+  Real    normalVelocity;
+  Real    DnormalVelocity;
+  Real    normalReaction;
+
 equation
 
   cosBetweenRollerVerticalAndGlobalVertical
@@ -37,17 +41,27 @@ equation
       );
   end when;
 
-  contactPointVelocity = Euler
-    ( InPortB.r
-    , contactPointCoords
-    , InPortB.v
-    , InPortB.omega
-    );
+  contactPointVelocity = if isInContact
+    then Euler
+           ( InPortB.r
+           , contactPointCoords
+           , InPortB.v
+           , InPortB.omega
+           )
+    else zeros(3);
+
+  normalVelocity = contactPointVelocity[2];
+  der(normalVelocity) = DnormalVelocity;
+  if isInContact then
+    DnormalVelocity = 0;
+  else
+    normalReaction = 0;
+  end if;
 
   OutPortA.P = { contactPointCoords[1], contactPointCoords[2], contactPointCoords[3] };
 
   OutPortB.P = contactPointCoords;
-  OutPortB.F = zeros(3);
+  OutPortB.F = zeros(3) + normalReaction * vertical;
   OutPortB.M = zeros(3);
 
 end PlaneContactOldSchool;
