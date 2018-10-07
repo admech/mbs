@@ -8,9 +8,10 @@ model OmniWheelOnPlaneOldSchoolTest
 
   constant Params   params   = TestParams.pmm;
   constant Initials initials
-    = TestInitials.wheelStill;
+    // = TestInitials.wheelStill;
     // = TestInitials.wheelSelfRotatingInPlace;
     // = TestInitials.wheelSelfRotatingAndSliding;
+    = TestInitials.wheelSliding;
 
   OmniWheelOnPlaneOldSchool m
     ( Gravity  = -vertical

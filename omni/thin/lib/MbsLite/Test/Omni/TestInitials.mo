@@ -49,6 +49,15 @@ package TestInitials
     , omegaVec = -1 * userward
     );
 
+  constant Initials wheelSliding = Initials
+    ( name = "wheel sliding forward"
+    , omega = 0
+    , vAbs = 1
+    , vDirAngle = 0
+    , vVec = 1 * forward
+    , omegaVec = zeros(3)
+    );
+
   constant Initials wheelSelfRotatingAndSliding = Initials
     ( name = "wheel rotating CW looking from user and sliding forward"
     , omega = -1
