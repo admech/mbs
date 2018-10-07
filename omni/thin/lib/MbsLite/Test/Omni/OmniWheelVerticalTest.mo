@@ -2,12 +2,30 @@ within MbsLite.Test.Omni;
 
 model OmniWheelVerticalTest
 
-  import MbsLite.Examples.OmniVehicle.PointContact.OmniWheelVertical;
+  import MbsLite.Examples.OmniVehicle.Params;
+  import MbsLite.Examples.OmniVehicle.Initials;
+  import MbsLite.Examples.OmniVehicle.Full.OmniWheelVertical;
 
-  OmniWheelVertical m;
+  constant Params   params   = TestParams.pmm;
+  constant Initials initials
+    // = TestInitials.wheelStill;
+    // = TestInitials.wheelSelfRotatingInPlace;
+    // = TestInitials.wheelSelfRotatingAndSliding;
+    // = TestInitials.wheelSliding;
+    = TestInitials.wheelSlidingAlongItsAxis;
+    // = TestInitials.wheelRolling_R_0_05;
+
+  OmniWheelVertical m
+    ( Gravity  = -vertical
+    , nActual  = params.nRollers
+    , r0       = params.wheelRadius * vertical
+    , q0       = QRot(0, vertical)
+    , params   = params
+    , initials = initials
+    );
 
   annotation(experiment
-    ( StopTime = 1
+    ( StopTime = 10
     , NumberOfIntervals = 1000
     , Tolerance = 1e-9
     , Algorithm = "Dassl"

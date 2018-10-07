@@ -2,7 +2,7 @@ within MbsLite.Examples.OmniVehicle.Full;
 
 model OmniWheelVertical
 
-  parameter String  name   = "OmniWheelOnPlaneFree";
+  parameter String  name   = "OmniWheelVertical";
 
   parameter Real[3]  Gravity = fill(inf, 3);
   parameter Integer  nActual = -Integer_inf;
@@ -32,13 +32,13 @@ initial algorithm
 
 equation
  
-  omegaNaklon = (wheelOnPlane.outPort.T * forward) * wheelOnPlane.outPort.omega;
+  omegaNaklon = (wheelOnPlane.wheel.OutPortK.T * forward) * wheelOnPlane.wheel.OutPortK.omega;
   der(omegaNaklon) = epsilonNaklon;
   epsilonNaklon = 0;
 
-  wheelOnPlane.InPort.P = wheelOnPlane.outPort.r;
-  wheelOnPlane.InPort.F = zeros(3);
-  wheelOnPlane.InPort.M = (wheelOnPlane.outPort.T * forward) * torque;
+  wheelOnPlane.wheel.InPortF.P = wheelOnPlane.wheel.OutPortK.r;
+  wheelOnPlane.wheel.InPortF.F = zeros(3);
+  wheelOnPlane.wheel.InPortF.M = (wheelOnPlane.wheel.OutPortK.T * forward) * torque;
 
 end OmniWheelVertical;
 
