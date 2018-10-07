@@ -37,6 +37,7 @@ model OmniWheelOnPlaneOldSchool
   // for visualization only! likely to spoil index reduction
   Integer indexOfRollerInContact;
   Real    contactPointVelocity;
+  Real    normalVelocity;
 
 initial algorithm
   AssertInitialized (name, q0,      "q0");
@@ -68,6 +69,11 @@ equation
           * contacts[i].contactPointVelocity
           )
         * contacts[i].contactPointVelocityNorm
+      for i in 1 : nActual
+      }
+    );
+  normalVelocity = sum
+    ( { contacts[i].normalVelocity
       for i in 1 : nActual
       }
     );
