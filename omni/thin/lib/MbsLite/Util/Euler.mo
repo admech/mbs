@@ -1,6 +1,7 @@
 within MbsLite.Util;
 
 function Euler
+  annotation(Inline=true);
 
   input Real[3] origin;
   input Real[3] point;
@@ -12,7 +13,5 @@ function Euler
 algorithm
 
   velocityOfPoint := velocityOfOrigin + cross(omega, point - origin);
-
-  annotation(Inline=true);
 
 end Euler;
