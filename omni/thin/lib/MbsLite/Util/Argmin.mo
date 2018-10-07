@@ -27,7 +27,5 @@ algorithm
     end if;
   end for;
 
-  print("argmin of " + StringA(items) + " is " + String(argmin));
-
 end Argmin;
 

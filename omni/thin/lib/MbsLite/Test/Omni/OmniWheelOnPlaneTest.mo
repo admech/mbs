@@ -10,7 +10,7 @@ model OmniWheelOnPlaneTest
   constant Initials initials = TestInitials.wheelStill;
 
   OmniWheelOnPlane m
-    ( Gravity  = zeros(3)
+    ( Gravity  = -vertical
     , nActual  = params.nRollers
     , r0       = params.wheelRadius * vertical
     , q0       = QRot(0, vertical)

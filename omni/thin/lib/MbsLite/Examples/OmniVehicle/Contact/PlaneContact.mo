@@ -23,8 +23,7 @@ protected
 equation
 
   lowestRollerIndex = Argmin
-    // ( { rollerOutPort.r[2] for rollerOutPort in rollerOutPorts }
-    ( { i for i in 1 : nActual }
+    ( { rollerOutPorts[i].r[2] for i in 1 : nActual }
     );
 
   (coords, velocity) = FindLowestPoint
