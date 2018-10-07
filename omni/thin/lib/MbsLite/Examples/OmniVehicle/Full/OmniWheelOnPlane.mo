@@ -3,9 +3,9 @@ within MbsLite.Examples.OmniVehicle.Full;
 model OmniWheelOnPlane
 
   import MbsLite.Examples.OmniVehicle.OmniWheel;
-  import MbsLite.Examples.OmniVehicle.Contact.PlaneContact;
+  import MbsLite.Examples.OmniVehicle.Contact.PlaneContactOldSchool;
 
-  parameter String  name   = "OmniWheelAtRest";
+  parameter String  name   = "OmniWheelOnPlane";
   parameter Boolean strict = false;
 
   parameter Real[3]  Gravity = fill(inf, 3);
@@ -14,6 +14,8 @@ model OmniWheelOnPlane
   parameter Real[4]  q0      = fill(inf, 3);
   parameter Params   params;
   parameter Initials initials;
+
+  Base base;
 
   OmniWheel wheel
     ( final name     = "wheel"
@@ -25,10 +27,17 @@ model OmniWheelOnPlane
     , final initials = initials
     );
 
-  PlaneContact contact
-    ( final params   = params
-    , final nActual  = nActual
+  PlaneContactOldSchool[nActual] contacts
+    ( final name = { "contacts[" + String(i) + "]" for i in 1 : nActual }
+    , each final params                        = params
+    , each final frictionCoeff                 = 1e-1
+    , each final viscousFrictionVelocityBound  = 1e-6
     );
+
+  // for visualization only! likely to spoil index reduction
+  Integer indexOfRollerInContact;
+  Real    contactPointVelocity;
+  Real    normalVelocity;
 
 initial algorithm
   AssertInitialized (name, q0,      "q0");
@@ -36,13 +45,31 @@ initial algorithm
   AssertInitialized (name, Gravity, "Gravity");
 
 equation
- 
-  connect(contact.wheelOutPort,     wheel.OutPortK);
-  connect(contact.wheelInPort,      wheel.InPortF);
+  
   for i in 1 : nActual loop
-    connect(contact.rollerOutPorts[i],   wheel.Rollers[i].OutPort);
-    connect(contact.rollerInPorts[i],    wheel.Rollers[i].InPorts[1]);
+    connect(contacts[i].InPortA,    base.OutPort);
+    connect(contacts[i].InPortB,    wheel.Rollers[i].OutPort);
+    connect(contacts[i].OutPortB,   wheel.Rollers[i].InPorts[1]);
   end for;
+  indexOfRollerInContact = Argmin
+    ( { (if contacts[i].isInContact then -1 else 0)
+      for i in 1 : nActual
+      }
+    );
+  contactPointVelocity = sum
+    ( { sign
+          ( normalize(contacts[i].contactPointVelocity)
+          * contacts[i].contactPointVelocity
+          )
+        * contacts[i].contactPointVelocityNorm
+      for i in 1 : nActual
+      }
+    );
+  normalVelocity = sum
+    ( { contacts[i].normalVelocity
+      for i in 1 : nActual
+      }
+    );
 
   if strict then
     when wheel.OutPortK.r[2] < R then

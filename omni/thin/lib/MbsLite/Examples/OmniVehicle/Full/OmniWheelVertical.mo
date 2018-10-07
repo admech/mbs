@@ -2,51 +2,43 @@ within MbsLite.Examples.OmniVehicle.Full;
 
 model OmniWheelVertical
 
-  parameter Real R = 0.05 "'wheel radius' := distance from wheel axis to the floor";
-  parameter Integer n = 5;
-  parameter Real wheelHubMass = 0.15;
-  parameter Real rollerMass = 0.05;
+  parameter String  name   = "OmniWheelOnPlaneFree";
 
-  parameter Real halfRollerAngle = pi / n;
-  parameter Real wheelHubRadius = R * cos(halfRollerAngle);
-  parameter Real rollerLength = 2 * R * sin(halfRollerAngle);
-  parameter Real rollerRadiusForMoi = (R - wheelHubRadius) / 2;
+  parameter Real[3]  Gravity = fill(inf, 3);
+  parameter Integer  nActual = -Integer_inf;
+  parameter Real[3]  r0      = fill(inf, 3);
+  parameter Real[4]  q0      = fill(inf, 4);
+  parameter Params   params;
+  parameter Initials initials;
 
-  Base base;
-
-  OmniWheelGeneral wheel
-    ( name    = "wheel"
-    , n       = n
-    , rollerMass            = rollerMass
-    , rollerAxialMoi        = rollerMass * (rollerRadiusForMoi^2) / 2
-    , rollerOrthogonalMoi   = rollerMass / 12 * (3 * rollerRadiusForMoi^2 + rollerLength^2)
-    , wheelHubMass          = wheelHubMass
-    , wheelHubAxialMoi      = wheelHubMass * (wheelHubRadius^2) / 2
-    , wheelHubOrthogonalMoi = wheelHubMass / 12 * (3 * wheelHubRadius^2 + 0.01^2)
-    , R       = R
-    , r0      = { 0, R, 0 }
-    , q0      = QRot(0, { 0, 0, 0 })
-    , v0      = { 0, 0, 0 }
-    , omega0  = { 0, 0, 0 }
+  OmniWheelOnPlane wheelOnPlane
+    ( name     = "OmniWheelOnPlane"
+    , nActual  = nActual
+    , Gravity  = Gravity
+    , r0       = r0
+    , q0       = q0
+    , params   = params
+    , initials = initials
     );
 
-/*
-  Verticality verticality
-    ( name = "verticality"
-    );
-*/
+  Real torque;
+  Real epsilonNaklon;
+  Real omegaNaklon;
+
+initial algorithm
+  AssertInitialized (name, q0,      "q0");
+  AssertInitialized (name, r0,      "r0");
+  AssertInitialized (name, Gravity, "Gravity");
 
 equation
+ 
+  omegaNaklon = (wheelOnPlane.outPort.T * forward) * wheelOnPlane.outPort.omega;
+  der(omegaNaklon) = epsilonNaklon;
+  epsilonNaklon = 0;
 
-  connect(wheel.InPortK, base.OutPort);
-
-/*
-  connect(wheel.OutPortK, verticality.InPort);
-  connect(wheel.InPortF,  verticality.OutPort);
-*/
-  wheel.InPortF.P = wheel.OutPortK.r;
-  wheel.InPortF.F = zeros(3);
-  wheel.InPortF.M = zeros(3);
+  wheelOnPlane.InPort.P = wheelOnPlane.outPort.r;
+  wheelOnPlane.InPort.F = zeros(3);
+  wheelOnPlane.InPort.M = (wheelOnPlane.outPort.T * forward) * torque;
 
 end OmniWheelVertical;
 

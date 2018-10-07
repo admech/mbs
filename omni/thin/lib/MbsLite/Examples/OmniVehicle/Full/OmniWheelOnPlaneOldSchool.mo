@@ -5,7 +5,7 @@ model OmniWheelOnPlaneOldSchool
   import MbsLite.Examples.OmniVehicle.OmniWheel;
   import MbsLite.Examples.OmniVehicle.Contact.PlaneContactOldSchool;
 
-  parameter String  name   = "OmniWheelAtRest";
+  parameter String  name   = "OmniWheelOnPlaneOldSchool";
   parameter Boolean strict = false;
 
   parameter Real[3]  Gravity = fill(inf, 3);
@@ -45,10 +45,6 @@ initial algorithm
   AssertInitialized (name, Gravity, "Gravity");
 
 equation
-  
-  if CompareReal(time, floor(time)) then
-    print("Current simulation time: " + String(time));
-  end if;
  
   wheel.InPortF.P = wheel.OutPortK.r;
   wheel.InPortF.F = zeros(3);

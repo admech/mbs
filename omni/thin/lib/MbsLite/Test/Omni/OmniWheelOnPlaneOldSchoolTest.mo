@@ -4,7 +4,7 @@ model OmniWheelOnPlaneOldSchoolTest
 
   import MbsLite.Examples.OmniVehicle.Params;
   import MbsLite.Examples.OmniVehicle.Initials;
-  import MbsLite.Examples.OmniVehicle.Full.OmniWheelOnPlaneOldSchool;
+  import MbsLite.Examples.OmniVehicle.Full.OmniWheelOnPlaneFree;
 
   constant Params   params   = TestParams.pmm;
   constant Initials initials
@@ -12,10 +12,10 @@ model OmniWheelOnPlaneOldSchoolTest
     // = TestInitials.wheelSelfRotatingInPlace;
     // = TestInitials.wheelSelfRotatingAndSliding;
     // = TestInitials.wheelSliding;
-    = TestInitials.wheelSlidingAlongItsAxis;
-    // = TestInitials.wheelRolling_R_0_05;
+    // = TestInitials.wheelSlidingAlongItsAxis;
+    = TestInitials.wheelRolling_R_0_05;
 
-  OmniWheelOnPlaneOldSchool m
+  OmniWheelOnPlaneFree m
     ( Gravity  = -vertical
     , nActual  = params.nRollers
     , r0       = params.wheelRadius * vertical
