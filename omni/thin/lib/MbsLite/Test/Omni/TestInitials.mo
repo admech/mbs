@@ -67,4 +67,13 @@ package TestInitials
     , omegaVec = -1 * userward
     );
 
+  constant Initials wheelRolling_R_0_05 = Initials
+    ( name = "wheel rotating CW looking from user and sliding forward without slip"
+    , omega = -1
+    , vAbs = 0.05
+    , vDirAngle = 0
+    , vVec = 0.05 * forward
+    , omegaVec = -1 * userward
+    );
+
 end TestInitials;

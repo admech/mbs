@@ -11,7 +11,8 @@ model OmniWheelOnPlaneOldSchoolTest
     // = TestInitials.wheelStill;
     // = TestInitials.wheelSelfRotatingInPlace;
     // = TestInitials.wheelSelfRotatingAndSliding;
-    = TestInitials.wheelSliding;
+    // = TestInitials.wheelSliding;
+    = TestInitials.wheelRolling_R_0_05;
 
   OmniWheelOnPlaneOldSchool m
     ( Gravity  = -vertical

@@ -33,7 +33,10 @@ model OmniWheelOnPlaneOldSchool
     , each final frictionCoeff                 = 1e-1
     , each final viscousFrictionVelocityBound  = 1e-6
     );
-  Integer indexOfRollerInContact "for visualization only! likely to spoil index reduction";
+  
+  // for visualization only! likely to spoil index reduction
+  Integer indexOfRollerInContact;
+  Real    contactPointVelocity;
 
 initial algorithm
   AssertInitialized (name, q0,      "q0");
@@ -41,6 +44,10 @@ initial algorithm
   AssertInitialized (name, Gravity, "Gravity");
 
 equation
+  
+  if CompareReal(time, floor(time)) then
+    print("Current simulation time: " + String(time));
+  end if;
  
   wheel.InPortF.P = wheel.OutPortK.r;
   wheel.InPortF.F = zeros(3);
@@ -52,6 +59,15 @@ equation
   end for;
   indexOfRollerInContact = Argmin
     ( { (if contacts[i].isInContact then -1 else 0)
+      for i in 1 : nActual
+      }
+    );
+  contactPointVelocity = sum
+    ( { sign
+          ( normalize(contacts[i].contactPointVelocity)
+          * contacts[i].contactPointVelocity
+          )
+        * contacts[i].contactPointVelocityNorm
       for i in 1 : nActual
       }
     );
