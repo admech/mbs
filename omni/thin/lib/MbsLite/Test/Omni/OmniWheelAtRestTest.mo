@@ -14,7 +14,7 @@ model OmniWheelAtRestTest
     , vAbs = 0
     , vDirAngle = 0
     , vVec = zeros(3)
-    , omegaVec = userward
+    , omegaVec = userward + vertical
     );
 
   OmniWheelAtRest m
@@ -27,8 +27,8 @@ model OmniWheelAtRestTest
     );
 
   annotation(experiment
-    ( StopTime = 10
-    , NumberOfIntervals = 1000
+    ( StopTime = 100
+    , NumberOfIntervals = 10000
     , Tolerance = 1e-9
     , Algorithm = "Dassl"
     ));

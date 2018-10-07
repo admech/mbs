@@ -3,18 +3,22 @@ within MbsLite.Examples.OmniVehicle.PointContact;
 model OmniWheelOnPlane
   extends OmniWheel;
 
-  RollerPointContactForcesGeneral[nOne] Contacts
-      ( name     = { name + ".Contacts[" + String(i) + "]" for i in 1 : nOne }
-      , each n   = n
-      , each R   = R
-      , each psi = psi
+  RollerPointContactForcesGeneral[nActual] Contacts
+      ( name       = { name + ".Contacts[" + String(i) + "]" for i in 1 : nActual }
+      , each n     = params.nRollers
+      , each R     = params.wheelRadius
+      , each psi   = params.mecanumAngle
+      , each alpha = params.rollerHalfAngle
+      , each R1    = params.wheelHubRadius
+      , each L1    = params.rollerLength
+      , each nA    = vertical
       );
 
   KinematicPort  InPortK   "takes kinematics from base (which has only an OutPort and which needn't import any forces as it has no dynamics)";
 
 equation
 
-  for i in 1 : nOne loop
+  for i in 1 : nActual loop
     Contacts[i].n1k = Wheel.T * { 0, 0, 1 };
     Contacts[i].rho = (Wheel.r - Rollers[i].r) / sqrt((Wheel.r - Rollers[i].r) * (Wheel.r - Rollers[i].r));
 
@@ -25,3 +29,4 @@ equation
   end for;
 
 end OmniWheelOnPlane;
+

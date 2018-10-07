@@ -14,27 +14,36 @@ print("====================================");
 print("Loading MbsLite"); 
 loadModel(MbsLite);
 
+getErrorString();
+
 print("===================================="); 
 print("Loading SPECIFY_MODEL_NAME"); 
 loadModel(SPECIFY_MODEL_NAME);
+
+getErrorString();
 
 print("===================================="); 
 print("Instantiating SPECIFY_MODEL_NAME"); 
 instantiateModel(SPECIFY_MODEL_NAME);
 
+getErrorString();
+
 print("===================================="); 
 print("Checking SPECIFY_MODEL_NAME"); 
 checkModel(SPECIFY_MODEL_NAME);
+
+getErrorString();
 
 print("===================================="); 
 print("Simulating SPECIFY_MODEL_NAME"); 
 /*
 print("na samom dele net"); 
 */
-simulate
+res := simulate
     ( SPECIFY_MODEL_NAME
     , outputFormat = "csv"
-    , stopTime = 1
+    // , stopTime = 1
     );
 
 getErrorString();
+

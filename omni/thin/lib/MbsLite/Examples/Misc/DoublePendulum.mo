@@ -64,14 +64,16 @@ model DoublePendulum
     );
 
   FixedJoint joint1 // A -- base, B -- body1
-    ( nA = userwardNormalToTheScreen
+    ( name = "joint1"
+    , nA = userwardNormalToTheScreen
     , nB = userwardNormalToTheScreen
     , rA = { 0, 0, 0 }
     , rB = bodyAxisPositionLocal
     );
 
   FixedJoint joint2 // A -- body1, B -- body2
-    ( nA = userwardNormalToTheScreen
+    ( name = "joint2"
+    , nA = userwardNormalToTheScreen
     , nB = userwardNormalToTheScreen
     , rA = { 0, 0, 0 }
     , rB = bodyAxisPositionLocal

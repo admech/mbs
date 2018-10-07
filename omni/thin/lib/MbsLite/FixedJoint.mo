@@ -46,7 +46,7 @@ equation
   nBi = InPortB.T * nB;
   for i in 1 : 3 loop
     assert
-      ( CompareReal(nAi[i], nBi[i], absTol = 1e-8)
+      ( CompareReal(nAi[i], nBi[i], absTol = 1e-2)
       , "looks like joint " + name + " is getting worse... axes in inertial coords should be same, but were:"
         +  " nAi = " + StringA(nAi)
         + ", nBi = " + StringA(nBi)
