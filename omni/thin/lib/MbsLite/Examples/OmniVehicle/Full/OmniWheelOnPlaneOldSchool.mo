@@ -28,7 +28,10 @@ model OmniWheelOnPlaneOldSchool
     );
 
   PlaneContactOldSchool[nActual] contacts
-    ( each final params = params
+    ( final name = { "contacts[" + String(i) + "]" for i in 1 : nActual }
+    , each final params                        = params
+    , each final frictionCoeff                 = 1e-1
+    , each final viscousFrictionVelocityBound  = 1e-6
     );
   Integer indexOfRollerInContact "for visualization only! likely to spoil index reduction";
 

@@ -3,7 +3,7 @@ within MbsLite.Util.Asserts;
 function Assert
   input Boolean condition;
   input String message;
-  input Boolean silent = false;
+  input Boolean silent = true;
 algorithm
  
   if not condition then
