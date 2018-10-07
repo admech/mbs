@@ -1,32 +1,106 @@
 within MbsLite.Examples.OmniVehicle.PointContact;
 
 model OmniWheelOnPlane
-  extends OmniWheel;
+  import MbsLite.Examples.OmniVehicle.Contact.PlaneContactOldSchool;
 
-  RollerPointContactForcesGeneral[nActual] Contacts
-      ( name       = { name + ".Contacts[" + String(i) + "]" for i in 1 : nActual }
-      , each n     = params.nRollers
-      , each R     = params.wheelRadius
-      , each psi   = params.mecanumAngle
-      , each alpha = params.rollerHalfAngle
-      , each R1    = params.wheelHubRadius
-      , each L1    = params.rollerLength
-      , each nA    = vertical
-      );
+  parameter String  name   = "OmniWheelOnPlane";
+  parameter Boolean strict = false;
 
-  KinematicPort  InPortK   "takes kinematics from base (which has only an OutPort and which needn't import any forces as it has no dynamics)";
+  parameter Real[3]  Gravity = fill(inf, 3);
+  parameter Integer  nActual = -Integer_inf;
+  parameter Real[3]  r0      = fill(inf, 3);
+  parameter Real[4]  q0      = fill(inf, 3);
+  parameter Params   params;
+  parameter Initials initials;
+
+  Base base;
+
+  OmniWheel wheel
+    ( final name     = "wheel"
+    , final nActual  = nActual
+    , final Gravity  = Gravity
+    , final r0       = params.wheelRadius * vertical
+    , final q0       = q0
+    , final params   = params
+    , final initials = initials
+    );
+
+  PlaneContactOldSchool[nActual] contacts
+    ( final name = { "contacts[" + String(i) + "]" for i in 1 : nActual }
+    , each final params                        = params
+    , each final frictionCoeff                 = 1e-1
+    , each final viscousFrictionVelocityBound  = 1e-6
+    );
+
+  // for visualization only! likely to spoil index reduction
+  Integer indexOfRollerInContact;
+  Real    contactPointVelocity;
+  Real    friction;
+  Real    normalVelocity;
+  Real    normalReaction;
+
+initial algorithm
+  AssertInitialized (name, q0,      "q0");
+  AssertInitialized (name, r0,      "r0");
+  AssertInitialized (name, Gravity, "Gravity");
 
 equation
-
+  
   for i in 1 : nActual loop
-    Contacts[i].n1k = Wheel.T * { 0, 0, 1 };
-    Contacts[i].rho = (Wheel.r - Rollers[i].r) / sqrt((Wheel.r - Rollers[i].r) * (Wheel.r - Rollers[i].r));
-
-    // interactions between Rollers and base (the floor) -- via Contacts
-    connect(InPortK,                 Contacts[i].InPortA);  // kinematics from base (floor) goes in via InPortK and is being passed into Contacts via their InPortA
-    connect(Rollers[i].OutPort,      Contacts[i].InPortB);  // similarly, kinematics from Rollers is fed in into Contacts via InPortB
-    connect(Rollers[i].InPorts[1],   Contacts[i].OutPortB); // then what forces are calculated within Contacts, are being exported to Rollers from the Contacts' OutPortB and via the Rollers' first InPorts
+    connect(contacts[i].InPortA,    base.OutPort);
+    connect(contacts[i].InPortB,    wheel.Rollers[i].OutPort);
+    connect(contacts[i].OutPortB,   wheel.Rollers[i].InPorts[1]);
   end for;
+
+  indexOfRollerInContact = Argmin
+    ( { (if contacts[i].isInContact then -1 else 0)
+      for i in 1 : nActual
+      }
+    );
+  // FIXME: strange calculations here; wanted to show the norm of velocity with sign
+  contactPointVelocity = sum
+    ( { sign
+          ( normalize(contacts[i].contactPointVelocity)
+          * contacts[i].contactPointVelocity
+          )
+        * contacts[i].contactPointVelocityNorm
+      for i in 1 : nActual
+      }
+    );
+  friction = sum
+    ( { sign
+          ( normalize(contacts[i].friction)
+          * contacts[i].friction
+          )
+        * norm(contacts[i].friction)
+      for i in 1 : nActual
+      }
+    );
+  normalVelocity = sum
+    ( { contacts[i].normalVelocity
+      for i in 1 : nActual
+      }
+    );
+  normalReaction = sum
+    ( { (if contacts[i].isInContact then contacts[i].normalReaction else 0)
+      for i in 1 : nActual
+      }
+    );
+
+  if strict then
+    when wheel.OutPortK.r[2] < R then
+      assert(CompareReal(R, wheel.OutPortK.r[2]), "the wheel is falling down! (r[2] < R)");
+    end when;
+    when wheel.OutPortK.r[2] > R then
+      assert(CompareReal(R, wheel.OutPortK.r[2]), "the wheel is flying! (r[2] > R)");
+    end when;
+    when wheel.OutPortK.v[2] < 0 then
+      assert(CompareReal(0, wheel.OutPortK.v[2]), "the wheel is falling down! (v[2] < 0)");
+    end when;
+    when wheel.OutPortK.v[2] > 0 then
+      assert(CompareReal(0, wheel.OutPortK.v[2]), "the wheel is flying! (v[2] > 0)");
+    end when;
+  end if;
 
 end OmniWheelOnPlane;
 

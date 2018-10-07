@@ -2,8 +2,6 @@ within MbsLite.Examples.OmniVehicle.Full;
 
 model OmniWheelAtRest
 
-  import MbsLite.Examples.OmniVehicle.OmniWheel;
-
   parameter String  name   = "OmniWheelAtRest";
   parameter Boolean strict = false;
 

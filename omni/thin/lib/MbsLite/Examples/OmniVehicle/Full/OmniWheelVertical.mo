@@ -1,6 +1,7 @@
 within MbsLite.Examples.OmniVehicle.Full;
 
 model OmniWheelVertical
+  import MbsLite.Examples.OmniVehicle.PointContact.OmniWheelOnPlane;
 
   parameter String  name   = "OmniWheelVertical";
 
