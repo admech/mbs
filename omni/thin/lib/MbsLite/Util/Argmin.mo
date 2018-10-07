@@ -1,6 +1,7 @@
 within MbsLite.Util;
 
 function Argmin
+  annotation(Inline = true);
   
   input  Real[:]    items;
 

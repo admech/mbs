@@ -17,7 +17,7 @@ true
 ""
 ====================================
 Instantiating MbsLite.Test.Omni.OmniWheelOnPlaneTest
-"function MbsLite.Examples.OmniVehicle.Contact.FindLowestPoint \"finds coords and velocity of the lowest point of the lowest roller of an omni-wheel in global coords\"
+"function MbsLite.Examples.OmniVehicle.Contact.FindLowestPoint \"Inline before index reduction\" \"finds coords and velocity of the lowest point of the lowest roller of an omni-wheel in global coords\"
   input Real[3] wheelCenter;
   input Real wheelRadius;
   input Real[3] lowestRollerCenter;
@@ -84,7 +84,7 @@ algorithm
   params := MbsLite.Examples.OmniVehicle.Params(name, NWheels, nRollers, mecanumAngle, platformRadius, wheelRadius, platformMass, wheelHubMass, rollerMass, rollerHalfAngle, wheelHubRadius, rollerRadius, rollerLength, MbsLite.Util.MassGeometry.CylinderAxialMoi(platformMass, platformRadius), MbsLite.Util.MassGeometry.CylinderOrthogonalMoi(platformMass, platformRadius, 0.01), MbsLite.Util.MassGeometry.CylinderAxialMoi(wheelHubMass, wheelHubRadius), MbsLite.Util.MassGeometry.CylinderOrthogonalMoi(wheelHubMass, wheelHubRadius, 0.01), MbsLite.Util.MassGeometry.CylinderAxialMoi(rollerMass, rollerRadius), MbsLite.Util.MassGeometry.CylinderOrthogonalMoi(rollerMass, rollerRadius, rollerLength));
 end MbsLite.Examples.OmniVehicle.Utils.CreateParams;
 
-function MbsLite.Util.Argmin
+function MbsLite.Util.Argmin \"Inline before index reduction\"
   input Real[:] items;
   output Integer argmin;
   protected Integer n;
@@ -1877,6 +1877,18 @@ class MbsLite.Test.Omni.OmniWheelOnPlaneTest
   protected Real m.contact.velocity[1];
   protected Real m.contact.velocity[2];
   protected Real m.contact.velocity[3];
+  protected Real m.contact.normalVelocity;
+  protected Real m.contact.DnormalVelocity;
+  protected Boolean m.contact.isInContact[1];
+  protected Boolean m.contact.isInContact[2];
+  protected Boolean m.contact.isInContact[3];
+  protected Boolean m.contact.isInContact[4];
+  protected Boolean m.contact.isInContact[5];
+  protected Real m.contact.cosBetweenRollerAxesAndVertical[1];
+  protected Real m.contact.cosBetweenRollerAxesAndVertical[2];
+  protected Real m.contact.cosBetweenRollerAxesAndVertical[3];
+  protected Real m.contact.cosBetweenRollerAxesAndVertical[4];
+  protected Real m.contact.cosBetweenRollerAxesAndVertical[5];
 initial equation
   UNKNOWN EQUATION TYPE
   UNKNOWN EQUATION TYPE
@@ -2482,21 +2494,31 @@ equation
   m.wheel.Wheel.OutPort.epsilon[2] = m.wheel.Wheel.T[2,1] * m.wheel.Wheel.epsilon[1] + m.wheel.Wheel.T[2,2] * m.wheel.Wheel.epsilon[2] + m.wheel.Wheel.T[2,3] * m.wheel.Wheel.epsilon[3];
   m.wheel.Wheel.OutPort.epsilon[3] = m.wheel.Wheel.T[3,1] * m.wheel.Wheel.epsilon[1] + m.wheel.Wheel.T[3,2] * m.wheel.Wheel.epsilon[2] + m.wheel.Wheel.T[3,3] * m.wheel.Wheel.epsilon[3];
   m.contact.lowestRollerIndex = MbsLite.Util.Argmin({m.contact.rollerOutPorts[1].r[2], m.contact.rollerOutPorts[2].r[2], m.contact.rollerOutPorts[3].r[2], m.contact.rollerOutPorts[4].r[2], m.contact.rollerOutPorts[5].r[2]});
+  m.contact.cosBetweenRollerAxesAndVertical[1] = m.contact.rollerOutPorts[1].T[2,2];
+  m.contact.cosBetweenRollerAxesAndVertical[2] = m.contact.rollerOutPorts[2].T[2,2];
+  m.contact.cosBetweenRollerAxesAndVertical[3] = m.contact.rollerOutPorts[3].T[2,2];
+  m.contact.cosBetweenRollerAxesAndVertical[4] = m.contact.rollerOutPorts[4].T[2,2];
+  m.contact.cosBetweenRollerAxesAndVertical[5] = m.contact.rollerOutPorts[5].T[2,2];
+  m.contact.isInContact[1] = m.contact.cosBetweenRollerAxesAndVertical[1] < 0.8090169943749475 and m.contact.rollerOutPorts[1].r[2] < 0.05;
+  m.contact.isInContact[2] = m.contact.cosBetweenRollerAxesAndVertical[2] < 0.8090169943749475 and m.contact.rollerOutPorts[2].r[2] < 0.05;
+  m.contact.isInContact[3] = m.contact.cosBetweenRollerAxesAndVertical[3] < 0.8090169943749475 and m.contact.rollerOutPorts[3].r[2] < 0.05;
+  m.contact.isInContact[4] = m.contact.cosBetweenRollerAxesAndVertical[4] < 0.8090169943749475 and m.contact.rollerOutPorts[4].r[2] < 0.05;
+  m.contact.isInContact[5] = m.contact.cosBetweenRollerAxesAndVertical[5] < 0.8090169943749475 and m.contact.rollerOutPorts[5].r[2] < 0.05;
   (m.contact.coords, m.contact.velocity) = MbsLite.Examples.OmniVehicle.Contact.FindLowestPoint({m.contact.wheelOutPort.r[1], m.contact.wheelOutPort.r[2], m.contact.wheelOutPort.r[3]}, 0.05, {m.contact.rollerOutPorts[m.contact.lowestRollerIndex].r[1], m.contact.rollerOutPorts[m.contact.lowestRollerIndex].r[2], m.contact.rollerOutPorts[m.contact.lowestRollerIndex].r[3]}, {m.contact.rollerOutPorts[m.contact.lowestRollerIndex].v[1], m.contact.rollerOutPorts[m.contact.lowestRollerIndex].v[2], m.contact.rollerOutPorts[m.contact.lowestRollerIndex].v[3]}, {m.contact.rollerOutPorts[m.contact.lowestRollerIndex].omega[1], m.contact.rollerOutPorts[m.contact.lowestRollerIndex].omega[2], m.contact.rollerOutPorts[m.contact.lowestRollerIndex].omega[3]});
+  m.contact.normalVelocity = m.contact.velocity[2];
+  der(m.contact.normalVelocity) = m.contact.DnormalVelocity;
   m.contact.rollerInPorts[1].P[1] = m.contact.rollerOutPorts[1].r[1];
   m.contact.rollerInPorts[1].P[2] = m.contact.rollerOutPorts[1].r[2];
   m.contact.rollerInPorts[1].P[3] = m.contact.rollerOutPorts[1].r[3];
   m.contact.rollerInPorts[1].M[1] = 0.0;
   m.contact.rollerInPorts[1].M[2] = 0.0;
   m.contact.rollerInPorts[1].M[3] = 0.0;
-  if 1 == m.contact.lowestRollerIndex then
-    m.contact.rollerInPorts[1].F[1] = 0.0;
-    m.contact.rollerInPorts[1].F[3] = 0.0;
-    m.contact.rollerInPorts[1].F[2] = 0.0;
+  m.contact.rollerInPorts[1].F[1] = 0.0;
+  m.contact.rollerInPorts[1].F[3] = 0.0;
+  if m.contact.isInContact[1] then
+    m.contact.DnormalVelocity = 0.0;
   else
-    m.contact.rollerInPorts[1].F[1] = 0.0;
     m.contact.rollerInPorts[1].F[2] = 0.0;
-    m.contact.rollerInPorts[1].F[3] = 0.0;
   end if;
   m.contact.rollerInPorts[2].P[1] = m.contact.rollerOutPorts[2].r[1];
   m.contact.rollerInPorts[2].P[2] = m.contact.rollerOutPorts[2].r[2];
@@ -2504,14 +2526,12 @@ equation
   m.contact.rollerInPorts[2].M[1] = 0.0;
   m.contact.rollerInPorts[2].M[2] = 0.0;
   m.contact.rollerInPorts[2].M[3] = 0.0;
-  if 2 == m.contact.lowestRollerIndex then
-    m.contact.rollerInPorts[2].F[1] = 0.0;
-    m.contact.rollerInPorts[2].F[3] = 0.0;
-    m.contact.rollerInPorts[2].F[2] = 0.0;
+  m.contact.rollerInPorts[2].F[1] = 0.0;
+  m.contact.rollerInPorts[2].F[3] = 0.0;
+  if m.contact.isInContact[2] then
+    m.contact.DnormalVelocity = 0.0;
   else
-    m.contact.rollerInPorts[2].F[1] = 0.0;
     m.contact.rollerInPorts[2].F[2] = 0.0;
-    m.contact.rollerInPorts[2].F[3] = 0.0;
   end if;
   m.contact.rollerInPorts[3].P[1] = m.contact.rollerOutPorts[3].r[1];
   m.contact.rollerInPorts[3].P[2] = m.contact.rollerOutPorts[3].r[2];
@@ -2519,14 +2539,12 @@ equation
   m.contact.rollerInPorts[3].M[1] = 0.0;
   m.contact.rollerInPorts[3].M[2] = 0.0;
   m.contact.rollerInPorts[3].M[3] = 0.0;
-  if 3 == m.contact.lowestRollerIndex then
-    m.contact.rollerInPorts[3].F[1] = 0.0;
-    m.contact.rollerInPorts[3].F[3] = 0.0;
-    m.contact.rollerInPorts[3].F[2] = 0.0;
+  m.contact.rollerInPorts[3].F[1] = 0.0;
+  m.contact.rollerInPorts[3].F[3] = 0.0;
+  if m.contact.isInContact[3] then
+    m.contact.DnormalVelocity = 0.0;
   else
-    m.contact.rollerInPorts[3].F[1] = 0.0;
     m.contact.rollerInPorts[3].F[2] = 0.0;
-    m.contact.rollerInPorts[3].F[3] = 0.0;
   end if;
   m.contact.rollerInPorts[4].P[1] = m.contact.rollerOutPorts[4].r[1];
   m.contact.rollerInPorts[4].P[2] = m.contact.rollerOutPorts[4].r[2];
@@ -2534,14 +2552,12 @@ equation
   m.contact.rollerInPorts[4].M[1] = 0.0;
   m.contact.rollerInPorts[4].M[2] = 0.0;
   m.contact.rollerInPorts[4].M[3] = 0.0;
-  if 4 == m.contact.lowestRollerIndex then
-    m.contact.rollerInPorts[4].F[1] = 0.0;
-    m.contact.rollerInPorts[4].F[3] = 0.0;
-    m.contact.rollerInPorts[4].F[2] = 0.0;
+  m.contact.rollerInPorts[4].F[1] = 0.0;
+  m.contact.rollerInPorts[4].F[3] = 0.0;
+  if m.contact.isInContact[4] then
+    m.contact.DnormalVelocity = 0.0;
   else
-    m.contact.rollerInPorts[4].F[1] = 0.0;
     m.contact.rollerInPorts[4].F[2] = 0.0;
-    m.contact.rollerInPorts[4].F[3] = 0.0;
   end if;
   m.contact.rollerInPorts[5].P[1] = m.contact.rollerOutPorts[5].r[1];
   m.contact.rollerInPorts[5].P[2] = m.contact.rollerOutPorts[5].r[2];
@@ -2549,14 +2565,12 @@ equation
   m.contact.rollerInPorts[5].M[1] = 0.0;
   m.contact.rollerInPorts[5].M[2] = 0.0;
   m.contact.rollerInPorts[5].M[3] = 0.0;
-  if 5 == m.contact.lowestRollerIndex then
-    m.contact.rollerInPorts[5].F[1] = 0.0;
-    m.contact.rollerInPorts[5].F[3] = 0.0;
-    m.contact.rollerInPorts[5].F[2] = 0.0;
+  m.contact.rollerInPorts[5].F[1] = 0.0;
+  m.contact.rollerInPorts[5].F[3] = 0.0;
+  if m.contact.isInContact[5] then
+    m.contact.DnormalVelocity = 0.0;
   else
-    m.contact.rollerInPorts[5].F[1] = 0.0;
     m.contact.rollerInPorts[5].F[2] = 0.0;
-    m.contact.rollerInPorts[5].F[3] = 0.0;
   end if;
   m.contact.wheelInPort.P[1] = m.contact.wheelOutPort.r[1];
   m.contact.wheelInPort.P[2] = m.contact.wheelOutPort.r[2];
@@ -3138,105 +3152,26 @@ end MbsLite.Test.Omni.OmniWheelOnPlaneTest;
 ====================================
 Checking MbsLite.Test.Omni.OmniWheelOnPlaneTest
 "Check of MbsLite.Test.Omni.OmniWheelOnPlaneTest completed successfully.
-Class MbsLite.Test.Omni.OmniWheelOnPlaneTest has 1239 equation(s) and 1239 variable(s).
-837 of these are trivial equation(s)."
+Class MbsLite.Test.Omni.OmniWheelOnPlaneTest has 1251 equation(s) and 1251 variable(s).
+854 of these are trivial equation(s)."
 [/home/vf/om/models/omni/thin/lib/MbsLite/Test/Omni/OmniWheelOnPlaneTest.mo:28:3-33:11:writable] Warning: In component <NO COMPONENT>, in relation time == 1.0,  ==  on Real numbers is only allowed inside functions.
 "
 ====================================
 Simulating MbsLite.Test.Omni.OmniWheelOnPlaneTest
 record SimulationResult
-    resultFile = "/home/vf/om/models/omni/test/out/MbsLite.Test.Omni.OmniWheelOnPlaneTest_res.csv",
+    resultFile = "",
     simulationOptions = "startTime = 0.0, stopTime = 10.0, numberOfIntervals = 1000, tolerance = 1e-09, method = 'dassl', fileNamePrefix = 'MbsLite.Test.Omni.OmniWheelOnPlaneTest', options = '', outputFormat = 'csv', variableFilter = '.*', cflags = '', simflags = ''",
-    messages = "stdout            | info    | The initialization finished successfully without homotopy method.
-stdout            | info    | The simulation finished successfully.
-",
-    timeFrontend = 2.860074855,
-    timeBackend = 3.935653186,
-    timeSimCode = 0.449508158,
-    timeTemplates = 1.442253165,
-    timeCompile = 13.928259772,
-    timeSimulation = 2.820521896,
-    timeTotal = 25.45240961
+    messages = "Failed to build model: MbsLite.Test.Omni.OmniWheelOnPlaneTest",
+    timeFrontend = 0.0,
+    timeBackend = 0.0,
+    timeSimCode = 0.0,
+    timeTemplates = 0.0,
+    timeCompile = 0.0,
+    timeSimulation = 0.0,
+    timeTotal = 0.0
 end SimulationResult;
 [/home/vf/om/models/omni/thin/lib/MbsLite/Test/Omni/OmniWheelOnPlaneTest.mo:28:3-33:11:writable] Warning: In component <NO COMPONENT>, in relation time == 1.0,  ==  on Real numbers is only allowed inside functions.
-Warning: Assuming fixed start value for the following 79 variables:
-         m.wheel.Joints[5].angle:VARIABLE()  "Relative angle. Beware numerical error accumulation!" type: Real  [5]
-         m.wheel.Joints[4].angle:VARIABLE()  "Relative angle. Beware numerical error accumulation!" type: Real  [5]
-         m.wheel.Joints[3].angle:VARIABLE()  "Relative angle. Beware numerical error accumulation!" type: Real  [5]
-         m.wheel.Joints[2].angle:VARIABLE()  "Relative angle. Beware numerical error accumulation!" type: Real  [5]
-         m.wheel.Joints[1].angle:VARIABLE()  "Relative angle. Beware numerical error accumulation!" type: Real  [5]
-         m.wheel.Rollers[5].r[3]:VARIABLE(start = m.wheel.RollerCenters[5,3] unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [5,3]
-         m.wheel.Rollers[5].r[1]:VARIABLE(start = m.wheel.RollerCenters[5,1] unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [5,3]
-         m.wheel.Rollers[4].r[3]:VARIABLE(start = m.wheel.RollerCenters[4,3] unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [5,3]
-         m.wheel.Rollers[4].r[1]:VARIABLE(start = m.wheel.RollerCenters[4,1] unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [5,3]
-         m.wheel.Rollers[3].r[3]:VARIABLE(start = m.wheel.RollerCenters[3,3] unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [5,3]
-         m.wheel.Rollers[3].r[1]:VARIABLE(start = m.wheel.RollerCenters[3,1] unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [5,3]
-         m.wheel.Rollers[2].r[3]:VARIABLE(start = m.wheel.RollerCenters[2,3] unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [5,3]
-         m.wheel.Rollers[2].r[1]:VARIABLE(start = m.wheel.RollerCenters[2,1] unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [5,3]
-         m.wheel.Rollers[1].r[3]:VARIABLE(start = m.wheel.RollerCenters[1,3] unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [5,3]
-         m.wheel.Rollers[1].r[1]:VARIABLE(start = m.wheel.RollerCenters[1,1] unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [5,3]
-         m.wheel.Joints[5].mu:VARIABLE(unit = "rad/s" )  "Relative angular velocity along the axis" type: Real  [5]
-         m.wheel.Joints[4].mu:VARIABLE(unit = "rad/s" )  "Relative angular velocity along the axis" type: Real  [5]
-         m.wheel.Joints[3].mu:VARIABLE(unit = "rad/s" )  "Relative angular velocity along the axis" type: Real  [5]
-         m.wheel.Joints[2].mu:VARIABLE(unit = "rad/s" )  "Relative angular velocity along the axis" type: Real  [5]
-         m.wheel.Joints[1].mu:VARIABLE(unit = "rad/s" )  "Relative angular velocity along the axis" type: Real  [5]
-         m.wheel.Wheel.Active:VARIABLE(start = 1.0 )  "Flag of active dynamics" type: Real 
-         m.wheel.Wheel.omega[3]:VARIABLE(start = 0.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [3]
-         m.wheel.Wheel.omega[2]:VARIABLE(start = 0.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [3]
-         m.wheel.Wheel.omega[1]:VARIABLE(start = 0.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [3]
-         m.wheel.Wheel.q[4]:VARIABLE(start = 0.0 )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [4]
-         m.wheel.Wheel.q[3]:VARIABLE(start = 0.0 )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [4]
-         m.wheel.Wheel.q[2]:VARIABLE(start = 0.0 )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [4]
-         m.wheel.Wheel.q[1]:VARIABLE(start = 1.0 )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [4]
-         m.wheel.Wheel.v[3]:VARIABLE(start = 0.0 unit = "m/s" )  "Velocity vector of masscenter" type: Real  [3]
-         m.wheel.Wheel.v[2]:VARIABLE(start = 0.0 unit = "m/s" )  "Velocity vector of masscenter" type: Real  [3]
-         m.wheel.Wheel.v[1]:VARIABLE(start = 0.0 unit = "m/s" )  "Velocity vector of masscenter" type: Real  [3]
-         m.wheel.Wheel.r[3]:VARIABLE(start = 0.0 unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [3]
-         m.wheel.Wheel.r[2]:VARIABLE(start = 0.05 unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [3]
-         m.wheel.Wheel.r[1]:VARIABLE(start = 0.0 unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [3]
-         m.wheel.Rollers[5].Active:VARIABLE(start = 1.0 )  "Flag of active dynamics" type: Real  [5]
-         m.wheel.Rollers[5].omega[3]:VARIABLE(start = 0.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [5,3]
-         m.wheel.Rollers[5].omega[2]:VARIABLE(start = 0.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [5,3]
-         m.wheel.Rollers[5].omega[1]:VARIABLE(start = 0.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [5,3]
-         m.wheel.Rollers[5].q[4]:VARIABLE(start = m.wheel.RollerQs[5,4] )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [5,4]
-         m.wheel.Rollers[5].q[3]:VARIABLE(start = m.wheel.RollerQs[5,3] )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [5,4]
-         m.wheel.Rollers[5].q[2]:VARIABLE(start = m.wheel.RollerQs[5,2] )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [5,4]
-         m.wheel.Rollers[5].q[1]:VARIABLE(start = m.wheel.RollerQs[5,1] )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [5,4]
-         m.wheel.Rollers[5].r[2]:VARIABLE(start = 0.05 + m.wheel.RollerCenters[5,2] unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [5,3]
-         m.wheel.Rollers[4].Active:VARIABLE(start = 1.0 )  "Flag of active dynamics" type: Real  [5]
-         m.wheel.Rollers[4].omega[3]:VARIABLE(start = 0.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [5,3]
-         m.wheel.Rollers[4].omega[2]:VARIABLE(start = 0.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [5,3]
-         m.wheel.Rollers[4].omega[1]:VARIABLE(start = 0.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [5,3]
-         m.wheel.Rollers[4].q[4]:VARIABLE(start = m.wheel.RollerQs[4,4] )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [5,4]
-         m.wheel.Rollers[4].q[3]:VARIABLE(start = m.wheel.RollerQs[4,3] )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [5,4]
-         m.wheel.Rollers[4].q[2]:VARIABLE(start = m.wheel.RollerQs[4,2] )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [5,4]
-         m.wheel.Rollers[4].q[1]:VARIABLE(start = m.wheel.RollerQs[4,1] )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [5,4]
-         m.wheel.Rollers[4].r[2]:VARIABLE(start = 0.05 + m.wheel.RollerCenters[4,2] unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [5,3]
-         m.wheel.Rollers[3].Active:VARIABLE(start = 1.0 )  "Flag of active dynamics" type: Real  [5]
-         m.wheel.Rollers[3].omega[3]:VARIABLE(start = 0.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [5,3]
-         m.wheel.Rollers[3].omega[2]:VARIABLE(start = 0.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [5,3]
-         m.wheel.Rollers[3].omega[1]:VARIABLE(start = 0.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [5,3]
-         m.wheel.Rollers[3].q[4]:VARIABLE(start = m.wheel.RollerQs[3,4] )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [5,4]
-         m.wheel.Rollers[3].q[3]:VARIABLE(start = m.wheel.RollerQs[3,3] )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [5,4]
-         m.wheel.Rollers[3].q[2]:VARIABLE(start = m.wheel.RollerQs[3,2] )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [5,4]
-         m.wheel.Rollers[3].q[1]:VARIABLE(start = m.wheel.RollerQs[3,1] )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [5,4]
-         m.wheel.Rollers[3].r[2]:VARIABLE(start = 0.05 + m.wheel.RollerCenters[3,2] unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [5,3]
-         m.wheel.Rollers[2].Active:VARIABLE(start = 1.0 )  "Flag of active dynamics" type: Real  [5]
-         m.wheel.Rollers[2].omega[3]:VARIABLE(start = 0.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [5,3]
-         m.wheel.Rollers[2].omega[2]:VARIABLE(start = 0.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [5,3]
-         m.wheel.Rollers[2].omega[1]:VARIABLE(start = 0.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [5,3]
-         m.wheel.Rollers[2].q[4]:VARIABLE(start = m.wheel.RollerQs[2,4] )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [5,4]
-         m.wheel.Rollers[2].q[3]:VARIABLE(start = m.wheel.RollerQs[2,3] )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [5,4]
-         m.wheel.Rollers[2].q[2]:VARIABLE(start = m.wheel.RollerQs[2,2] )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [5,4]
-         m.wheel.Rollers[2].q[1]:VARIABLE(start = m.wheel.RollerQs[2,1] )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [5,4]
-         m.wheel.Rollers[2].r[2]:VARIABLE(start = 0.05 + m.wheel.RollerCenters[2,2] unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [5,3]
-         m.wheel.Rollers[1].Active:VARIABLE(start = 1.0 )  "Flag of active dynamics" type: Real  [5]
-         m.wheel.Rollers[1].omega[3]:VARIABLE(start = 0.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [5,3]
-         m.wheel.Rollers[1].r[2]:VARIABLE(start = 0.05 + m.wheel.RollerCenters[1,2] unit = "m" )  "Radius vector of masscenter in global coords" type: Real  [5,3]
-         m.wheel.Rollers[1].q[1]:VARIABLE(start = m.wheel.RollerQs[1,1] )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [5,4]
-         m.wheel.Rollers[1].q[2]:VARIABLE(start = m.wheel.RollerQs[1,2] )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [5,4]
-         m.wheel.Rollers[1].q[3]:VARIABLE(start = m.wheel.RollerQs[1,3] )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [5,4]
-         m.wheel.Rollers[1].q[4]:VARIABLE(start = m.wheel.RollerQs[1,4] )  "Quaternion of body orientation.  QToT(q) * local = global.  E.g. QRot(pi/6, { 0, 0, 1 }) means this body is rotated clockwise along the third axis (normal to the screen) by pi/6" type: Real  [5,4]
-         m.wheel.Rollers[1].omega[1]:VARIABLE(start = 0.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [5,3]
-         m.wheel.Rollers[1].omega[2]:VARIABLE(start = 0.0 unit = "rad/s" )  "Vector of angular rate in local coords" type: Real  [5,3]
+Error: Internal error IndexReduction.pantelidesIndexReduction failed! Found empty set of continues equations. Use -d=bltdump to get more information.
+Error: Internal error - IndexReduction.pantelidesIndexReduction failed!
+Error: Internal error Transformation Module PFPlusExt index Reduction Method Pantelides failed!
 "

@@ -1,6 +1,7 @@
 within MbsLite.Examples.OmniVehicle.Contact;
 
 function FindLowestPoint "finds coords and velocity of the lowest point of the lowest roller of an omni-wheel in global coords"
+  annotation(Inline = true);
 
   input  Real[3]    wheelCenter;
   input  Real       wheelRadius;
