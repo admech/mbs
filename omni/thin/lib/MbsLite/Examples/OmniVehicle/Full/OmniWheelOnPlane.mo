@@ -37,7 +37,9 @@ model OmniWheelOnPlane
   // for visualization only! likely to spoil index reduction
   Integer indexOfRollerInContact;
   Real    contactPointVelocity;
+  Real    friction;
   Real    normalVelocity;
+  Real    normalReaction;
 
 initial algorithm
   AssertInitialized (name, q0,      "q0");
@@ -51,11 +53,13 @@ equation
     connect(contacts[i].InPortB,    wheel.Rollers[i].OutPort);
     connect(contacts[i].OutPortB,   wheel.Rollers[i].InPorts[1]);
   end for;
+
   indexOfRollerInContact = Argmin
     ( { (if contacts[i].isInContact then -1 else 0)
       for i in 1 : nActual
       }
     );
+  // FIXME: strange calculations here; wanted to show the norm of velocity with sign
   contactPointVelocity = sum
     ( { sign
           ( normalize(contacts[i].contactPointVelocity)
@@ -65,8 +69,22 @@ equation
       for i in 1 : nActual
       }
     );
+  friction = sum
+    ( { sign
+          ( normalize(contacts[i].friction)
+          * contacts[i].friction
+          )
+        * norm(contacts[i].friction)
+      for i in 1 : nActual
+      }
+    );
   normalVelocity = sum
     ( { contacts[i].normalVelocity
+      for i in 1 : nActual
+      }
+    );
+  normalReaction = sum
+    ( { (if contacts[i].isInContact then contacts[i].normalReaction else 0)
       for i in 1 : nActual
       }
     );
