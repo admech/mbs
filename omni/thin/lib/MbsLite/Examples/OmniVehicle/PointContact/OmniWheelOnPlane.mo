@@ -9,7 +9,7 @@ model OmniWheelOnPlane
   parameter Real[3]  Gravity = fill(inf, 3);
   parameter Integer  nActual = -Integer_inf;
   parameter Real[3]  r0      = fill(inf, 3);
-  parameter Real[4]  q0      = fill(inf, 3);
+  parameter Real[4]  q0      = fill(inf, 4);
   parameter Params   params;
   parameter Initials initials;
 
@@ -40,6 +40,7 @@ model OmniWheelOnPlane
   Real    normalReaction;
 
 initial algorithm
+  AssertInitializedI(name, nActual, "nActual");
   AssertInitialized (name, q0,      "q0");
   AssertInitialized (name, r0,      "r0");
   AssertInitialized (name, Gravity, "Gravity");
