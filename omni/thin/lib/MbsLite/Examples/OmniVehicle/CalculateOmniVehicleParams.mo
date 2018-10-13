@@ -35,7 +35,7 @@ algorithm
 
   for i in 1 : NActual loop
     wheelAxisAngles[i]     := (2 * pi / NActual * (i - 1));
-    wheelQuaternionsRel[i] := QRot(wheelAxisAngles[i], vertical);
+    wheelQuaternionsRel[i] := QRot(wheelAxisAngles[i] + pi / 2, vertical);
     wheelQuaternionsAbs[i] := QMult(platformQuaternion, wheelQuaternionsRel[i,:]);
     wheelAxisDirections[i] := QToT(wheelQuaternionsAbs[i,:]) * userward;
   

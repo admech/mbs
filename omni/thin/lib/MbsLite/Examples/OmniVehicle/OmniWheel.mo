@@ -24,7 +24,7 @@ model OmniWheel
   // parameter Real[nActual, 4]  RollerQsAbs             = { QMult(q0, RollerQsRel[i, :]) for i in 1 : nActual };
   parameter Real[nActual, 4]  RollerQsAbs             = { QMult(q0, QRot(2 * params.rollerHalfAngle * (i - 1), wheelAxis)) for i in 1 : nActual };
 
-  parameter Real[nActual, 3]  VerticalInRollersAxes   = { QToT(RollerQsAbs[i, :]) * vertical        for i in 1 : nActual };
+  parameter Real[nActual, 3]  VerticalInRollersAxes   = { QToT(RollerQsRel[i, :]) * vertical        for i in 1 : nActual };
   parameter Real[nActual, 3]  RollerCenterDirections  = -VerticalInRollersAxes;
   parameter Real[nActual, 3]  RollerAxisDirectionsRel = { QToT(RollerQsRel[i, :]) * rollerAxisLocal for i in 1 : nActual };
   parameter Real[nActual, 3]  RollerCenters           = params.wheelHubRadius * RollerCenterDirections;

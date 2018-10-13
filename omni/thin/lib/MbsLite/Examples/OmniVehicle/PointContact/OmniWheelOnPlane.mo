@@ -19,7 +19,7 @@ model OmniWheelOnPlane
     ( name     = name + ".wheel"
     , nActual  = nActual
     , Gravity  = Gravity
-    , r0       = params.wheelRadius * vertical
+    , r0       = r0
     , q0       = q0
     , params   = params
     , initials = initials

@@ -31,4 +31,14 @@ package TestParams
     , platformQuaternion  = QRot(0, vertical) 
     );
 
+  constant OmniVehicleParams pmmSelfRot = CalculateOmniVehicleParams
+    ( params
+        = TestParams.pmm
+    , initials
+        = TestInitials.selfRot
+
+    , gravity             = -vertical
+    , platformQuaternion  = QRot(0, vertical) 
+    );
+
 end TestParams;

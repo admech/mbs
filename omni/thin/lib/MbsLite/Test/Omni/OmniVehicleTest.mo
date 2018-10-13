@@ -7,12 +7,16 @@ model OmniVehicleTest
   import MbsLite.Examples.OmniVehicle.Full.OmniVehicle;
 
   OmniVehicle m
-    ( ovp = TestParams.pmmAtRest
+    ( ovp =
+        TestParams.pmmAtRest
+        /*
+        TestParams.pmmSelfRot
+        */
     );
 
   annotation(experiment
     ( StopTime = 1
-    , NumberOfIntervals = 100
+    , NumberOfIntervals = 10
     , Tolerance = 1e-9
     , Algorithm = "Dassl"
     ));
