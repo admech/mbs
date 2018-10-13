@@ -2,13 +2,13 @@ within MbsLite.Examples.OmniVehicle;
 
 record Initials
 
-  parameter String   name(fixed = false);
+  parameter String   name;
 
-  parameter Real     omega(fixed = false);
-  parameter Real     vAbs(fixed = false);
-  parameter Real     vDirAngle(fixed = false) "angle between inertial X axis and vehicle's X axis counter-clockwise-positive looking from the end of Z axis";
+  parameter Real     omega;
+  parameter Real     vAbs;
+  parameter Real     vDirAngle "angle between inertial X axis and vehicle's X axis counter-clockwise-positive looking from the end of Z axis";
 
-  parameter Real[3] vVec(each fixed = false);
-  parameter Real[3] omegaVec(each fixed = false);
+  parameter Real[3] vVec;
+  parameter Real[3] omegaVec;
 
 end Initials;

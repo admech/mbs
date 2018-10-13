@@ -3,19 +3,11 @@ within MbsLite.Test.Omni;
 model OmniVehicleTest
 
   import MbsLite.Examples.OmniVehicle.Params;
-  import MbsLite.Examples.OmniVehicle.Initials;
+  import MbsLite.Examples.OmniVehicle.CalculateOmniVehicleParams;
   import MbsLite.Examples.OmniVehicle.Full.OmniVehicle;
 
-  constant Params   params   = TestParams.pmm;
-  constant Initials initials
-    = TestInitials.atRest;
-
   OmniVehicle m
-    ( gravity             = -vertical
-    , NActual             = params.NWheels
-    , platformQuaternion  = QRot(0, vertical)
-    , params              = params
-    , initials            = initials
+    ( ovp = TestParams.pmmAtRest
     );
 
   annotation(experiment
