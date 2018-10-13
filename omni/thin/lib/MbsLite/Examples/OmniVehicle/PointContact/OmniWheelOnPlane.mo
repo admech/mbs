@@ -16,20 +16,20 @@ model OmniWheelOnPlane
   Base base;
 
   OmniWheel wheel
-    ( final name     = "wheel"
-    , final nActual  = nActual
-    , final Gravity  = Gravity
-    , final r0       = params.wheelRadius * vertical
-    , final q0       = q0
-    , final params   = params
-    , final initials = initials
+    ( name     = name + ".wheel"
+    , nActual  = nActual
+    , Gravity  = Gravity
+    , r0       = params.wheelRadius * vertical
+    , q0       = q0
+    , params   = params
+    , initials = initials
     );
 
   PlaneContactOldSchool[nActual] contacts
-    ( final name = { "contacts[" + String(i) + "]" for i in 1 : nActual }
-    , each final params                        = params
-    , each final frictionCoeff                 = 1e-1
-    , each final viscousFrictionVelocityBound  = 1e-6
+    ( name = { name + ".contacts[" + String(i) + "]" for i in 1 : nActual }
+    , each params                        = params
+    , each frictionCoeff                 = 1e-1
+    , each viscousFrictionVelocityBound  = 1e-6
     );
 
   // for visualization only! likely to spoil index reduction

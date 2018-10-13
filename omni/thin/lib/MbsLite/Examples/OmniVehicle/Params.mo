@@ -2,31 +2,31 @@ within MbsLite.Examples.OmniVehicle;
 
 record Params
 
-  parameter String   name;
+  parameter String   name(fixed = false);
 
-  parameter Integer  NWheels;
-  parameter Integer  nRollers;
-  parameter Real     mecanumAngle;
+  parameter Integer  NWheels(fixed = false);
+  parameter Integer  nRollers(fixed = false);
+  parameter Real     mecanumAngle(fixed = false);
 
-  parameter Real     platformRadius;
-  parameter Real     wheelRadius;
+  parameter Real     platformRadius(fixed = false);
+  parameter Real     wheelRadius(fixed = false);
 
-  parameter Real     platformMass;
-  parameter Real     wheelHubMass;
-  parameter Real     rollerMass;
+  parameter Real     platformMass(fixed = false);
+  parameter Real     wheelHubMass(fixed = false);
+  parameter Real     rollerMass(fixed = false);
 
   // below params to be calculated in a factory function
 
-  parameter Real     rollerHalfAngle;
-  parameter Real     wheelHubRadius;
-  parameter Real     rollerRadius;
-  parameter Real     rollerLength;
+  parameter Real     rollerHalfAngle(fixed = false);
+  parameter Real     wheelHubRadius(fixed = false);
+  parameter Real     rollerRadius(fixed = false);
+  parameter Real     rollerLength(fixed = false);
 
-  parameter Real     platformAxialMoi;
-  parameter Real     platformOrthogonalMoi;
-  parameter Real     wheelHubAxialMoi;
-  parameter Real     wheelHubOrthogonalMoi;
-  parameter Real     rollerAxialMoi;
-  parameter Real     rollerOrthogonalMoi;
+  parameter Real     platformAxialMoi(fixed = false);
+  parameter Real     platformOrthogonalMoi(fixed = false);
+  parameter Real     wheelHubAxialMoi(fixed = false);
+  parameter Real     wheelHubOrthogonalMoi(fixed = false);
+  parameter Real     rollerAxialMoi(fixed = false);
+  parameter Real     rollerOrthogonalMoi(fixed = false);
 
 end Params;

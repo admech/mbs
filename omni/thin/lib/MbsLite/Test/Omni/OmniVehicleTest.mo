@@ -12,6 +12,7 @@ model OmniVehicleTest
 
   OmniVehicle m
     ( gravity             = -vertical
+    , NActual             = params.NWheels
     , platformQuaternion  = QRot(0, vertical)
     , params              = params
     , initials            = initials
