@@ -24,8 +24,9 @@ model OmniWheel
   // parameter Real[nActual, 4]  RollerQsAbs             = { QMult(q0, RollerQsRel[i, :]) for i in 1 : nActual };
   parameter Real[nActual, 4]  RollerQsAbs             = { QMult(q0, QRot(2 * params.rollerHalfAngle * (i - 1), wheelAxis)) for i in 1 : nActual };
 
+  parameter Real[nActual, 3]  RollerVerticalsInWheelCoords = { QToT(RollerQsRel[i, :]) * vertical   for i in 1 : nActual };
   parameter Real[nActual, 3]  VerticalInRollersAxes   = { QToT(RollerQsRel[i, :]) * vertical        for i in 1 : nActual };
-  parameter Real[nActual, 3]  RollerCenterDirections  = -VerticalInRollersAxes;
+  parameter Real[nActual, 3]  RollerCenterDirections  = -RollerVerticalsInWheelCoords;
   parameter Real[nActual, 3]  RollerAxisDirectionsRel = { QToT(RollerQsRel[i, :]) * rollerAxisLocal for i in 1 : nActual };
   parameter Real[nActual, 3]  RollerCenters           = params.wheelHubRadius * RollerCenterDirections;
 
@@ -40,8 +41,9 @@ model OmniWheel
       , final q(start = { RollerQsAbs[i,:] for i in 1 : nActual })
       , final omega
           ( start
-            = { { 0, 0, initials.omegaVec[3] } for i in 1 : nActual }
-            + initials.omegaVec[2] * VerticalInRollersAxes
+            = { transpose(QToT(RollerQsAbs[i,:])) * initials.omegaVec
+              for i in 1 : nActual
+              }
           )
       );
 
@@ -62,7 +64,7 @@ model OmniWheel
     , final r(start = r0)
     , final v(start = initials.vVec)
     , final q(start = q0)
-    , final omega(start = initials.omegaVec)
+    , final omega(start = transpose(QToT(q0)) * initials.omegaVec)
     );
 
   WrenchPort     InPortF   "imports forces from the platform or verticality constraint";

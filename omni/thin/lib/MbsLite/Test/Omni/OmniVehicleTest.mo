@@ -8,15 +8,19 @@ model OmniVehicleTest
 
   OmniVehicle m
     ( ovp =
-        TestParams.pmmAtRest
-        /*
         TestParams.pmmSelfRot
+        /*
+        TestParams.pmmAtRest
         */
     );
 
   annotation(experiment
     ( StopTime = 1
-    , NumberOfIntervals = 10
+    , NumberOfIntervals =
+        1000
+        /*
+        10
+        */
     , Tolerance = 1e-9
     , Algorithm = "Dassl"
     ));

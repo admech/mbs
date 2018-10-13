@@ -45,7 +45,9 @@ model OmniVehicle
 
 equation
 
+/*
   assert(noEvent( platform.OutPort.v[2] * platform.OutPort.v[2] < 1e-6 ),  "Platform has vertical speed !!!" );
+*/
   assert(noEvent( platform.omega[1] * platform.omega[1] + platform.omega[3] * platform.omega[3] < 1e-3 ),  "Platform.omega is not all [2] !!!" );
 
   for i in 1 : NActual loop

@@ -71,10 +71,12 @@ equation
   tangentialVelocity  = { contactPointVelocity[1], 0, contactPointVelocity[3] };
   if isInContact then
     DnormalVelocity = 0;
+/*
     Assert
       ( CompareReal(0, contactPointVelocity[2], absTol = 1e-5)
       , name + " contact point has vertical speed!"
       );
+*/
     friction = -frictionCoeff * contactPointVelocity
            * ( if noEvent(contactPointVelocityNorm <= viscousFrictionVelocityBound)
              then 1 / viscousFrictionVelocityBound
