@@ -7,32 +7,18 @@ function CalculateOmniVehicleParams
   input Real[3]  gravity            = -vertical;
   input Real[4]  platformQuaternion = QRot(0, vertical);
 
-/*
-  output Initials initials1;
-
-algorithm
-  initials1 := initials;
-
-end CalculateOmniVehicleParams;
-*/
-
   output OmniVehicleParams omniVehicleParams;
 
 protected
 
-  // OUTPUT
+  Integer           nActual = params.nRollers;
+  Integer           NActual = params.NWheels;
 
   Real[3]           platformCenter;
   Real[NActual, 3]  wheelCenters;
   Real[NActual, 3]  wheelAxisDirections;
-  Real[NActual, 4]  wheelQuaternions;
 
   Initials[NActual] wheelInitials;
-
-  // HELPER
-
-  Integer           nActual;
-  Integer           NActual;
 
   Real[NActual]     wheelAxisAngles      "Angles between rightward direction (x1, i.e. forward direction) and wheel axes";
   Real[NActual, 4]  wheelQuaternionsRel  "Directions of x1 of each wheel relative to platform";
@@ -77,23 +63,20 @@ algorithm
 
   end for;
 
-  omniVehicleParams        :=
-    OmniVehicleParams
+  omniVehicleParams := OmniVehicleParams
       ( params                = params
       , initials              = initials
 
       , gravity               = gravity
       , platformQuaternion    = platformQuaternion
 
-      // CALCULATED PARAMS
-
       , platformCenter        = platformCenter
       , wheelCenters          = wheelCenters
       , wheelAxisDirections   = wheelAxisDirections
-      , wheelQuaternions      = wheelQuaternions
+      , wheelQuaternions      = wheelQuaternionsAbs
 
       , wheelInitials         = wheelInitials
-      );
+    );
 
 end CalculateOmniVehicleParams;
 

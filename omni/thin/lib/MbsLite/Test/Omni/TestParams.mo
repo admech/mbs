@@ -2,6 +2,7 @@ within MbsLite.Test.Omni;
 
 package TestParams
   import MbsLite.Examples.OmniVehicle.Params;
+  import MbsLite.Examples.OmniVehicle.Initials;
   import MbsLite.Examples.OmniVehicle.OmniVehicleParams;
   import MbsLite.Examples.OmniVehicle.CalculateOmniVehicleParams;
 
@@ -20,7 +21,7 @@ package TestParams
     , rollerMass      =  0.05
     );
 
-  constant Initials pmmAtRest = CalculateOmniVehicleParams
+  constant OmniVehicleParams pmmAtRest = CalculateOmniVehicleParams
     ( params
         = TestParams.pmm
     , initials

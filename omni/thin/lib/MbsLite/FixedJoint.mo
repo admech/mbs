@@ -50,7 +50,7 @@ equation
       , "looks like joint " + name + " is getting worse... axes in inertial coords should be same, but were:"
         +  " nAi = " + StringA(nAi)
         + ", nBi = " + StringA(nBi)
-        + ", nBi - nAi = " + StringA(nBi - nAi)
+        + ", nBi - nAi = " + StringA({ (nBi[j] - nAi[j]) for j in 1 : 3 })
       );
   end for;
 

@@ -36,14 +36,14 @@ getErrorString();
 
 print("===================================="); 
 print("Simulating SPECIFY_MODEL_NAME"); 
-print("na samom dele net"); 
-/*
 res := simulate
     ( SPECIFY_MODEL_NAME
     , outputFormat = "csv"
     // , stopTime = 1
     // , simflags = "-lv=LOG_LS"
     );
+/*
+print("na samom dele net"); 
 */
 
 getErrorString();
