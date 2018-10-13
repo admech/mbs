@@ -18,12 +18,15 @@ model OmniWheel
 
   parameter Real[nActual]     RollerAngles            = { (2 * params.rollerHalfAngle * (i - 1)) for i in 1 : nActual } "Angles between downward vertical { 0, -1, 0 } and roller center radius vectors";
   // FIXME: OpenModelica just can't use above array :(
-  // parameter Real[nActual, 4]  RollerQs                = { QMult(q0, QRot(RollerAngles[i], wheelAxis)) for i in 1 : nActual };
-  parameter Real[nActual, 4]  RollerQs                = { QMult(q0, QRot(2 * params.rollerHalfAngle * (i - 1), wheelAxis)) for i in 1 : nActual };
+  // parameter Real[nActual, 4]  RollerQsRel             = { QRot(RollerAngles[i], wheelAxis) for i in 1 : nActual };
+  parameter Real[nActual, 4]  RollerQsRel             = { QRot(2 * params.rollerHalfAngle * (i - 1), wheelAxis) for i in 1 : nActual };
+  // FIXME: OpenModelica just can't use above array :(
+  // parameter Real[nActual, 4]  RollerQsAbs             = { QMult(q0, RollerQsRel[i, :]) for i in 1 : nActual };
+  parameter Real[nActual, 4]  RollerQsAbs             = { QMult(q0, QRot(2 * params.rollerHalfAngle * (i - 1), wheelAxis)) for i in 1 : nActual };
 
-  parameter Real[nActual, 3]  VerticalInRollersAxes   = { QToT(RollerQs[i, :]) * vertical        for i in 1 : nActual };
+  parameter Real[nActual, 3]  VerticalInRollersAxes   = { QToT(RollerQsAbs[i, :]) * vertical        for i in 1 : nActual };
   parameter Real[nActual, 3]  RollerCenterDirections  = -VerticalInRollersAxes;
-  parameter Real[nActual, 3]  RollerAxisDirections    = { QToT(RollerQs[i, :]) * rollerAxisLocal for i in 1 : nActual };
+  parameter Real[nActual, 3]  RollerAxisDirectionsRel = { QToT(RollerQsRel[i, :]) * rollerAxisLocal for i in 1 : nActual };
   parameter Real[nActual, 3]  RollerCenters           = params.wheelHubRadius * RollerCenterDirections;
 
   NPortsHeavyBody[nActual] Rollers
@@ -34,7 +37,7 @@ model OmniWheel
       , each final Gravity = Gravity
       , final r(start = { r0 + T0 * RollerCenters[i] for i in 1 : nActual })
       , final v(start = { initials.vVec + T0 * cross(initials.omegaVec, RollerCenters[i]) for i in 1 : nActual })
-      , final q(start = { RollerQs[i,:] for i in 1 : nActual })
+      , final q(start = { RollerQsAbs[i,:] for i in 1 : nActual })
       , final omega
           ( start
             = { { 0, 0, initials.omegaVec[3] } for i in 1 : nActual }
@@ -45,7 +48,7 @@ model OmniWheel
   FixedJoint[nActual] Joints
     ( final name = { name + " joint" + String(i) for i in 1 : nActual }
     , each final nA = { 1, 0, 0 }
-    , final nB = RollerAxisDirections
+    , final nB = RollerAxisDirectionsRel
     , each final rA = { 0, 0, 0 }
     , final rB = RollerCenters
     );
