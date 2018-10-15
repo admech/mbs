@@ -27,8 +27,8 @@ model RollerOnPlaneExplicitTest
     );
 
   annotation(experiment
-    ( StopTime = 1
-    , NumberOfIntervals = 1000
+    ( StopTime = 2
+    , NumberOfIntervals = 2000
     , Tolerance = 1e-9
     , Algorithm = "Dassl"
     ));

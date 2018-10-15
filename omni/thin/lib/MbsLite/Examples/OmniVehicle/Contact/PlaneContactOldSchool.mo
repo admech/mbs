@@ -15,7 +15,7 @@ model PlaneContactOldSchool
   Real[3] contactPointCoords;
   Real[3] contactPointVelocity;
   Real    contactPointVelocityNorm;
-  Real    cosBetweenRollerVerticalAndGlobalVertical;
+  Real    cosBetweenWheelVerticalAndGlobalVertical;
   Boolean isInContact;
 
   Real    normalVelocity;
@@ -26,29 +26,37 @@ model PlaneContactOldSchool
 
   Real[3] friction;
 
+  constant Real[3] rollerAxisLocal = forward;
+  Real[3] rollerAxisGlobal;
+  Real[3] userwardHorizontalGlobal;
+  Real[3] towardsWheelCenterGlobal;
+
 equation
 
-  cosBetweenRollerVerticalAndGlobalVertical
-    = (InPortB.T * vertical) * vertical;
-
   isInContact
-    = cosBetweenRollerVerticalAndGlobalVertical > cos(params.rollerHalfAngle)
+    = cosBetweenWheelVerticalAndGlobalVertical > cos(params.rollerHalfAngle)
       and InPortB.r[2] < params.wheelRadius;
   
   // CONTACT POINT COORDS
+  rollerAxisGlobal = InPortB.T * rollerAxisLocal;
+  userwardHorizontalGlobal = cross(rollerAxisGlobal, vertical);
+  towardsWheelCenterGlobal = cross(userwardHorizontalGlobal / norm(userwardHorizontalGlobal), rollerAxisGlobal);
+  cosBetweenWheelVerticalAndGlobalVertical
+    = towardsWheelCenterGlobal * vertical;
+
   contactPointCoords = if isInContact
-      then InPortB.r                                        // start from roller center, 
-           + params.wheelHubRadius * (InPortB.T * vertical) // go to wheel center
-           - params.wheelRadius * vertical                  // and then outright downward.
+      then InPortB.r                                          // start from roller center, 
+           + params.wheelHubRadius * towardsWheelCenterGlobal // go to wheel center
+           - params.wheelRadius * vertical                    // and then outright downward.
       else zeros(3);
   when isInContact <> pre(isInContact) then
     print("REINITIALIZING " + name);
     reinit
       ( contactPointCoords
       , if isInContact
-        then InPortB.r                                        // start from roller center,
-             + params.wheelHubRadius * (InPortB.T * vertical) // go to wheel center
-             - params.wheelRadius * vertical                  // and then outright downward.  
+        then InPortB.r                                          // start from roller center,
+             + params.wheelHubRadius * towardsWheelCenterGlobal // go to wheel center
+             - params.wheelRadius * vertical                    // and then outright downward.  
         else zeros(3)
       );
 /*

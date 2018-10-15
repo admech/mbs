@@ -75,7 +75,7 @@ equation
   // friction
 
   friction = -coefficientOfFriction * contactPointVelocityAbsGlobal * normalReaction
-           / (if contactPointVelocityAbsGlobalNorm < viscousFrictionVelocityBound then viscousFrictionVelocityBound else contactPointVelocityAbsGlobalNorm);
+           / (if noEvent(contactPointVelocityAbsGlobalNorm < viscousFrictionVelocityBound) then viscousFrictionVelocityBound else contactPointVelocityAbsGlobalNorm);
 
   // contact tracking
 
