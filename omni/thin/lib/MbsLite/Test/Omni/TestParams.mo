@@ -41,4 +41,24 @@ package TestParams
     , platformQuaternion  = QRot(0, vertical) 
     );
 
+  constant OmniVehicleParams pmmStraight = CalculateOmniVehicleParams
+    ( params
+        = TestParams.pmm
+    , initials
+        = TestInitials.straight
+
+    , gravity             = -vertical
+    , platformQuaternion  = QRot(0, vertical) 
+    );
+
+  constant OmniVehicleParams pmmWrench = CalculateOmniVehicleParams
+    ( params
+        = TestParams.pmm
+    , initials
+        = TestInitials.wrench
+
+    , gravity             = -vertical
+    , platformQuaternion  = QRot(0, vertical) 
+    );
+
 end TestParams;

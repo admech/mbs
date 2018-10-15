@@ -28,16 +28,27 @@ model OmniWheelOnPlane
   PlaneContactOldSchool[nActual] contacts
     ( name = { name + ".contacts[" + String(i) + "]" for i in 1 : nActual }
     , each params                        = params
-    , each frictionCoeff                 = 1e-1
-    , each viscousFrictionVelocityBound  = 1e-6
+    , isInContactInitially               =
+        { (if i == 1 then true else false) for i in 1 : nActual }
+    , each frictionCoeff                 =
+        1e-1
+        /*
+        1
+        */
+    , each viscousFrictionVelocityBound  =
+        1e-6
+        /*
+        1e-5
+        */
     );
 
   // for visualization only! likely to spoil index reduction
   Integer indexOfRollerInContact;
   Real    contactPointVelocity;
   Real    friction;
-  Real    normalVelocity;
+//  Real    normalVelocity;
   Real    normalReaction;
+  Real[3] frictionVec;
 
 initial algorithm
   AssertInitializedI(name, nActual, "nActual");
@@ -77,11 +88,20 @@ equation
       for i in 1 : nActual
       }
     );
+  frictionVec = 
+    { sum
+        ( { contacts[j].friction[i]
+        for j in 1 : nActual
+        } )
+    for i in 1 : 3
+    };
+/*
   normalVelocity = sum
     ( { contacts[i].normalVelocity
       for i in 1 : nActual
       }
     );
+*/
   normalReaction = sum
     ( { (if contacts[i].isInContact then contacts[i].normalReaction else 0)
       for i in 1 : nActual

@@ -24,11 +24,10 @@ model OmniWheel
   // parameter Real[nActual, 4]  RollerQsAbs             = { QMult(q0, RollerQsRel[i, :]) for i in 1 : nActual };
   parameter Real[nActual, 4]  RollerQsAbs             = { QMult(q0, QRot(2 * params.rollerHalfAngle * (i - 1), wheelAxis)) for i in 1 : nActual };
 
-  parameter Real[nActual, 3]  RollerVerticalsInWheelCoords = { QToT(RollerQsRel[i, :]) * vertical   for i in 1 : nActual };
-  parameter Real[nActual, 3]  VerticalInRollersAxes   = { QToT(RollerQsRel[i, :]) * vertical        for i in 1 : nActual };
-  parameter Real[nActual, 3]  RollerCenterDirections  = -RollerVerticalsInWheelCoords;
-  parameter Real[nActual, 3]  RollerAxisDirectionsRel = { QToT(RollerQsRel[i, :]) * rollerAxisLocal for i in 1 : nActual };
-  parameter Real[nActual, 3]  RollerCenters           = params.wheelHubRadius * RollerCenterDirections;
+  parameter Real[nActual, 3]  RollerVerticalsInWheelCoords       = { QToT(RollerQsRel[i, :]) * vertical        for i in 1 : nActual };
+  parameter Real[nActual, 3]  RollerCenterDirections             = -RollerVerticalsInWheelCoords;
+  parameter Real[nActual, 3]  RollerAxisDirectionsInWheelCoords  = { QToT(RollerQsRel[i, :]) * rollerAxisLocal for i in 1 : nActual };
+  parameter Real[nActual, 3]  RollerCentersInWheelCoords         = params.wheelHubRadius * RollerCenterDirections;
 
   NPortsHeavyBody[nActual] Rollers
       ( final name = { name + ".Rollers[" + String(i) + "]" for i in 1 : nActual }
@@ -36,8 +35,8 @@ model OmniWheel
       , each final I = diagonal({ params.rollerAxialMoi, params.rollerOrthogonalMoi, params.rollerOrthogonalMoi })
       , each final N = 2
       , each final Gravity = Gravity
-      , final r(start = { r0 + T0 * RollerCenters[i] for i in 1 : nActual })
-      , final v(start = { initials.vVec + T0 * cross(initials.omegaVec, RollerCenters[i]) for i in 1 : nActual })
+      , final r(start = { r0 + T0 * RollerCentersInWheelCoords[i] for i in 1 : nActual })
+      , final v(start = { initials.vVec + cross(initials.omegaVec, T0 * RollerCentersInWheelCoords[i]) for i in 1 : nActual })
       , final q(start = { RollerQsAbs[i,:] for i in 1 : nActual })
       , final omega
           ( start
@@ -50,9 +49,9 @@ model OmniWheel
   FixedJoint[nActual] Joints
     ( final name = { name + " joint" + String(i) for i in 1 : nActual }
     , each final nA = { 1, 0, 0 }
-    , final nB = RollerAxisDirectionsRel
+    , final nB = RollerAxisDirectionsInWheelCoords
     , each final rA = { 0, 0, 0 }
-    , final rB = RollerCenters
+    , final rB = RollerCentersInWheelCoords
     );
 
   NPortsHeavyBody Wheel

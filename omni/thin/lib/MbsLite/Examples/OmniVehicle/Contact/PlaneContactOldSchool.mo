@@ -9,7 +9,9 @@ model PlaneContactOldSchool
   parameter Real frictionCoeff                 = inf;
   parameter Real viscousFrictionVelocityBound  = inf;
 
-protected
+  parameter Boolean isInContactInitially       = false;
+
+// protected
   Real[3] contactPointCoords;
   Real[3] contactPointVelocity;
   Real    contactPointVelocityNorm;
@@ -20,13 +22,9 @@ protected
   Real    DnormalVelocity;
   Real    normalReaction;
 
-  Real[3] tangentialVelocity;
-  Real[3] friction;
+  // Real    mu(start = 0, fixed = true, stateSelect = StateSelect.prefer);
 
-initial equation
-  AssertInitializedS(name, name,                             "name");
-  AssertInitialized (name, { frictionCoeff },                "frictionCoeff");
-  AssertInitialized (name, { viscousFrictionVelocityBound }, "viscousFrictionVelocityBound");
+  Real[3] friction;
 
 equation
 
@@ -44,6 +42,7 @@ equation
            - params.wheelRadius * vertical                  // and then outright downward.
       else zeros(3);
   when isInContact <> pre(isInContact) then
+    print("REINITIALIZING " + name);
     reinit
       ( contactPointCoords
       , if isInContact
@@ -52,6 +51,16 @@ equation
              - params.wheelRadius * vertical                  // and then outright downward.  
         else zeros(3)
       );
+/*
+    reinit
+      ( normalVelocity
+      , if isInContact then 0 else normalVelocity
+      );
+    reinit
+      ( normalReaction
+      , if isInContact then normalReaction else 0
+      );
+*/
   end when;
 
   // CONTACT POINT VELOCITY
@@ -63,12 +72,11 @@ equation
            , InPortB.omega
            )
     else zeros(3);
-  contactPointVelocityNorm = norm(contactPointVelocity);
 
   // SIGNORINI'S LAW
   normalVelocity      = contactPointVelocity[2];
   der(normalVelocity) = DnormalVelocity;
-  tangentialVelocity  = { contactPointVelocity[1], 0, contactPointVelocity[3] };
+  contactPointVelocityNorm = norm(contactPointVelocity);
   if isInContact then
     DnormalVelocity = 0;
 /*
@@ -83,17 +91,19 @@ equation
              else 1 / contactPointVelocityNorm
              )
            * normalReaction
+           // * 0
            // + mu * vertical // regularization ?
            ;
   else
     normalReaction = 0;
     friction = zeros(3);
   end if;
+  OutPortB.F = friction + normalReaction * vertical;
+  // normalReaction = OutPortB.F * vertical; // e.g. for mu
 
   OutPortA.P = { contactPointCoords[1], contactPointCoords[2], contactPointCoords[3] };
 
   OutPortB.P = contactPointCoords;
-  OutPortB.F = friction + normalReaction * vertical;
   OutPortB.M = zeros(3);
 
 end PlaneContactOldSchool;

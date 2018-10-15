@@ -11,14 +11,22 @@ model OmniVehicleTest
         TestParams.pmmSelfRot
         /*
         TestParams.pmmAtRest
+        TestParams.pmmSelfRot
+        TestParams.pmmStraight
+        TestParams.pmmWrench
         */
     );
 
   annotation(experiment
-    ( StopTime = 1
+    ( StopTime =
+        1
+        /*
+        20
+        */
     , NumberOfIntervals =
         1000
         /*
+        20000
         10
         */
     , Tolerance = 1e-9

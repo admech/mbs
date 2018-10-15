@@ -1,10 +1,10 @@
 within MbsLite.Test.Omni;
 
-model OmniWheelVerticalTest
+model RollerOnPlaneTest
 
   import MbsLite.Examples.OmniVehicle.Params;
   import MbsLite.Examples.OmniVehicle.Initials;
-  import MbsLite.Examples.OmniVehicle.Full.OmniWheelVertical;
+  import MbsLite.Examples.OmniVehicle.Full.RollerOnPlane;
 
   constant Params   params   = TestParams.pmm;
   constant Initials initials
@@ -15,7 +15,7 @@ model OmniWheelVerticalTest
     = TestInitials.wheelSlidingAlongItsAxis;
     // = TestInitials.wheelRolling_R_0_05;
 
-  OmniWheelVertical m
+  RollerOnPlane m
     ( Gravity  = -vertical
     , nActual  = params.nRollers
     , r0       = params.wheelRadius * vertical
@@ -25,8 +25,8 @@ model OmniWheelVerticalTest
     );
 
   annotation(experiment
-    ( StopTime = 0.1
-    , NumberOfIntervals = 100
+    ( StopTime = 1
+    , NumberOfIntervals = 1000
     , Tolerance = 1e-9
     , Algorithm = "Dassl"
     ));
@@ -38,4 +38,4 @@ equation
       );
   end when;
 
-end OmniWheelVerticalTest;
+end RollerOnPlaneTest;

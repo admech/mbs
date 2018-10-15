@@ -12,7 +12,7 @@ model OmniVehicle
 
   NPortsHeavyBody platform
     ( name    = "Platform"
-    , N       = NActual
+    , N       = NActual // + 1
     , m       = ovp.params.platformMass
     , I       = diagonal(
                   { ovp.params.platformOrthogonalMoi
@@ -47,8 +47,8 @@ equation
 
 /*
   assert(noEvent( platform.OutPort.v[2] * platform.OutPort.v[2] < 1e-6 ),  "Platform has vertical speed !!!" );
-*/
   assert(noEvent( platform.omega[1] * platform.omega[1] + platform.omega[3] * platform.omega[3] < 1e-3 ),  "Platform.omega is not all [2] !!!" );
+*/
 
   for i in 1 : NActual loop
     connect( platform.OutPort,          joints[i].InPortB  );
@@ -56,6 +56,12 @@ equation
     connect( wheels[i].wheel.OutPortK,  joints[i].InPortA  );
     connect( wheels[i].wheel.InPortF,   joints[i].OutPortA );
   end for;
+
+/*
+  platform.InPorts[NActual + 1].P = platform.OutPort.r;
+  platform.InPorts[NActual + 1].M = zeros(3);
+  platform.OutPort.a = zeros(3); // Signorini no-fall-through
+*/
 
 end OmniVehicle;
 
