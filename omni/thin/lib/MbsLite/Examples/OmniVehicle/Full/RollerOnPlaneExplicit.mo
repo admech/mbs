@@ -43,12 +43,15 @@ model RollerOnPlaneExplicit "A roller that is constrained as if it were attached
   Real[3]  wheelAngularVelocityGlobal;
   Real[3]  contactPointCoordsRelGlobal;
   Real[3]  contactPointVelocityAbsGlobal;
+  Real     contactPointNormalVelocity;
+  Real     contactPointNormalAcceleration;
 
   Real[4]  rollerQuaternion                 (start = q0);
   Real[3, 3] T;
   Real     contactPointVelocityAbsGlobalNorm;
   Real[3]  rollerAngularVelocityGlobal;
   Real[3]  rollerVerticalGlobal;
+  Real     cosBtwWheelVerticalGlobalAndVertical;
 
 initial algorithm
   AssertInitialized (name, q0,      "q0");
@@ -70,7 +73,9 @@ equation
 
   // Signorini non-fall-through
 
-  rollerCenterAccelerationGlobal[2] = 0;
+  contactPointNormalVelocity = contactPointVelocityAbsGlobal[2];
+  der(contactPointNormalVelocity) = contactPointNormalAcceleration;
+  contactPointNormalAcceleration = 0;
 
   // friction
 
@@ -84,9 +89,12 @@ equation
   der(wheelVerticalGlobal)           = cross(wheelAngularVelocityGlobal, wheelVerticalGlobal);
   contactPointCoordsRelGlobal        = wheelVerticalGlobal * params.wheelHubRadius - vertical * params.wheelRadius;
   contactPointVelocityAbsGlobal      = rollerCenterVelocityGlobal + cross(rollerAngularVelocityGlobal, contactPointCoordsRelGlobal);
-  contactPointVelocityAbsGlobalNorm  = norm(contactPointVelocityAbsGlobal);
+  contactPointVelocityAbsGlobalNorm  = length(contactPointVelocityAbsGlobal);
 
   rollerVerticalGlobal               = T * vertical;
-  
+
+  cosBtwWheelVerticalGlobalAndVertical = wheelVerticalGlobal * vertical;
+  assert(noEvent(cosBtwWheelVerticalGlobalAndVertical > cos(params.rollerHalfAngle)), "Roller would have left contact already (now it just tipped over).");
+
 end RollerOnPlaneExplicit;
 

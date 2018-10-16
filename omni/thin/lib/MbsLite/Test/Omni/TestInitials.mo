@@ -40,6 +40,15 @@ package TestInitials
     , omegaVec = zeros(3)
     );
 
+  constant Initials wheelSpinning = Initials
+    ( name = "wheel still"
+    , omega = inf
+    , vAbs = 0
+    , vDirAngle = 0
+    , vVec = zeros(3)
+    , omegaVec = 1 * vertical
+    );
+
   constant Initials wheelSelfRotatingInPlace = Initials
     ( name = "wheel rotating CW looking from user"
     , omega = -1

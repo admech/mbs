@@ -10,23 +10,23 @@ model FixedJoint
   parameter SI.Position[3]   rA             "Axis position in body A local";
   parameter SI.Position[3]   rB             "Axis position in body B local";
 
-  SI.Position[3]             RA             "Axis position in body A global";
-  SI.Position[3]             RB             "Axis position in body B global";
-  SI.Velocity[3]             vA             "Velocity of axis point in body A global";
-  SI.Velocity[3]             vB             "Velocity of axis point in body B global";
+  SI.Position[3]             RA             (each stateSelect = StateSelect.never) "Axis position in body A global";
+  SI.Position[3]             RB             (each stateSelect = StateSelect.never) "Axis position in body B global";
+  SI.Velocity[3]             vA             (each stateSelect = StateSelect.never) "Velocity of axis point in body A global";
+  SI.Velocity[3]             vB             (each stateSelect = StateSelect.never) "Velocity of axis point in body B global";
   // Real[3]                    vr             "Relative velocity of axis points in bodies";
   // Real[3]                    ar             "Relative acceleration of axis points in bodies";
 
-  SI.AngularAcceleration     lambda         "Relative angular acceleration along the axis";
-  SI.AngularVelocity         mu             "Relative angular velocity along the axis";
-  Real                       angle          "Relative angle. Beware numerical error accumulation!";
+  SI.AngularAcceleration     lambda         (stateSelect = StateSelect.never) "Relative angular acceleration along the axis";
+  SI.AngularVelocity         mu             (stateSelect = StateSelect.never) "Relative angular velocity along the axis";
+  Real                       angle          (stateSelect = StateSelect.never) "Relative angle. Beware numerical error accumulation!";
   // SI.AngularVelocity[3]      omegar         "Relative angular velocity";
-  SI.AngularAcceleration[3]  epsilonr       "Relative angular acceleration";
+  SI.AngularAcceleration[3]  epsilonr       (each stateSelect = StateSelect.never) "Relative angular acceleration";
 
-  Real[3]                    nAi            "Unit vector of joint axis w.r.t. the inertial frame, def by body A";
-  Real[3]                    nBi            "Unit vector of joint axis w.r.t. the inertial frame, def by body B";
+  Real[3]                    nAi            (each stateSelect = StateSelect.never) "Unit vector of joint axis w.r.t. the inertial frame, def by body A";
+  Real[3]                    nBi            (each stateSelect = StateSelect.never) "Unit vector of joint axis w.r.t. the inertial frame, def by body B";
 
-  SI.Torque                  M              "Torque about joint axis";
+  SI.Torque                  M              (stateSelect = StateSelect.never) "Torque about joint axis";
 
 initial equation
   AssertInitializedS(name, name, "name");

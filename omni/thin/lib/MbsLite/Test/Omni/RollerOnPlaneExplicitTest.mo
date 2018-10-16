@@ -7,13 +7,16 @@ model RollerOnPlaneExplicitTest
   import MbsLite.Examples.OmniVehicle.Full.RollerOnPlaneExplicit;
 
   constant Params   params   = TestParams.pmm;
-  constant Initials initials
-    // = TestInitials.wheelStill;
-    // = TestInitials.wheelSelfRotatingInPlace;
-    // = TestInitials.wheelSelfRotatingAndSliding;
-    // = TestInitials.wheelSliding;
-    = TestInitials.wheelSlidingAlongItsAxis;
-    // = TestInitials.wheelRolling_R_0_05;
+  constant Initials initials =
+    TestInitials.wheelSliding;
+    /*
+    TestInitials.wheelStill;
+    TestInitials.wheelSelfRotatingInPlace;
+    TestInitials.wheelSelfRotatingAndSliding;
+    TestInitials.wheelSliding;
+    TestInitials.wheelSlidingAlongItsAxis;
+    TestInitials.wheelRolling_R_0_05;
+    */
 
   RollerOnPlaneExplicit m
     ( Gravity  = -vertical

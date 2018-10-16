@@ -10,7 +10,7 @@ package MbsLite
   import Modelica.Constants.inf;
   import Modelica.Constants.Integer_inf;
 
-  import Modelica.Math.Vectors.norm;
+  import Modelica.Math.Vectors.length;
   import Modelica.Math.Vectors.normalize;
 
   import MbsLite.Util.*;

@@ -44,7 +44,7 @@ model RollerOnPlane "A roller that is constrained as if it were attached to a wh
     ( name = "contact"
     , params                        = params
     , isInContactInitially          = true
-    , each frictionCoeff            =
+    , frictionCoeff                 =
         1e-1
         /*
         1
@@ -66,6 +66,8 @@ equation
   connect(contact.InPortA,    base.OutPort);
   connect(contact.InPortB,    roller.OutPort);
   connect(contact.OutPortB,   roller.InPorts[1]);
+
+  assert(noEvent(contact.isInContact), "Roller would have left contact already (now it just tipped over).");
 
 end RollerOnPlane;
 

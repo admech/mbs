@@ -8,7 +8,7 @@ model NPortsHeavyBody
 
   WrenchPort[N] InPorts;
 
-  Real[N, 3] crosses;
+  Real[N, 3] crosses (each stateSelect = StateSelect.never);
 
 initial algorithm
   AssertInitializedI(name, N,       "N");

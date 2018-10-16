@@ -27,6 +27,7 @@ date;
 
 omc \
     -d=initialization,evaluateAllParameters \
+    --indexReductionMethod=dummyDerivatives \
     $tmp_file_name \
   | grep -v "Warning.*Connector.*\(KinematicPort\|WrenchPort\) is not balanced" \
   > run.log;

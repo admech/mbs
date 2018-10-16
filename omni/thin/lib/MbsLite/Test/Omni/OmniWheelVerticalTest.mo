@@ -7,13 +7,16 @@ model OmniWheelVerticalTest
   import MbsLite.Examples.OmniVehicle.Full.OmniWheelVertical;
 
   constant Params   params   = TestParams.pmm;
-  constant Initials initials
-    // = TestInitials.wheelStill;
-    // = TestInitials.wheelSelfRotatingInPlace;
-    // = TestInitials.wheelSelfRotatingAndSliding;
-    // = TestInitials.wheelSliding;
-    = TestInitials.wheelSlidingAlongItsAxis;
-    // = TestInitials.wheelRolling_R_0_05;
+  constant Initials initials =
+    TestInitials.wheelSliding;
+    /*
+    TestInitials.wheelStill;
+    TestInitials.wheelSelfRotatingInPlace;
+    TestInitials.wheelSelfRotatingAndSliding;
+    TestInitials.wheelSliding;
+    TestInitials.wheelSlidingAlongItsAxis;
+    TestInitials.wheelRolling_R_0_05;
+    */
 
   OmniWheelVertical m
     ( Gravity  = -vertical
@@ -25,8 +28,8 @@ model OmniWheelVerticalTest
     );
 
   annotation(experiment
-    ( StopTime = 0.1
-    , NumberOfIntervals = 100
+    ( StopTime = 1
+    , NumberOfIntervals = 1000
     , Tolerance = 1e-9
     , Algorithm = "Dassl"
     ));

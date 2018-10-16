@@ -41,6 +41,7 @@ res := simulate
     , outputFormat = "csv"
     // , stopTime = 1
     // , simflags = "-lv=LOG_LS"
+    // , simflags = "-lv=LOG_DASSL_STATES"
     );
 /*
 print("na samom dele net"); 
