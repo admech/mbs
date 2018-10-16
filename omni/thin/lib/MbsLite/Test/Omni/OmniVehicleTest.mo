@@ -19,12 +19,12 @@ model OmniVehicleTest
 
   annotation(experiment
     ( StopTime =
-        1
+        100
         /*
         20
         */
     , NumberOfIntervals =
-        1000
+        100000
         /*
         20000
         10

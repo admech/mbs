@@ -31,9 +31,9 @@ model OmniWheelOnPlane
     , isInContactInitially               =
         { (if i == 1 then true else false) for i in 1 : nActual }
     , each frictionCoeff                 =
-        1e-1
+        0.85
         /*
-        1
+        1e-1
         */
     , each viscousFrictionVelocityBound  =
         1e-6

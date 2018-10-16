@@ -4,6 +4,7 @@ package Utils
   
   function CreateParams
     input String   name;
+    input Boolean  cut = false;
   
     input Integer  NWheels;
     input Integer  nRollers;
@@ -20,9 +21,10 @@ package Utils
 
   protected
     Real rollerHalfAngle       = pi / nRollers;
-    Real wheelHubRadius        = wheelRadius * cos(rollerHalfAngle);
+    Real fatRollerHalfAngle    = pi / (if cut then (nRollers - 1) else nRollers);
+    Real wheelHubRadius        = wheelRadius * cos(fatRollerHalfAngle);
     Real rollerRadius          = (wheelRadius - wheelHubRadius) / 2;
-    Real rollerLength          = wheelRadius * sin(rollerHalfAngle);
+    Real rollerLength          = wheelRadius * sin(fatRollerHalfAngle);
 
   algorithm
     params := Params

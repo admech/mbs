@@ -9,6 +9,7 @@ package TestParams
   constant Params pmm = CreateParams
     ( name            =  "params used in the PMM paper"
 
+    , cut             =  true
     , NWheels         =  3
     , nRollers        =  5
     , mecanumAngle    =  0
