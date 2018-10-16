@@ -113,7 +113,7 @@ equation
   OutPortB.F = friction + normalReaction * vertical;
   // der(mu) = 0;
   // normalReaction = OutPortB.F * vertical; // e.g. for mu
-  assert(/*noEvent*/(isInContact and CompareReal(0, normalVelocity) or not isInContact), "contact " + name + " is active, but there is normal velocity: " + String(normalVelocity));
+  // assert(/*noEvent*/(isInContact and CompareReal(0, normalVelocity) or not isInContact), "contact " + name + " is active, but there is normal velocity: " + String(normalVelocity));
 
   OutPortA.P = { contactPointCoords[1], contactPointCoords[2], contactPointCoords[3] };
 

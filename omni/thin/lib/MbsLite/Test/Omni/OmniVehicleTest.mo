@@ -8,7 +8,7 @@ model OmniVehicleTest
 
   OmniVehicle m
     ( ovp =
-        TestParams.pmmAtRest
+        TestParams.pmmWrench
         /*
         TestParams.pmmAtRest
         TestParams.pmmSelfRot

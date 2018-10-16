@@ -84,7 +84,7 @@ equation
           ( normalize(contacts[i].friction)
           * contacts[i].friction
           )
-        * norm(contacts[i].friction)
+        * length(contacts[i].friction)
       for i in 1 : nActual
       }
     );
