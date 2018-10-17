@@ -93,6 +93,7 @@ equation
       );
 */
     DnormalVelocity = 0;
+/*
     friction = -frictionCoeff * contactPointVelocity
            * ( if (contactPointVelocityNorm <= viscousFrictionVelocityBound)
            // * ( if noEvent(contactPointVelocityNorm <= viscousFrictionVelocityBound)
@@ -103,9 +104,11 @@ equation
            // * 0
            // + mu * vertical // regularization ?
            ;
-/*
     friction = zeros(3);
 */
+    friction = -frictionCoeff * contactPointVelocity
+           / viscousFrictionVelocityBound
+           ;
   else
     normalReaction = 0;
     friction = zeros(3);
