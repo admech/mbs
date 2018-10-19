@@ -42,6 +42,12 @@ res := simulate
     // , stopTime = 1
     // , simflags = "-lv=LOG_LS"
     // , simflags = "-lv=LOG_DASSL_STATES"
+
+    // , method = "ida"
+    // , simflags = "-idaLS=klu"
+    // , simflags = "-idaScaling"
+
+    // , method = "impeuler"
     );
 /*
 print("na samom dele net"); 

@@ -8,7 +8,7 @@ model OmniVehicleTest
 
   OmniVehicle m
     ( ovp =
-        TestParams.pmmSelfRot
+        TestParams.pmmWrench
         /*
         TestParams.pmmAtRest
         TestParams.pmmSelfRot
@@ -22,15 +22,18 @@ model OmniVehicleTest
         100
         /*
         20
+        0.0001
         */
     , NumberOfIntervals =
         100000
         /*
+        100000
         20000
         10
+        5
         */
     , Tolerance = 1e-9
-    , Algorithm = "Dassl"
+    // , Algorithm = "Dassl"
     ));
 equation
   when time == 1 then

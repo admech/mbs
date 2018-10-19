@@ -2,6 +2,7 @@ within MbsLite.Examples.OmniVehicle.Full;
 
 model OmniVehicle
   import MbsLite.Examples.OmniVehicle.PointContact.OmniWheelOnPlane;
+  import MbsLite.Examples.OmniVehicle.Utils.CreateRandomNoise;
 
   parameter String name = "OmniVehicle";
   
@@ -41,6 +42,7 @@ model OmniVehicle
     , r0            = { ovp.wheelCenters[i,:]             for i in 1 : NActual }
     , q0            = { ovp.wheelQuaternions[i,:]         for i in 1 : NActual }
     , initials      = { ovp.wheelInitials[i]              for i in 1 : NActual }
+    , maxAngleNoise = { 1e-3 * (i - 1)                    for i in 1 : NActual }
     );
 
 equation

@@ -11,6 +11,8 @@ function CalculateOmniVehicleParams
 
 protected
 
+  constant Real wheelNoise = 0 "to reduce the probabiilty of multiple simultaneous impacts";
+
   Integer           nActual = params.nRollers;
   Integer           NActual = params.NWheels;
 
@@ -35,7 +37,10 @@ algorithm
 
   for i in 1 : NActual loop
     wheelAxisAngles[i]     := (2 * pi / NActual * (i - 1));
-    wheelQuaternionsRel[i] := QRot(wheelAxisAngles[i] + pi / 2, vertical);
+    wheelQuaternionsRel[i] := QMult
+      ( QRot(wheelAxisAngles[i] + pi / 2, vertical)
+      , QRot((i - 1) * wheelNoise, userward)
+      );
     wheelQuaternionsAbs[i] := QMult(platformQuaternion, wheelQuaternionsRel[i,:]);
     wheelAxisDirections[i] := QToT(wheelQuaternionsAbs[i,:]) * userward;
   

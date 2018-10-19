@@ -12,6 +12,7 @@ model OmniWheelOnPlane
   parameter Real[4]  q0      = fill(inf, 4);
   parameter Params   params;
   parameter Initials initials;
+  parameter Real     maxAngleNoise = inf;
 
   Base base;
 
@@ -41,6 +42,7 @@ model OmniWheelOnPlane
         /*
         1e-5
         */
+    , each maxAngleNoise = maxAngleNoise
     );
 
   // for visualization only! likely to spoil index reduction

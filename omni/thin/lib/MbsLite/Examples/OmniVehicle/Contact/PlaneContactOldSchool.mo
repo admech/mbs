@@ -10,6 +10,7 @@ model PlaneContactOldSchool
   parameter Real viscousFrictionVelocityBound  = inf;
 
   parameter Boolean isInContactInitially       = false;
+  parameter Real    maxAngleNoise              = inf;
 
   Real[3] contactPointCoords                        (each stateSelect = StateSelect.never);
   Real[3] contactPointVelocity                      (each stateSelect = StateSelect.never);
@@ -36,40 +37,22 @@ equation
     = towardsWheelCenterGlobal * vertical;
 
   isInContact
-    = cosBetweenWheelVerticalAndGlobalVertical > cos(params.rollerHalfAngle)
+    = cosBetweenWheelVerticalAndGlobalVertical > cos
+        ( params.rollerHalfAngle
+        - maxAngleNoise // trying to battle multiple impacts
+        )
       and InPortB.r[2] < params.wheelRadius;
   
   // CONTACT POINT COORDS
   rollerAxisGlobal = InPortB.T * rollerAxisLocal;
   userwardHorizontalGlobal = cross(rollerAxisGlobal, vertical);
   towardsWheelCenterGlobal = normalize(cross(userwardHorizontalGlobal, rollerAxisGlobal));
-  contactPointCoords = if noEvent(isInContact)
+  contactPointCoords = if /*noEvent*/(isInContact)
       // start from roller center, go to wheel center and then outright downward.
       then InPortB.r                                          
            + params.wheelHubRadius * towardsWheelCenterGlobal
            - params.wheelRadius * vertical                    
       else zeros(3);
-  when noEvent(isInContact <> pre(isInContact)) then
-    print("REINITIALIZING " + name);
-    reinit
-      ( contactPointCoords
-      , if isInContact
-        then InPortB.r                                          // start from roller center,
-             + params.wheelHubRadius * towardsWheelCenterGlobal // go to wheel center
-             - params.wheelRadius * vertical                    // and then outright downward.  
-        else zeros(3)
-      );
-/*
-    reinit
-      ( normalVelocity
-      , if isInContact then 0 else normalVelocity
-      );
-    reinit
-      ( normalReaction
-      , if isInContact then normalReaction else 0
-      );
-*/
-  end when;
 
   // CONTACT POINT VELOCITY
   contactPointVelocity = if /*noEvent*/(isInContact)
