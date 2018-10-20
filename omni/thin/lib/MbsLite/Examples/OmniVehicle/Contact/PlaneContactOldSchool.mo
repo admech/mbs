@@ -16,7 +16,8 @@ model PlaneContactOldSchool
   Real[3] contactPointVelocity                      (each stateSelect = StateSelect.never);
   Real    contactPointVelocityNorm                  (stateSelect = StateSelect.never);
   Real    cosBetweenWheelVerticalAndGlobalVertical  (stateSelect = StateSelect.never);
-  Boolean isInContact                               (stateSelect = StateSelect.never);
+  Boolean isInContact                               (stateSelect = StateSelect.never, start = isInContactInitially);
+  Boolean isInContactNormal                         (stateSelect = StateSelect.never, start = isInContactInitially);
 
   Real    normalVelocity                            (stateSelect = StateSelect.never);
   Real    DnormalVelocity                           (stateSelect = StateSelect.never);
@@ -42,12 +43,18 @@ equation
         - maxAngleNoise // trying to battle multiple impacts
         )
       and InPortB.r[2] < params.wheelRadius;
+
+  isInContactNormal
+    = cosBetweenWheelVerticalAndGlobalVertical > cos
+        ( params.rollerHalfAngle
+        )
+      and InPortB.r[2] < params.wheelRadius;
   
   // CONTACT POINT COORDS
   rollerAxisGlobal = InPortB.T * rollerAxisLocal;
   userwardHorizontalGlobal = cross(rollerAxisGlobal, vertical);
   towardsWheelCenterGlobal = normalize(cross(userwardHorizontalGlobal, rollerAxisGlobal));
-  contactPointCoords = if /*noEvent*/(isInContact)
+  contactPointCoords = if /*noEvent*/(isInContactNormal)
       // start from roller center, go to wheel center and then outright downward.
       then InPortB.r                                          
            + params.wheelHubRadius * towardsWheelCenterGlobal
@@ -55,7 +62,7 @@ equation
       else zeros(3);
 
   // CONTACT POINT VELOCITY
-  contactPointVelocity = if /*noEvent*/(isInContact)
+  contactPointVelocity = if /*noEvent*/(isInContactNormal)
     then Euler
            ( InPortB.r
            , contactPointCoords
@@ -68,6 +75,13 @@ equation
   normalVelocity      = contactPointVelocity[2];
   der(normalVelocity) = DnormalVelocity;
   contactPointVelocityNorm = length(contactPointVelocity);
+
+  if /*noEvent*/(isInContactNormal) then
+    DnormalVelocity = 0;
+  else
+    normalReaction = 0;
+  end if;
+
   if /*noEvent*/(isInContact) then
 /*
     Assert
@@ -75,7 +89,7 @@ equation
       , name + " contact point has vertical speed!"
       );
 */
-    DnormalVelocity = 0;
+    // DnormalVelocity = 0;
 /*
     friction = -frictionCoeff * contactPointVelocity
            * ( if (contactPointVelocityNorm <= viscousFrictionVelocityBound)
@@ -93,7 +107,7 @@ equation
            / viscousFrictionVelocityBound
            ;
   else
-    normalReaction = 0;
+    // normalReaction = 0;
     friction = zeros(3);
   end if;
   OutPortB.F = friction + normalReaction * vertical;
