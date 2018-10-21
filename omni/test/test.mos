@@ -1,10 +1,11 @@
 print("===================================="); 
-print("cd to out"); 
-cd("out");
+// print("cd to out"); 
+// cd("/home/ubuntu/dump/out");
+print("going to write to current directory: " + cd()); 
 
 print("===================================="); 
 print("Setting ModelicaPath"); 
-setModelicaPath("/usr/lib/omlibrary:/home/vf/.openmodelica/libraries:/home/vf/om/models/omni/thin/lib/");
+setModelicaPath("/usr/lib/omlibrary:/home/ubuntu/.openmodelica/libraries:/home/ubuntu/om/mbs/omni/thin/lib/");
 
 print("===================================="); 
 print("Loading Modelica"); 
@@ -39,6 +40,7 @@ print("Simulating SPECIFY_MODEL_NAME");
 res := simulate
     ( SPECIFY_MODEL_NAME
     , outputFormat = "csv"
+    SPECIFY_PARAMETER_OVERRIDES
     // , stopTime = 1
     // , simflags = "-lv=LOG_LS"
     // , simflags = "-lv=LOG_DASSL_STATES"
@@ -46,6 +48,8 @@ res := simulate
     // , method = "ida"
     // , simflags = "-idaLS=klu"
     // , simflags = "-idaScaling"
+
+    , simflags = "-r=res.csv"
 
     // , method = "impeuler"
     );
