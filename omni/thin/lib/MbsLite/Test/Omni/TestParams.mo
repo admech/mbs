@@ -69,4 +69,100 @@ package TestParams
     , platformQuaternion  = QRot(0, vertical) 
     );
 
+  constant OmniVehicleParams pmmAtRestDry = CalculateOmniVehicleParams
+    ( params
+        = TestParams.pmm
+    , initials
+        = TestInitials.atRest
+    , frictionParams
+        = TestFrictionParams.dryRubberConcrete
+
+    , gravity             = -vertical
+    , platformQuaternion  = QRot(0, vertical) 
+    );
+
+  constant OmniVehicleParams pmmSelfRotDry = CalculateOmniVehicleParams
+    ( params
+        = TestParams.pmm
+    , initials
+        = TestInitials.selfRot
+    , frictionParams
+        = TestFrictionParams.dryRubberConcrete
+
+    , gravity             = -vertical
+    , platformQuaternion  = QRot(0, vertical) 
+    );
+
+  constant OmniVehicleParams pmmStraightDry = CalculateOmniVehicleParams
+    ( params
+        = TestParams.pmm
+    , initials
+        = TestInitials.straight
+    , frictionParams
+        = TestFrictionParams.dryRubberConcrete
+
+    , gravity             = -vertical
+    , platformQuaternion  = QRot(0, vertical) 
+    );
+
+  constant OmniVehicleParams pmmWrenchDry = CalculateOmniVehicleParams
+    ( params
+        = TestParams.pmm
+    , initials
+        = TestInitials.wrench
+    , frictionParams
+        = TestFrictionParams.dryRubberConcrete
+
+    , gravity             = -vertical
+    , platformQuaternion  = QRot(0, vertical) 
+    );
+
+  constant OmniVehicleParams pmmAtRestViscous = CalculateOmniVehicleParams
+    ( params
+        = TestParams.pmm
+    , initials
+        = TestInitials.atRest
+    , frictionParams
+        = TestFrictionParams.viscousRubberConcrete
+
+    , gravity             = -vertical
+    , platformQuaternion  = QRot(0, vertical) 
+    );
+
+  constant OmniVehicleParams pmmSelfRotViscous = CalculateOmniVehicleParams
+    ( params
+        = TestParams.pmm
+    , initials
+        = TestInitials.selfRot
+    , frictionParams
+        = TestFrictionParams.viscousRubberConcrete
+
+    , gravity             = -vertical
+    , platformQuaternion  = QRot(0, vertical) 
+    );
+
+  constant OmniVehicleParams pmmStraightViscous = CalculateOmniVehicleParams
+    ( params
+        = TestParams.pmm
+    , initials
+        = TestInitials.straight
+    , frictionParams
+        = TestFrictionParams.viscousRubberConcrete
+
+    , gravity             = -vertical
+    , platformQuaternion  = QRot(0, vertical) 
+    );
+
+  constant OmniVehicleParams pmmWrenchViscous = CalculateOmniVehicleParams
+    ( params
+        = TestParams.pmm
+    , initials
+        = TestInitials.wrench
+    , frictionParams
+        = TestFrictionParams.viscousRubberConcrete
+
+    , gravity             = -vertical
+    , platformQuaternion  = QRot(0, vertical) 
+    );
+
 end TestParams;

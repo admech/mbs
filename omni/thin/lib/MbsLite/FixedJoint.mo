@@ -44,6 +44,7 @@ equation
 
   nAi = InPortA.T * nA;
   nBi = InPortB.T * nB;
+/*
   for i in 1 : 3 loop
     assert
       ( CompareReal(nAi[i], nBi[i], absTol = 1e-2)
@@ -53,6 +54,7 @@ equation
         + ", nBi - nAi = " + StringA({ (nBi[j] - nAi[j]) for j in 1 : 3 })
       );
   end for;
+*/
 
   //  InPortA.epsilon = InPortB.epsilon;
   //  cross(InPortA.T * nA, InPortB.T*nB) = zeros(3);
