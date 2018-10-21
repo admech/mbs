@@ -36,7 +36,6 @@ getErrorString();
 
 print("===================================="); 
 print("Simulating SPECIFY_MODEL_NAME"); 
-/*
 res := simulate
     ( SPECIFY_MODEL_NAME
     , outputFormat = "csv"
@@ -50,8 +49,9 @@ res := simulate
 
     // , method = "impeuler"
     );
-*/
+/*
 print("na samom dele net"); 
+*/
 
 getErrorString();
 
