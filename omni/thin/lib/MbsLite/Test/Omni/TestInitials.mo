@@ -27,7 +27,7 @@ package TestInitials
     ( name      = "wrench"
     , omega     = 1
     , vAbs      = 1
-    , vDirAngle = 1e-3
+    , vDirAngle = 0 // 1e-3
     );
 
   constant Initials wheelStill = Initials
