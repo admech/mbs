@@ -49,7 +49,7 @@ res := simulate
     // , simflags = "-idaLS=klu"
     // , simflags = "-idaScaling"
 
-    , simflags = "-r=res.csv"
+    // , simflags = "-r=res.csv"
 
     // , method = "impeuler"
     );
