@@ -34,7 +34,7 @@ model OmniVehicleTest
 equation
   when time == 1 then
     assert
-      ( MbsLite.CompareReal(0, 0)
+      ( MbsLite.Util.CompareReal(0, 0)
       , "zero should be zero, was: " + String(0)
       );
   end when;
