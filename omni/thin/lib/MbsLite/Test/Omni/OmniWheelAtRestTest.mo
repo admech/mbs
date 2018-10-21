@@ -2,10 +2,6 @@ within MbsLite.Test.Omni;
 
 model OmniWheelAtRestTest
 
-  import MbsLite.Examples.OmniVehicle.Params;
-  import MbsLite.Examples.OmniVehicle.Initials;
-  import MbsLite.Examples.OmniVehicle.Full.OmniWheelAtRest;
-
   // NOTE: this field should be a constant becaus OMC can't handle it being a parameter...
   constant Params   params   = TestParams.pmm;
   constant Initials initials = Initials

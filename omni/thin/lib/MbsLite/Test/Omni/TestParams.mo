@@ -1,10 +1,9 @@
 within MbsLite.Test.Omni;
 
 package TestParams
-  import MbsLite.Examples.OmniVehicle.Params;
-  import MbsLite.Examples.OmniVehicle.Initials;
-  import MbsLite.Examples.OmniVehicle.OmniVehicleParams;
-  import MbsLite.Examples.OmniVehicle.CalculateOmniVehicleParams;
+
+  constant FrictionParams frictionParams =
+    TestFrictionParams.impactLikeViscous;
 
   constant Params pmm = CreateParams
     ( name            =  "params used in the PMM paper"
@@ -27,6 +26,8 @@ package TestParams
         = TestParams.pmm
     , initials
         = TestInitials.atRest
+    , frictionParams
+        = frictionParams
 
     , gravity             = -vertical
     , platformQuaternion  = QRot(0, vertical) 
@@ -37,6 +38,8 @@ package TestParams
         = TestParams.pmm
     , initials
         = TestInitials.selfRot
+    , frictionParams
+        = frictionParams
 
     , gravity             = -vertical
     , platformQuaternion  = QRot(0, vertical) 
@@ -47,6 +50,8 @@ package TestParams
         = TestParams.pmm
     , initials
         = TestInitials.straight
+    , frictionParams
+        = frictionParams
 
     , gravity             = -vertical
     , platformQuaternion  = QRot(0, vertical) 
@@ -57,6 +62,8 @@ package TestParams
         = TestParams.pmm
     , initials
         = TestInitials.wrench
+    , frictionParams
+        = frictionParams
 
     , gravity             = -vertical
     , platformQuaternion  = QRot(0, vertical) 

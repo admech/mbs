@@ -1,7 +1,6 @@
 within MbsLite.Test.Omni;
 
 package TestInitials
-  import MbsLite.Examples.OmniVehicle.Initials;
 
   constant Initials atRest = CreateInitials
     ( name      = "atRest"
@@ -28,7 +27,7 @@ package TestInitials
     ( name      = "wrench"
     , omega     = 1
     , vAbs      = 1
-    , vDirAngle = 0
+    , vDirAngle = 1e-3
     );
 
   constant Initials wheelStill = Initials

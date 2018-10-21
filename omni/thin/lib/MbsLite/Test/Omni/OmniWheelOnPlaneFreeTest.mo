@@ -2,10 +2,6 @@ within MbsLite.Test.Omni;
 
 model OmniWheelOnPlaneFreeTest
 
-  import MbsLite.Examples.OmniVehicle.Params;
-  import MbsLite.Examples.OmniVehicle.Initials;
-  import MbsLite.Examples.OmniVehicle.Full.OmniWheelOnPlaneFree;
-
   constant Params   params   = TestParams.pmm;
   constant Initials initials
     // = TestInitials.wheelStill;

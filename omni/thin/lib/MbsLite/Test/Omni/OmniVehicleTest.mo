@@ -2,10 +2,6 @@ within MbsLite.Test.Omni;
 
 model OmniVehicleTest
 
-  import MbsLite.Examples.OmniVehicle.Params;
-  import MbsLite.Examples.OmniVehicle.CalculateOmniVehicleParams;
-  import MbsLite.Examples.OmniVehicle.Full.OmniVehicle;
-
   OmniVehicle m
     ( ovp =
         TestParams.pmmWrench
@@ -19,13 +15,13 @@ model OmniVehicleTest
 
   annotation(experiment
     ( StopTime =
-        100
+        1000
         /*
         20
         0.0001
         */
     , NumberOfIntervals =
-        100000
+        1000000
         /*
         100000
         20000

@@ -2,10 +2,6 @@ within MbsLite.Test.Omni;
 
 model RollerOnPlaneTest
 
-  import MbsLite.Examples.OmniVehicle.Params;
-  import MbsLite.Examples.OmniVehicle.Initials;
-  import MbsLite.Examples.OmniVehicle.Full.RollerOnPlane;
-
   constant Params   params   = TestParams.pmm;
   constant Initials initials =
     TestInitials.wheelSliding;
