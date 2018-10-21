@@ -12,8 +12,9 @@ model RollerOnPlane "A roller that is constrained as if it were attached to a wh
   parameter Integer  nActual = -Integer_inf;
   parameter Real[3]  r0      = fill(inf, 3);
   parameter Real[4]  q0      = fill(inf, 4);
-  parameter Params   params;
-  parameter Initials initials;
+  parameter Params         params;
+  parameter Initials       initials;
+  parameter FrictionParams frictionParams;
 
   parameter Real[3, 3]   T0  = QToT(q0);
 
@@ -44,16 +45,7 @@ model RollerOnPlane "A roller that is constrained as if it were attached to a wh
     ( name = "contact"
     , params                        = params
     , isInContactInitially          = true
-    , frictionCoeff                 =
-        1e-1
-        /*
-        1
-        */
-    , viscousFrictionVelocityBound  =
-        1e-6
-        /*
-        1e-5
-        */
+    , frictionParams                = frictionParams
     );
 
 initial algorithm
@@ -67,7 +59,7 @@ equation
   connect(contact.InPortB,    roller.OutPort);
   connect(contact.OutPortB,   roller.InPorts[1]);
 
-  assert(noEvent(contact.isInContact), "Roller would have left contact already (now it just tipped over).");
+  assert(noEvent(contact.isInContactNormal), "Roller would have left contact already (now it just tipped over).");
 
 end RollerOnPlane;
 

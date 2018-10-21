@@ -22,6 +22,8 @@ model RollerOnPlaneTest
     , q0       = QRot(0, -userward)
     , params   = params
     , initials = initials
+    , frictionParams =
+        TestFrictionParams.impactLikeViscous
     );
 
   annotation(experiment

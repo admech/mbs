@@ -61,25 +61,23 @@ equation
   userwardHorizontalGlobal = cross(rollerAxisGlobal, vertical);
   towardsWheelCenterGlobal = normalize(cross(userwardHorizontalGlobal, rollerAxisGlobal));
 
-  if /*noEvent*/(isInContactKinematics) then
-
-    contactPointCoords   = 
+  contactPointCoords   = 
+    if /*noEvent*/(isInContactKinematics) then
       // start from roller center, go to wheel center and then outright downward.
       InPortB.r                                          
         + params.wheelHubRadius * towardsWheelCenterGlobal
-        - params.wheelRadius * vertical;
+        - params.wheelRadius * vertical
+    else zeros(3);
 
-    contactPointVelocity = Euler
-      ( InPortB.r
-      , contactPointCoords
-      , InPortB.v
-      , InPortB.omega
-      );
-
-  else
-    contactPointCoords   = zeros(3);
-    contactPointVelocity = zeros(3);
-  end if;
+  contactPointVelocity =
+    if /*noEvent*/(isInContactKinematics) then
+      Euler
+        ( InPortB.r
+        , contactPointCoords
+        , InPortB.v
+        , InPortB.omega
+        )
+    else zeros(3);
 
   // SIGNORINI'S LAW FOR MOVEMENT ALONG THE NORMAL
   normalVelocity      = contactPointVelocity[2];
