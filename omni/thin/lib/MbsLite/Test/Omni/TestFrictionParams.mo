@@ -16,7 +16,16 @@ package TestFrictionParams
     );
 
   constant FrictionParams impactLikeViscous = CreateFrictionParams
-    ( name            =  "FrictionParams rubber-concrete"
+    ( name            =  "FrictionParams impactLikeViscous"
+
+    , frictionType                  = FrictionType.viscous
+    , dryFrictionCoeff              = 1e-1
+    , viscousFrictionVelocityBound  = defaultViscousFrictionVelocityBound
+    , frictionGapAtEndOfRoller      = defaultFrictionGapAtEndOfRoller
+    );
+
+  constant FrictionParams viscousRubberConcrete = CreateFrictionParams
+    ( name            =  "FrictionParams viscous rubber-concrete"
 
     , frictionType                  = FrictionType.viscous
     , dryFrictionCoeff              = 0.85
@@ -24,8 +33,8 @@ package TestFrictionParams
     , frictionGapAtEndOfRoller      = defaultFrictionGapAtEndOfRoller
     );
 
-  constant FrictionParams rubberConcrete = CreateFrictionParams
-    ( name            =  "FrictionParams rubber-concrete"
+  constant FrictionParams dryRubberConcrete = CreateFrictionParams
+    ( name            =  "FrictionParams dry rubber-concrete"
 
     , frictionType                  = FrictionType.dry
     , dryFrictionCoeff              = 0.85
