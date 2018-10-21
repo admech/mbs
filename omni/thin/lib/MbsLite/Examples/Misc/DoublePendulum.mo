@@ -100,13 +100,13 @@ equation
   connect(body2.InPorts[1], joint2.OutPortB);
 
   assert
-    ( CompareReal(1, norm(body1.r))
-    , "body1 should stay at distance of 1 from origin, was: " + String(norm(body1.r))
+    ( CompareReal(1, length(body1.r))
+    , "body1 should stay at distance of 1 from origin, was: " + String(length(body1.r))
     );
 
   assert
-    ( CompareReal(1, norm(body2.r - body1.r))
-    , "body2 should stay at distance of 1 from body1, was: " + String(norm(body2.r - body1.r))
+    ( CompareReal(1, length(body2.r - body1.r))
+    , "body2 should stay at distance of 1 from body1, was: " + String(length(body2.r - body1.r))
     );
 
 end DoublePendulum;

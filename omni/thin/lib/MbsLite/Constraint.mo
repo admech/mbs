@@ -1,8 +1,6 @@
 within MbsLite;
 
-partial model Constraint
-
-  parameter Integer ConstraintNo = 1;
+model Constraint
 
   replaceable KinematicPort  InPortA;
   replaceable WrenchPort     OutPortA;
