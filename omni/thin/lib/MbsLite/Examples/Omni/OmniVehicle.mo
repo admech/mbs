@@ -43,13 +43,11 @@ model OmniVehicle
     , each frictionParams = ovp.frictionParams
     );
 
-/*
   TelemetryInfo telemetry 
     ( NWheels  = ovp.params.NWheels
     , nRollers = ovp.params.nRollers
     );
   Real DTheta (stateSelect = StateSelect.never);
-*/
 
 equation
 
@@ -67,7 +65,6 @@ equation
 
   // TELEMETRY
 
-/*
   telemetry.kineticEnergy                  = platform.kineticEnergy + sum
     ({ wheels[i].wheel.Wheel.kineticEnergy
        + sum
@@ -131,7 +128,6 @@ equation
     { wheels[i].contactPointNormalVelocity
     for i in 1 : NActual
     };
-*/
   
 end OmniVehicle;
 
