@@ -20,7 +20,7 @@ package TestInitials
     ( name      = "straight"
     , omega     = 0
     , vAbs      = 1
-    , vDirAngle = 0
+    , vDirAngle = 1e-3
     );
 
   constant Initials wrench = CreateInitials

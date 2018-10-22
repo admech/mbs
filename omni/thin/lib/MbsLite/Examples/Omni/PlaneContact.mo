@@ -62,7 +62,7 @@ equation
   towardsWheelCenterGlobal = normalize(cross(userwardHorizontalGlobal, rollerAxisGlobal));
 
   contactPointCoords   = 
-    if /*noEvent*/(isInContactKinematics) then
+    if /*noEvent*/(isInContactNormal) then
       // start from roller center, go to wheel center and then outright downward.
       InPortB.r                                          
         + params.wheelHubRadius * towardsWheelCenterGlobal
@@ -70,7 +70,7 @@ equation
     else zeros(3);
 
   contactPointVelocity =
-    if /*noEvent*/(isInContactKinematics) then
+    if /*noEvent*/(isInContactNormal) then
       Euler
         ( InPortB.r
         , contactPointCoords

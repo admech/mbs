@@ -22,22 +22,12 @@ else
   exit -1;
 fi
 
-if [[ $3 ]]
-then
-  echo "Using parameter overrides: $3";
-  parameter_overrides=", override=\"$3\"";
-else
-  echo "just in case: you could have specified some parameter overrides in the form: paramName=paramValue,other=oneMore as the third argument";
-  parameter_overrides="";
-fi
-
 tmp_dir_name="/home/ubuntu/dump/out/$2";
 tmp_file_name="$tmp_dir_name/simulate_$1.mos";
 
 cp "test.mos" $tmp_file_name;
 
 sed -i "s/SPECIFY_MODEL_NAME/$1/g" $tmp_file_name;
-sed -i "s/SPECIFY_PARAMETER_OVERRIDES/$parameter_overrides/g" $tmp_file_name;
 
 echo "Created run script:"
 echo "";
@@ -54,7 +44,6 @@ cd $tmp_dir_name && \
 omc \
     -d=initialization,evaluateAllParameters \
     --indexReductionMethod=dummyDerivatives \
-    --numProcs=6 \
     $tmp_file_name \
   | grep -v "Warning.*Connector.*\(KinematicPort\|WrenchPort\) is not balanced" \
   > run.log && \

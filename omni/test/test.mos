@@ -40,8 +40,9 @@ print("Simulating SPECIFY_MODEL_NAME");
 res := simulate
     ( SPECIFY_MODEL_NAME
     , outputFormat = "csv"
-    SPECIFY_PARAMETER_OVERRIDES
-    // , stopTime = 1
+    , stopTime = 1000
+    , numberOfIntervals = 1000000
+    , tolerance = 1e-12
     // , simflags = "-lv=LOG_LS"
     // , simflags = "-lv=LOG_DASSL_STATES"
 

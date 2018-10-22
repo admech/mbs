@@ -159,7 +159,7 @@ package TestParams
     , initials
         = TestInitials.wrench
     , frictionParams
-        = TestFrictionParams.viscousRubberConcrete
+        = TestFrictionParams.impactLikeViscous
 
     , gravity             = -vertical
     , platformQuaternion  = QRot(0, vertical) 

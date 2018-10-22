@@ -17,12 +17,14 @@ model OmniVehicleTest
     ( StopTime =
         1000
         /*
+        1000
         20
         0.0001
         */
     , NumberOfIntervals =
         1000000
         /*
+        1000000
         100000
         20000
         10

@@ -120,7 +120,7 @@ package ParamsUtils
   
   protected
   
-    constant Real wheelNoise = 0 "to reduce the probabiilty of multiple simultaneous impacts";
+    constant Real wheelNoise = 2e-3 "to reduce the probabiilty of multiple simultaneous impacts";
   
     Integer           nActual = params.nRollers;
     Integer           NActual = params.NWheels;
