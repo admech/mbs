@@ -104,5 +104,9 @@ equation
     end when;
   end if;
 
+  when pre(indexOfRollerInContact) <> indexOfRollerInContact then
+    reinit(wheel.Wheel.r[2], params.wheelRadius);
+  end when;
+
 end OmniWheelOnPlane;
 

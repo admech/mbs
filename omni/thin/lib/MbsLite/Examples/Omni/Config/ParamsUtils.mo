@@ -24,7 +24,7 @@ package ParamsUtils
     Real fatRollerHalfAngle    = pi / (if cut then (nRollers - 1) else nRollers);
     Real wheelHubRadius        = wheelRadius * cos(fatRollerHalfAngle);
     Real rollerRadius          = (wheelRadius - wheelHubRadius) / 2;
-    Real rollerLength          = wheelRadius * sin(fatRollerHalfAngle);
+    Real rollerLength          = 2 * wheelRadius * sin(fatRollerHalfAngle);
 
   algorithm
     params := Params
@@ -50,7 +50,7 @@ package ParamsUtils
       , platformOrthogonalMoi = CylinderOrthogonalMoi( platformMass,  platformRadius, 0.01 )
       , wheelHubAxialMoi      = CylinderAxialMoi     ( wheelHubMass,  wheelHubRadius )
       , wheelHubOrthogonalMoi = CylinderOrthogonalMoi( wheelHubMass,  wheelHubRadius, 0.01 )
-      , rollerAxialMoi        = CylinderAxialMoi     ( rollerMass,    rollerRadius   )
+      , rollerAxialMoi        = CylinderAxialMoi     ( rollerMass,    rollerRadius   ) * 10
       , rollerOrthogonalMoi   = CylinderOrthogonalMoi( rollerMass,    rollerRadius,   rollerLength )
       );
 

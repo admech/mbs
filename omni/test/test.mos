@@ -51,6 +51,7 @@ res := simulate
     // , simflags = "-idaScaling"
 
     // , simflags = "-r=res.csv"
+    , simflags = "-lssMaxDensity=0.003,-lssMinSize=1000"
 
     // , method = "impeuler"
     );

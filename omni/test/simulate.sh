@@ -40,11 +40,13 @@ echo "----------------------------------------";
 echo "----------------------------------------";
 date;
 
+# --indexReductionMethod=dummyDerivatives \
 cd $tmp_dir_name && \
 omc \
     -d=initialization,evaluateAllParameters \
-    --indexReductionMethod=dummyDerivatives \
     $tmp_file_name \
+    --maxSizeLinearTearing=5000 \
+    --maxSizeNonlinearTearing=5000 \
   | grep -v "Warning.*Connector.*\(KinematicPort\|WrenchPort\) is not balanced" \
   > run.log && \
 cd -;

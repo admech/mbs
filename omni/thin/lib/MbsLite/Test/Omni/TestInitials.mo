@@ -12,8 +12,8 @@ package TestInitials
   constant Initials selfRot = CreateInitials
     ( name      = "selfRot"
     , omega     = 1
-    , vAbs      = 0
-    , vDirAngle = 0
+    , vAbs      = 1e-3
+    , vDirAngle = 1e-3
     );
 
   constant Initials straight = CreateInitials
@@ -27,7 +27,7 @@ package TestInitials
     ( name      = "wrench"
     , omega     = 1
     , vAbs      = 1
-    , vDirAngle = 1e-3
+    , vDirAngle = 5e-3
     );
 
   constant Initials wheelStill = Initials
