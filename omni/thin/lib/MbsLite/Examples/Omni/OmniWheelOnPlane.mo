@@ -23,6 +23,7 @@ model OmniWheelOnPlane
     , q0       = q0
     , params   = params
     , initials = initials
+    , frictionParams = frictionParams
     );
 
   PlaneContact[nActual] contacts

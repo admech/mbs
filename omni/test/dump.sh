@@ -20,8 +20,15 @@ then
   else
     echo "Please specify n to take each nth line, from and to files as args 2-4";
   fi
+elif [[ $1 == "--diag" || $1 == "-d" ]]
+then
+  date;
+  echo "HDD ==========";
+  df -h | grep "nvme\|Use";
+  echo "RAM ==========";
+  free -m;
 else
-  echo "Usage: --current|-c -- dump current sims, --peek|-p -- show csv sizes and last time point";
+  echo "Usage: --current|-c -- dump current sims, --peek|-p -- show csv sizes and last time point; -t n f1 f2 puts every nth line from f1 to f2; -d shows diag";
   exit -1;
 fi
 

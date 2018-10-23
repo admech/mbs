@@ -10,6 +10,9 @@ model FixedJoint
   parameter SI.Position[3]   rA             "Axis position in body A local";
   parameter SI.Position[3]   rB             "Axis position in body B local";
 
+  parameter Boolean          hasFriction    = false;
+  parameter Real             frictionCoeff  = inf;
+
   SI.Position[3]             RA             (each stateSelect = StateSelect.never) "Axis position in body A global";
   SI.Position[3]             RB             (each stateSelect = StateSelect.never) "Axis position in body B global";
   SI.Velocity[3]             vA             (each stateSelect = StateSelect.never) "Velocity of axis point in body A global";
@@ -71,13 +74,14 @@ equation
   epsilonr = InPortB.epsilon - InPortA.epsilon - cross(InPortA.omega, InPortB.omega);
   epsilonr = lambda * nAi;
 
+  der(mu) = lambda;
+
   M = OutPortA.M * nAi;
-  M = 0;
+  M = if hasFriction then -frictionCoeff * mu else 0;
 
   OutPortA.P = RA;
   OutPortB.P = RB;
 
-  der(mu) = lambda;
   der(angle) = mu;
 
 end FixedJoint;

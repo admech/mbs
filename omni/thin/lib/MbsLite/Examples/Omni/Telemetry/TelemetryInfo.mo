@@ -13,6 +13,7 @@ model TelemetryInfo
   // note that these can become zero if the repective vectors and wheel axes become orthogonal
   Real[NWheels]    contactPointVelocitiesSigned (each stateSelect = StateSelect.never); 
   Real[NWheels]    frictionNormsSigned          (each stateSelect = StateSelect.never); 
+  Real[NWheels]    normalReactions              (each stateSelect = StateSelect.never); 
 
   LagrangianCoords lagrangianCoords
     ( NWheels  = NWheels

@@ -7,11 +7,15 @@ record FrictionParams
 
   parameter FrictionType frictionType          "dry, viscous or none";
 
-  parameter Real dryFrictionCoeff              "for dry friction only";
+  parameter Real dryFrictionCoeff;
   parameter Real viscousFrictionVelocityBound  "for dry friction only, specifies the size of regularization zone";
-
-  parameter Real viscousFrictionCoeff          "for viscous friction only";
+  parameter Real viscousFrictionCoeff;
 
   parameter Real frictionGapAtEndOfRoller      "a small angle such that friction can be turned off a bit in advance before the tip of the roller is reached";
+
+  parameter Boolean rollerJointsHaveFriction;
+  parameter Real    rollerJointsFrictionCoeff;
+  parameter Boolean wheelJointsHaveFriction;
+  parameter Real    wheelJointsFrictionCoeff;
 
 end FrictionParams;

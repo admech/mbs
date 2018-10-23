@@ -37,7 +37,8 @@ getErrorString();
 
 print("===================================="); 
 print("Simulating SPECIFY_MODEL_NAME"); 
-res := simulate
+if not SPECIFY_DRY_RUN then
+  res := simulate
     ( SPECIFY_MODEL_NAME
     , outputFormat = "csv"
     , stopTime = 1000
@@ -55,9 +56,9 @@ res := simulate
 
     // , method = "impeuler"
     );
-/*
-print("na samom dele net"); 
-*/
+else
+  print("na samom dele net"); 
+end if;
 
 getErrorString();
 

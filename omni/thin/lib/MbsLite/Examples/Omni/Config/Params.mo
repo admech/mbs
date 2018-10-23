@@ -14,13 +14,14 @@ record Params
   parameter Real     platformMass;
   parameter Real     wheelHubMass;
   parameter Real     rollerMass;
+  parameter Real     fractionOfRollerMassInWholeWheel;
 
   // below params to be calculated in a factory function
 
   parameter Real     rollerHalfAngle;
   parameter Real     wheelHubRadius;
-  parameter Real     rollerRadius;
-  parameter Real     rollerLength;
+  parameter Real     rollerRadiusForMoi;
+  parameter Real     rollerLengthForMoi;
 
   parameter Real     platformAxialMoi;
   parameter Real     platformOrthogonalMoi;

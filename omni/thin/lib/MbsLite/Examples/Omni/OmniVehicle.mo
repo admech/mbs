@@ -31,6 +31,8 @@ model OmniVehicle
     , each rA = zeros(3)
     ,      nB = { ovp.wheelAxisDirections[i,:]            for i in 1 : NActual }
     ,      rB = { ovp.wheelCenters[i,:]                   for i in 1 : NActual }
+    , each final hasFriction   = ovp.frictionParams.wheelJointsHaveFriction
+    , each final frictionCoeff = ovp.frictionParams.wheelJointsFrictionCoeff
     );
   OmniWheelOnPlane[NActual] wheels
     ( name          = { "OmniWheel[" + String(i) + "]"    for i in 1 : NActual }
@@ -63,6 +65,11 @@ equation
     connect( wheels[i].wheel.InPortF,   joints[i].OutPortA );
   end for;
 
+  when { pre(wheels[i].indexOfRollerInContact) <> wheels[i].indexOfRollerInContact for i in 1 : NActual } then
+    reinit(platform.r[2], ovp.params.wheelRadius);
+    reinit(platform.v[2], 0);
+  end when;
+
   // TELEMETRY
 
   telemetry.kineticEnergy                  = platform.kineticEnergy + sum
@@ -88,6 +95,10 @@ equation
     ({ wheels[i].friction
     for i in 1 : NActual
     });
+  telemetry.normalReactions                     = 
+    { wheels[i].normalReaction
+    for i in 1 : NActual
+    };
 
   telemetry.lagrangianCoords.x           =  platform.OutPort.r[1]; 
   telemetry.lagrangianCoords.y           = -platform.OutPort.r[3];

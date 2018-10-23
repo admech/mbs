@@ -6,40 +6,67 @@ package TestFrictionParams
   constant Real defaultFrictionGapAtEndOfRoller      = 2e-3;
   constant Real defaultViscousFrictionVelocityBound  = 1e-6;
 
+  constant Real defaultWheelJointsFrictionCoeff      = 0;
+  constant Real defaultRollerJointsFrictionCoeff     = 0;
+
   constant FrictionParams disabled  = CreateFrictionParams
-    ( name            =  "FrictionParams rubber-concrete"
+    ( name            =  "FrictionParams disabled"
 
     , frictionType                  = FrictionType.none
-    , dryFrictionCoeff              = -1
-    , viscousFrictionVelocityBound  = -1
+    , frictionCoeff                 = inf
+    , viscousFrictionVelocityBound  = 0
     , frictionGapAtEndOfRoller      = defaultFrictionGapAtEndOfRoller
+
+    , wheelJointsFrictionCoeff      = defaultWheelJointsFrictionCoeff
+    , rollerJointsFrictionCoeff     = defaultRollerJointsFrictionCoeff
     );
 
   constant FrictionParams impactLikeViscous = CreateFrictionParams
     ( name            =  "FrictionParams impactLikeViscous"
 
     , frictionType                  = FrictionType.viscous
-    , dryFrictionCoeff              = 1e-1
-    , viscousFrictionVelocityBound  = defaultViscousFrictionVelocityBound
+    , frictionCoeff                 = 1e-1 / defaultViscousFrictionVelocityBound // for consistency with experiments that were run earlier
+    , viscousFrictionVelocityBound  = 0
     , frictionGapAtEndOfRoller      = defaultFrictionGapAtEndOfRoller
-    );
 
-  constant FrictionParams viscousRubberConcrete = CreateFrictionParams
-    ( name            =  "FrictionParams viscous rubber-concrete"
-
-    , frictionType                  = FrictionType.viscous
-    , dryFrictionCoeff              = 0.85
-    , viscousFrictionVelocityBound  = defaultViscousFrictionVelocityBound
-    , frictionGapAtEndOfRoller      = defaultFrictionGapAtEndOfRoller
+    , wheelJointsFrictionCoeff      = defaultWheelJointsFrictionCoeff
+    , rollerJointsFrictionCoeff     = defaultRollerJointsFrictionCoeff
     );
 
   constant FrictionParams dryRubberConcrete = CreateFrictionParams
-    ( name            =  "FrictionParams dry rubber-concrete"
+    ( name            =  "FrictionParams dryRubberConcrete"
 
     , frictionType                  = FrictionType.dry
-    , dryFrictionCoeff              = 0.85
+    , frictionCoeff              = 0.85
     , viscousFrictionVelocityBound  = defaultViscousFrictionVelocityBound
     , frictionGapAtEndOfRoller      = defaultFrictionGapAtEndOfRoller
+
+    , wheelJointsFrictionCoeff      = defaultWheelJointsFrictionCoeff
+    , rollerJointsFrictionCoeff     = defaultRollerJointsFrictionCoeff
+    );
+
+  constant FrictionParams impactLikeViscousJointsFrictionSmall = CreateFrictionParams
+    ( name            =  "FrictionParams impactLikeViscousJointsFrictionSmall"
+
+    , frictionType                  = FrictionType.viscous
+    , frictionCoeff                 = 1e-1 / defaultViscousFrictionVelocityBound // for consistency with experiments that were run earlier
+    , viscousFrictionVelocityBound  = 0
+    , frictionGapAtEndOfRoller      = defaultFrictionGapAtEndOfRoller
+
+    , wheelJointsFrictionCoeff      = defaultWheelJointsFrictionCoeff
+    , rollerJointsFrictionCoeff     = 1e-3
+    );
+
+  constant FrictionParams impactLikeViscousJointsFrictionLarge = CreateFrictionParams
+    ( name            =  "FrictionParams impactLikeViscousJointsFrictionLarge"
+
+    , frictionType                  = FrictionType.viscous
+    , frictionCoeff                 = 1e-1 / defaultViscousFrictionVelocityBound // for consistency with experiments that were run earlier
+    , viscousFrictionVelocityBound  = 0
+    , frictionGapAtEndOfRoller      = defaultFrictionGapAtEndOfRoller
+
+    , wheelJointsFrictionCoeff      = defaultWheelJointsFrictionCoeff
+    , rollerJointsFrictionCoeff     = 5e-1
     );
 
 end TestFrictionParams;

@@ -5,8 +5,9 @@ model OmniWheel
   constant  Real[3] rollerAxisLocal  = forward;
   constant  Real[3] wheelAxis        = userward;
 
-  parameter Params   params;
-  parameter Initials initials;
+  parameter Params         params;
+  parameter Initials       initials;
+  parameter FrictionParams frictionParams;
 
   parameter String       name        = "NOT INITIALIZED";
   parameter Integer      nActual     = -Integer_inf "actual number of rollers on the wheel";
@@ -52,6 +53,8 @@ model OmniWheel
     , final nB = RollerAxisDirectionsInWheelCoords
     , each final rA = { 0, 0, 0 }
     , final rB = RollerCentersInWheelCoords
+    , each final hasFriction = frictionParams.rollerJointsHaveFriction
+    , each final frictionCoeff = frictionParams.rollerJointsFrictionCoeff
     );
 
   NPortsHeavyBody Wheel

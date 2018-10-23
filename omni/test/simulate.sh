@@ -22,12 +22,21 @@ else
   exit -1;
 fi
 
+if [[ $3 == "--dry" ]]
+then
+  is_dry_run="true";
+else
+  is_dry_run="false";
+fi
+
 tmp_dir_name="/home/ubuntu/dump/out/$2";
 tmp_file_name="$tmp_dir_name/simulate_$1.mos";
 
 cp "test.mos" $tmp_file_name;
 
 sed -i "s/SPECIFY_MODEL_NAME/$1/g" $tmp_file_name;
+
+sed -i "s/SPECIFY_DRY_RUN/$is_dry_run/g" $tmp_file_name;
 
 echo "Created run script:"
 echo "";

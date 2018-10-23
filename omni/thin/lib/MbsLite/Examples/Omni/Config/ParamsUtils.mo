@@ -15,7 +15,8 @@ package ParamsUtils
   
     input Real     platformMass;
     input Real     wheelHubMass;
-    input Real     rollerMass;
+    input Real     rollerMass                       = -1;
+    input Real     fractionOfRollerMassInWholeWheel = -1;
 
     output Params params;
 
@@ -23,10 +24,24 @@ package ParamsUtils
     Real rollerHalfAngle       = pi / nRollers;
     Real fatRollerHalfAngle    = pi / (if cut then (nRollers - 1) else nRollers);
     Real wheelHubRadius        = wheelRadius * cos(fatRollerHalfAngle);
-    Real rollerRadius          = (wheelRadius - wheelHubRadius) / 2;
-    Real rollerLength          = 2 * wheelRadius * sin(fatRollerHalfAngle);
+    Real rollerRadiusForMoi    = (wheelRadius - wheelHubRadius) / 2;
+    Real rollerLengthForMoi    = 2 * wheelRadius * sin(rollerHalfAngle);
+    Real actualRollerMass;
+    Real actualFractionOfRollerMassInWholeWheel;
 
   algorithm
+    if rollerMass == -1 then
+      assert(fractionOfRollerMassInWholeWheel > 0, "fractionOfRollerMassInWholeWheel should be positive, was: " + String(fractionOfRollerMassInWholeWheel));
+      actualRollerMass := fractionOfRollerMassInWholeWheel * wheelHubMass / (1 - nRollers * fractionOfRollerMassInWholeWheel);
+      actualFractionOfRollerMassInWholeWheel := fractionOfRollerMassInWholeWheel;
+    elseif fractionOfRollerMassInWholeWheel == -1 then
+      assert(rollerMass > 0, "rollerMass should be positive, was: " + String(rollerMass));
+      actualRollerMass := rollerMass;
+      actualFractionOfRollerMassInWholeWheel := wheelHubMass + nRollers * rollerMass;
+    else
+      assert(false, "only one of rollerMass and fractionOfRollerMassInWholeWheel should be specified");
+    end if;
+
     params := Params
       ( name            = name
       
@@ -39,19 +54,20 @@ package ParamsUtils
       
       , platformMass    = platformMass
       , wheelHubMass    = wheelHubMass
-      , rollerMass      = rollerMass
+      , rollerMass      = actualRollerMass
+      , fractionOfRollerMassInWholeWheel = actualFractionOfRollerMassInWholeWheel
     
       , rollerHalfAngle       = rollerHalfAngle
       , wheelHubRadius        = wheelHubRadius
-      , rollerRadius          = rollerRadius
-      , rollerLength          = rollerLength
+      , rollerRadiusForMoi    = rollerRadiusForMoi
+      , rollerLengthForMoi    = rollerLengthForMoi
       
       , platformAxialMoi      = CylinderAxialMoi     ( platformMass,  platformRadius )
       , platformOrthogonalMoi = CylinderOrthogonalMoi( platformMass,  platformRadius, 0.01 )
       , wheelHubAxialMoi      = CylinderAxialMoi     ( wheelHubMass,  wheelHubRadius )
       , wheelHubOrthogonalMoi = CylinderOrthogonalMoi( wheelHubMass,  wheelHubRadius, 0.01 )
-      , rollerAxialMoi        = CylinderAxialMoi     ( rollerMass,    rollerRadius   ) * 10
-      , rollerOrthogonalMoi   = CylinderOrthogonalMoi( rollerMass,    rollerRadius,   rollerLength )
+      , rollerAxialMoi        = CylinderAxialMoi     ( rollerMass,    rollerRadiusForMoi   )
+      , rollerOrthogonalMoi   = CylinderOrthogonalMoi( rollerMass,    rollerRadiusForMoi,   rollerLengthForMoi )
       );
 
   end CreateParams;
@@ -84,26 +100,34 @@ package ParamsUtils
     input String        name;
 
     input FrictionType  frictionType;
-    input Real          dryFrictionCoeff;
-    input Real          viscousFrictionVelocityBound;
+    input Real          frictionCoeff;
+    input Real          viscousFrictionVelocityBound "for dry friction only";
     input Real          frictionGapAtEndOfRoller;
+
+    input Real          rollerJointsFrictionCoeff;
+    input Real          wheelJointsFrictionCoeff;
 
     output FrictionParams frictionParams;
 
   protected
-    Real viscousFrictionCoeff;
+    Boolean rollerJointsHaveFriction;
+    Boolean wheelJointsHaveFriction;
 
   algorithm
-    // for viscous friction to be comparable with dry friction in the regularized zone
-    viscousFrictionCoeff := dryFrictionCoeff / viscousFrictionVelocityBound;
+    rollerJointsHaveFriction := CompareReal(0, rollerJointsFrictionCoeff);
+    wheelJointsHaveFriction  := CompareReal(0, wheelJointsFrictionCoeff);
 
     frictionParams := FrictionParams
       ( name                          = name
       , frictionType                  = frictionType
-      , dryFrictionCoeff              = dryFrictionCoeff
+      , dryFrictionCoeff              = frictionCoeff
       , viscousFrictionVelocityBound  = viscousFrictionVelocityBound
-      , viscousFrictionCoeff          = viscousFrictionCoeff
+      , viscousFrictionCoeff          = frictionCoeff
       , frictionGapAtEndOfRoller      = frictionGapAtEndOfRoller
+      , rollerJointsHaveFriction      = rollerJointsHaveFriction
+      , rollerJointsFrictionCoeff     = rollerJointsFrictionCoeff
+      , wheelJointsHaveFriction       = wheelJointsHaveFriction
+      , wheelJointsFrictionCoeff      = wheelJointsFrictionCoeff
       );
 
   end CreateFrictionParams;
