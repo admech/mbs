@@ -2,33 +2,61 @@ within MbsLite.Test.Omni;
 
 package TestInitials
 
-  constant Initials atRest = CreateInitials
-    ( name      = "atRest"
-    , omega     = 0
-    , vAbs      = 0
-    , vDirAngle = 0
-    );
+  function atRest
+    input Params params;
+    output Initials initials;
+  algorithm
+    initials := CreateInitials
+      ( name      = "atRest"
+      , omega     = 0 / 3.610781043976
+      , vAbs      = 0 * 0.15
+      , vDirAngle = 0
+      , params    = params
+      , noSlip    = true
+      );
+  end atRest;
 
-  constant Initials selfRot = CreateInitials
-    ( name      = "selfRot"
-    , omega     = 1
-    , vAbs      = 1e-3
-    , vDirAngle = 1e-3
-    );
+  function selfRot
+    input Params params;
+    output Initials initials;
+  algorithm
+    initials := CreateInitials
+      ( name      = "selfRot"
+      , omega     = 1 / 3.610781043976
+      , vAbs      = 0 * 0.15 // 1e-3
+      , vDirAngle = 1e-3
+      , params    = params
+      , noSlip    = true
+      );
+  end selfRot;
 
-  constant Initials straight = CreateInitials
-    ( name      = "straight"
-    , omega     = 0
-    , vAbs      = 1
-    , vDirAngle = 1e-3
-    );
-
-  constant Initials wrench = CreateInitials
-    ( name      = "wrench"
-    , omega     = 1
-    , vAbs      = 1
-    , vDirAngle = 5e-3
-    );
+  function straight
+    input Params params;
+    output Initials initials;
+  algorithm
+    initials := CreateInitials
+      ( name      = "straight"
+      , omega     = 0 / 3.610781043976
+      , vAbs      = 1 * 0.15
+      , vDirAngle = 5e-3
+      , params    = params
+      , noSlip    = true
+      );
+  end straight;
+  
+  function wrench
+    input Params params;
+    output Initials initials;
+  algorithm
+    initials := CreateInitials
+      ( name      = "wrench"
+      , omega     = 1 / 3.610781043976
+      , vAbs      = 1 * 0.15
+      , vDirAngle = 5e-3
+      , params    = params
+      , noSlip    = true
+      );
+  end wrench;
 
   constant Initials wheelStill = Initials
     ( name = "wheel still"
@@ -37,6 +65,8 @@ package TestInitials
     , vDirAngle = 0
     , vVec = zeros(3)
     , omegaVec = zeros(3)
+    , params   = CreateParamsForOneWheelSimulation()
+    , noSlip   = true
     );
 
   constant Initials wheelSpinning = Initials
@@ -46,6 +76,8 @@ package TestInitials
     , vDirAngle = 0
     , vVec = zeros(3)
     , omegaVec = 1 * vertical
+    , params   = CreateParamsForOneWheelSimulation()
+    , noSlip    = true
     );
 
   constant Initials wheelSelfRotatingInPlace = Initials
@@ -55,6 +87,8 @@ package TestInitials
     , vDirAngle = 0
     , vVec = zeros(3)
     , omegaVec = -1 * userward
+    , params   = CreateParamsForOneWheelSimulation()
+    , noSlip    = true
     );
 
   constant Initials wheelSliding = Initials
@@ -64,6 +98,8 @@ package TestInitials
     , vDirAngle = 0
     , vVec = 1 * forward
     , omegaVec = zeros(3)
+    , params   = CreateParamsForOneWheelSimulation()
+    , noSlip    = true
     );
 
   constant Initials wheelSlidingAlongItsAxis = Initials
@@ -73,6 +109,8 @@ package TestInitials
     , vDirAngle = pi / 2
     , vVec = 1 * QToT(QRot(pi / 2, vertical)) * forward
     , omegaVec = zeros(3)
+    , params   = CreateParamsForOneWheelSimulation()
+    , noSlip    = true
     );
 
   constant Initials wheelSelfRotatingAndSliding = Initials
@@ -82,6 +120,8 @@ package TestInitials
     , vDirAngle = 0
     , vVec = 1 * forward
     , omegaVec = -1 * userward
+    , params   = CreateParamsForOneWheelSimulation()
+    , noSlip    = true
     );
 
   constant Initials wheelRolling_R_0_05 = Initials
@@ -91,6 +131,8 @@ package TestInitials
     , vDirAngle = 0
     , vVec = 0.05 * forward
     , omegaVec = -1 * userward
+    , params   = CreateParamsForOneWheelSimulation()
+    , noSlip    = true
     );
 
 end TestInitials;

@@ -14,13 +14,13 @@ package TestParams
     , mecanumAngle    =  0
 
     , platformRadius  =  0.15
-    , wheelRadius     =  0.05
+    , wheelRadius     =  0.07071067812
 
     , platformMass    =  1
     , wheelHubMass    =  0.15
     , rollerMass      =  0.05
     );
-  
+
   function CalculateVerificationParams
     input Real fractionOfRollerMassInWholeWheel;
     output Params params;
@@ -46,7 +46,10 @@ package TestParams
     ( params
         = TestParams.pmm
     , initials
-        = TestInitials.atRest
+        = TestInitials.atRest(
+          TestParams.pmm
+        )
+
     , frictionParams
         = frictionParams
 
@@ -58,7 +61,9 @@ package TestParams
     ( params
         = TestParams.pmm
     , initials
-        = TestInitials.selfRot
+        = TestInitials.selfRot(
+          TestParams.pmm
+        )
     , frictionParams
         = frictionParams
 
@@ -70,7 +75,10 @@ package TestParams
     ( params
         = TestParams.pmm
     , initials
-        = TestInitials.straight
+        = TestInitials.straight(
+          TestParams.pmm
+        )
+
     , frictionParams
         = frictionParams
 
@@ -82,7 +90,10 @@ package TestParams
     ( params
         = TestParams.pmm
     , initials
-        = TestInitials.wrench
+        = TestInitials.wrench(
+          TestParams.pmm
+        )
+
     , frictionParams
         = frictionParams
 
@@ -94,7 +105,10 @@ package TestParams
     ( params
         = TestParams.pmm
     , initials
-        = TestInitials.atRest
+        = TestInitials.atRest(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.dryRubberConcrete
 
@@ -106,7 +120,10 @@ package TestParams
     ( params
         = TestParams.pmm
     , initials
-        = TestInitials.selfRot
+        = TestInitials.selfRot(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.dryRubberConcrete
 
@@ -118,7 +135,10 @@ package TestParams
     ( params
         = TestParams.pmm
     , initials
-        = TestInitials.straight
+        = TestInitials.straight(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.dryRubberConcrete
 
@@ -130,7 +150,10 @@ package TestParams
     ( params
         = TestParams.pmm
     , initials
-        = TestInitials.wrench
+        = TestInitials.wrench(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.dryRubberConcrete
 
@@ -142,7 +165,10 @@ package TestParams
     ( params
         = TestParams.pmm
     , initials
-        = TestInitials.atRest
+        = TestInitials.atRest(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.impactLikeViscous
 
@@ -154,7 +180,10 @@ package TestParams
     ( params
         = TestParams.pmm
     , initials
-        = TestInitials.selfRot
+        = TestInitials.selfRot(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.impactLikeViscous
 
@@ -166,7 +195,10 @@ package TestParams
     ( params
         = TestParams.pmm
     , initials
-        = TestInitials.straight
+        = TestInitials.straight(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.impactLikeViscous
 
@@ -178,7 +210,10 @@ package TestParams
     ( params
         = TestParams.pmm
     , initials
-        = TestInitials.wrench
+        = TestInitials.wrench(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.impactLikeViscous
 
@@ -190,7 +225,10 @@ package TestParams
     ( params
         = TestParams.pmm
     , initials
-        = TestInitials.wrench
+        = TestInitials.wrench(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.impactLikeViscousJointsFrictionSmall
 
@@ -202,7 +240,10 @@ package TestParams
     ( params
         = TestParams.pmm
     , initials
-        = TestInitials.wrench
+        = TestInitials.wrench(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.impactLikeViscousJointsFrictionLarge
 
@@ -214,7 +255,10 @@ package TestParams
     ( params
         = TestParams.pmm
     , initials
-        = TestInitials.straight
+        = TestInitials.straight(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.impactLikeViscous
 
@@ -230,7 +274,10 @@ package TestParams
             ( fractionOfRollerMassInWholeWheel = 1e-1
             )
     , initials
-        = TestInitials.selfRot
+        = TestInitials.selfRot(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.dryRubberConcrete
 
@@ -244,7 +291,10 @@ package TestParams
             ( fractionOfRollerMassInWholeWheel = 1e-2
             )
     , initials
-        = TestInitials.selfRot
+        = TestInitials.selfRot(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.dryRubberConcrete
 
@@ -258,7 +308,10 @@ package TestParams
             ( fractionOfRollerMassInWholeWheel = 1e-3
             )
     , initials
-        = TestInitials.selfRot
+        = TestInitials.selfRot(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.dryRubberConcrete
 
@@ -272,7 +325,10 @@ package TestParams
             ( fractionOfRollerMassInWholeWheel = 1e-4
             )
     , initials
-        = TestInitials.selfRot
+        = TestInitials.selfRot(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.dryRubberConcrete
 
@@ -286,7 +342,10 @@ package TestParams
             ( fractionOfRollerMassInWholeWheel = 1e-5
             )
     , initials
-        = TestInitials.selfRot
+        = TestInitials.selfRot(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.dryRubberConcrete
 
@@ -300,7 +359,10 @@ package TestParams
             ( fractionOfRollerMassInWholeWheel = 1e-6
             )
     , initials
-        = TestInitials.selfRot
+        = TestInitials.selfRot(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.dryRubberConcrete
 
@@ -314,7 +376,10 @@ package TestParams
             ( fractionOfRollerMassInWholeWheel = 1e-1
             )
     , initials
-        = TestInitials.straight
+        = TestInitials.straight(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.dryRubberConcrete
 
@@ -328,7 +393,10 @@ package TestParams
             ( fractionOfRollerMassInWholeWheel = 1e-2
             )
     , initials
-        = TestInitials.straight
+        = TestInitials.straight(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.dryRubberConcrete
 
@@ -342,7 +410,10 @@ package TestParams
             ( fractionOfRollerMassInWholeWheel = 1e-3
             )
     , initials
-        = TestInitials.straight
+        = TestInitials.straight(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.dryRubberConcrete
 
@@ -356,7 +427,10 @@ package TestParams
             ( fractionOfRollerMassInWholeWheel = 1e-4
             )
     , initials
-        = TestInitials.straight
+        = TestInitials.straight(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.dryRubberConcrete
 
@@ -370,7 +444,10 @@ package TestParams
             ( fractionOfRollerMassInWholeWheel = 1e-5
             )
     , initials
-        = TestInitials.straight
+        = TestInitials.straight(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.dryRubberConcrete
 
@@ -384,7 +461,10 @@ package TestParams
             ( fractionOfRollerMassInWholeWheel = 1e-6
             )
     , initials
-        = TestInitials.straight
+        = TestInitials.straight(
+          TestParams.pmm
+        )
+
     , frictionParams
         = TestFrictionParams.dryRubberConcrete
 

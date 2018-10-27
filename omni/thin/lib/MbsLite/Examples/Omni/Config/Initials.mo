@@ -3,6 +3,7 @@ within MbsLite.Examples.Omni.Config;
 record Initials
 
   parameter String   name;
+  parameter Params   params;
 
   parameter Real     omega;
   parameter Real     vAbs;
@@ -10,5 +11,8 @@ record Initials
 
   parameter Real[3] vVec;
   parameter Real[3] omegaVec;
+
+  parameter Real[:]  wheelAxialOmegas;
+  parameter Real[:]  firstRollerAxialOmegas;
 
 end Initials;

@@ -13,6 +13,9 @@ model OmniWheelOnPlane
   parameter Initials         initials;
   parameter FrictionParams   frictionParams;
 
+  parameter Real firstRollerAxialOmega0 = 0;
+  parameter Real wheelAxialOmega0       = 0;
+
   Base base;
 
   OmniWheel wheel
@@ -105,9 +108,11 @@ equation
     end when;
   end if;
 
+/*
   when pre(indexOfRollerInContact) <> indexOfRollerInContact then
     reinit(wheel.Wheel.r[2], params.wheelRadius);
   end when;
+*/
 
 end OmniWheelOnPlane;
 

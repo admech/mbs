@@ -3,7 +3,7 @@ within MbsLite.Test.Omni.Cases;
 model OmniVehicleWrenchViscousTest
 
   OmniVehicleTest t
-    ( m.ovp =
+    (final m.ovp =
         TestParams.pmmWrenchViscous
         /*
         TestParams.pmmAtRestViscous

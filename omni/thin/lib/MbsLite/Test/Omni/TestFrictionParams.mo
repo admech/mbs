@@ -54,7 +54,7 @@ package TestFrictionParams
     , frictionGapAtEndOfRoller      = defaultFrictionGapAtEndOfRoller
 
     , wheelJointsFrictionCoeff      = defaultWheelJointsFrictionCoeff
-    , rollerJointsFrictionCoeff     = 1e-3
+    , rollerJointsFrictionCoeff     = 1e-5
     );
 
   constant FrictionParams impactLikeViscousJointsFrictionLarge = CreateFrictionParams
@@ -66,7 +66,7 @@ package TestFrictionParams
     , frictionGapAtEndOfRoller      = defaultFrictionGapAtEndOfRoller
 
     , wheelJointsFrictionCoeff      = defaultWheelJointsFrictionCoeff
-    , rollerJointsFrictionCoeff     = 5e-1
+    , rollerJointsFrictionCoeff     = 1e-4
     );
 
 end TestFrictionParams;

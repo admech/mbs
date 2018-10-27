@@ -43,6 +43,8 @@ model OmniVehicle
     , q0            = { ovp.wheelQuaternions[i,:]         for i in 1 : NActual }
     , initials      = { ovp.wheelInitials[i]              for i in 1 : NActual }
     , each frictionParams = ovp.frictionParams
+    , wheelAxialOmega0       = { ovp.initials.wheelAxialOmegas[i]        for i in 1 : NActual }
+    , firstRollerAxialOmega0 = { ovp.initials.firstRollerAxialOmegas[i]  for i in 1 : NActual }
     );
 
   TelemetryInfo telemetry 
@@ -65,10 +67,12 @@ equation
     connect( wheels[i].wheel.InPortF,   joints[i].OutPortA );
   end for;
 
+/*
   when { pre(wheels[i].indexOfRollerInContact) <> wheels[i].indexOfRollerInContact for i in 1 : NActual } then
     reinit(platform.r[2], ovp.params.wheelRadius);
     reinit(platform.v[2], 0);
   end when;
+*/
 
   // TELEMETRY
 

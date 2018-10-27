@@ -90,9 +90,11 @@ equation
     normalReaction = 0;
   end if;
 
+/*
   when isInContactNormal then
     reinit(normalVelocity, 0);
   end when;
+*/
 
   // FRICTION
   if /*noEvent*/(isInContactFriction) then

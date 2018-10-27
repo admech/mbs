@@ -72,26 +72,85 @@ package ParamsUtils
 
   end CreateParams;
 
+  function CreateParamsForOneWheelSimulation
+    input String name = "ParamsForOneWheelSimulation";
+    output Params params;
+  algorithm
+    params := Params
+      ( name            = name
+      
+      , NWheels         = 1
+      , nRollers        = -Integer_inf
+      , mecanumAngle    = inf
+      
+      , platformRadius  = inf
+      , wheelRadius     = inf
+      
+      , platformMass    = inf
+      , wheelHubMass    = inf
+      , rollerMass      = inf
+      , fractionOfRollerMassInWholeWheel = inf
+    
+      , rollerHalfAngle       = inf
+      , wheelHubRadius        = inf
+      , rollerRadiusForMoi    = inf
+      , rollerLengthForMoi    = inf
+      
+      , platformAxialMoi      = inf
+      , platformOrthogonalMoi = inf
+      , wheelHubAxialMoi      = inf
+      , wheelHubOrthogonalMoi = inf
+      , rollerAxialMoi        = inf
+      , rollerOrthogonalMoi   = inf
+      );
+
+  end CreateParamsForOneWheelSimulation;
+
   function CreateInitials
     input String   name;
+
+    input Params   params;
 
     input Real     omega;
     input Real     vAbs;
     input Real     vDirAngle;
 
+    input Boolean  noSlip "works only if platform.q0 = QRot(0, ...)";
+
     output Initials initials;
+
+  protected
+    Real[3] vVec                           = vAbs * QToT(QRot(vDirAngle, vertical)) * forward;
+    Real[params.NWheels] wheelAngles       = { pi / params.NWheels * (i - 1) for i in 1 : params.NWheels };
+    Real[params.NWheels] wheelAxialOmegas  =
+      { if noSlip then
+          (QToT(QRot(wheelAngles[i], vertical)) * forward) * vVec / params.wheelRadius
+          - omega * params.platformRadius / params.wheelRadius
+        else 0
+      for i in 1 : params.NWheels
+      };
+    Real[params.NWheels] firstRollerAxialOmegas  =
+      { if noSlip then
+          (QToT(QRot(wheelAngles[i], vertical)) * userward) * vVec / (params.wheelRadius - params.wheelHubRadius)
+        else 0
+      for i in 1 : params.NWheels
+      };
 
   algorithm
 
     initials := Initials
       ( name      = name
+      , params    = params
 
       , omega     = omega
       , vAbs      = vAbs
       , vDirAngle = vDirAngle
 
-      , vVec      = vAbs * QToT(QRot(vDirAngle, vertical)) * forward
+      , vVec      = vVec
       , omegaVec  = omega * vertical
+
+      , wheelAxialOmegas        = wheelAxialOmegas
+      , firstRollerAxialOmegas  = firstRollerAxialOmegas
       );
 
   end CreateInitials;
@@ -114,8 +173,8 @@ package ParamsUtils
     Boolean wheelJointsHaveFriction;
 
   algorithm
-    rollerJointsHaveFriction := CompareReal(0, rollerJointsFrictionCoeff);
-    wheelJointsHaveFriction  := CompareReal(0, wheelJointsFrictionCoeff);
+    rollerJointsHaveFriction := not CompareReal(0, rollerJointsFrictionCoeff);
+    wheelJointsHaveFriction  := not CompareReal(0, wheelJointsFrictionCoeff);
 
     frictionParams := FrictionParams
       ( name                          = name
@@ -192,11 +251,14 @@ package ParamsUtils
       wheelInitials[i]       :=
         Initials
           ( name      = "OmniWheel[" + String(i) + "] initials"
+          , params    = params
           , omega     = inf
           , vAbs      = inf
           , vDirAngle = inf
           , vVec      = wheelV0s[i,:]
           , omegaVec  = wheelOmega0s[i]
+          , wheelAxialOmegas       = initials.wheelAxialOmegas
+          , firstRollerAxialOmegas = initials.firstRollerAxialOmegas
           );
   
     end for;
