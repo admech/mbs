@@ -32,11 +32,18 @@ then
 # show disk and ram usage
 elif [[ $1 == "--diag" || $1 == "-d" ]]
 then
+  echo "";
   date;
+  echo "";
   echo "HDD ==========";
   df -h | grep "nvme\|Use";
+  echo "";
   echo "RAM ==========";
-  free -m;
+  free -m | sed "s/      //" ;
+  echo "";
+  echo "OMC ==========";
+  ps aww --sort=-pcpu -o pid,pcpu,trs,args | grep "[M]bs[A-Z,a-z,0-9,.]\+$\|omc .*" | fold -w `tput cols` 
+  echo "";
 
 else
   echo "Usage: --current|-c -- dump current sims, --peek|-p -- show csv sizes and last time point; -t n f1 f2 puts every nth line from f1 to f2; -d shows diag";

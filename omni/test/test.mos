@@ -60,25 +60,24 @@ if not SPECIFY_DRY_RUN then
     , stopTime = 1000
     , numberOfIntervals = 1000000
     , tolerance = 1e-12
-    // , simflags = "-lv=LOG_LS"
-    // , simflags = "-lv=LOG_DASSL_STATES"
+    // -lv=LOG_LS
+    // -lv=LOG_DASSL_STATES
 
     // , method = "ida"
-    // , simflags = "-idaLS=klu"
-    // , simflags = "-idaScaling"
+    // -idaLS=klu
+    // -idaScaling
 
-    , simflags = "-r=res_SPECIFY_MODEL_NAME.csv -cpu -emit_protected -abortSlowSimulation"
-    // , simflags = "-cpu"
-    // , simflags = "-emit_protected"
-    // , simflags = "--noRootFinding"
-    // , simflags = "-output=..."
-    // , simflags = "-abortSlowSimulation"
-    // , simflags = "<-ignoreHideResult>
-    // , simflags = "  Emits also variables with HideResult=true annotation.
+    , simflags = "-cpu -emit_protected -lssMaxDensity=0.003 -lssMinSize=1000"
 
-    , simflags = "-lssMaxDensity=0.003,-lssMinSize=1000"
-
-    // , method = "impeuler"
+    // -r=res_SPECIFY_MODEL_NAME.csv 
+    // -abortSlowSimulation
+    // -cpu
+    // -emit_protected
+    // --noRootFinding
+    // -output=...
+    // -abortSlowSimulation
+    // <-ignoreHideResult>
+    //   Emits also variables with HideResult=true annotation.
     );
 else
   print("na samom dele net"); 

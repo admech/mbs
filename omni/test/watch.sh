@@ -3,7 +3,7 @@
 # HDD and RAM
 if [[ $1 == "--resources" || $1 == "-r" ]]
 then
-  watch -n 600 "./dump.sh -d"
+  watch -n 1 "./dump.sh -d"
 
 elif [[ $1 == "--simulation" || $1 == "-s" ]]
 then
