@@ -2,7 +2,8 @@
 
 if [[ $1 ]]
 then
-  echo "Going to run $1";
+  model_name="$1";
+  echo "Going to run $model_name";
 else
   echo "Please pass model name as first arg";
   exit -1;
@@ -30,24 +31,44 @@ else
 fi
 
 tmp_dir_name="/home/ubuntu/dump/out/$2";
-tmp_file_name="$tmp_dir_name/simulate_$1.mos";
+tmp_file_name="$tmp_dir_name/simulate_$model_name.mos";
 
 cp "test.mos" $tmp_file_name;
 
-sed -i "s/SPECIFY_MODEL_NAME/$1/g" $tmp_file_name;
+sed -i "s/SPECIFY_MODEL_NAME/$model_name/g" $tmp_file_name;
 
 sed -i "s/SPECIFY_DRY_RUN/$is_dry_run/g" $tmp_file_name;
 
+echo "";
+echo "";
+echo "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
+echo "--------------------------------";
+echo "--------------------------------";
+echo "";
 echo "Created run script:"
 echo "";
 echo "$tmp_file_name";
 echo "";
-echo "----------------------------------------";
-echo "----------------------------------------";
-echo "            RUNNING MODELICA            ";
-echo "----------------------------------------";
-echo "----------------------------------------";
+echo "--------------------------------";
+echo "--------------------------------";
+echo "        RUNNING MODELICA        ";
+echo "--------------------------------";
+echo "--------------------------------";
+echo "";
+echo "";
+echo "Started simulating";
+echo "";
+echo "$model_name"; 
+echo "";
+echo "at";
 date;
+echo "";
+echo "Please find results in";
+echo "";
+echo "$tmp_dir_name";
+echo "";
+echo "";
+echo "--------------------------------";
 
 # --indexReductionMethod=dummyDerivatives \
 cd $tmp_dir_name && \
