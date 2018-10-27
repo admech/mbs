@@ -30,6 +30,9 @@ package ParamsUtils
     Real actualFractionOfRollerMassInWholeWheel;
 
   algorithm
+   
+    assert(FIXME_N_WHEELS == NWheels, "Please update the global constant MbsLite.Util.Constants.FIXME_N_WHEELS or check if OMC finally fixed the nasty bug with records and [:] arrays.");
+
     if rollerMass == -1 then
       assert(fractionOfRollerMassInWholeWheel > 0, "fractionOfRollerMassInWholeWheel should be positive, was: " + String(fractionOfRollerMassInWholeWheel));
       actualRollerMass := fractionOfRollerMassInWholeWheel * wheelHubMass / (1 - nRollers * fractionOfRollerMassInWholeWheel);
@@ -120,16 +123,16 @@ package ParamsUtils
     output Initials initials;
 
   protected
-    Real[3] vVec                           = vAbs * QToT(QRot(vDirAngle, vertical)) * forward;
-    Real[params.NWheels] wheelAngles       = { pi / params.NWheels * (i - 1) for i in 1 : params.NWheels };
-    Real[params.NWheels] wheelAxialOmegas  =
+    Real[3] vVec              = vAbs * QToT(QRot(vDirAngle, vertical)) * forward;
+    Real[:] wheelAngles       = { pi / params.NWheels * (i - 1) for i in 1 : params.NWheels };
+    Real[:] wheelAxialOmegas  =
       { if noSlip then
           (QToT(QRot(wheelAngles[i], vertical)) * forward) * vVec / params.wheelRadius
           - omega * params.platformRadius / params.wheelRadius
         else 0
       for i in 1 : params.NWheels
       };
-    Real[params.NWheels] firstRollerAxialOmegas  =
+    Real[:] firstRollerAxialOmegas  =
       { if noSlip then
           (QToT(QRot(wheelAngles[i], vertical)) * userward) * vVec / (params.wheelRadius - params.wheelHubRadius)
         else 0

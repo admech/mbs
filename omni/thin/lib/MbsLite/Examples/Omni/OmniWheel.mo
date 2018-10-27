@@ -16,8 +16,8 @@ model OmniWheel
   parameter Real[4]      q0          = fill(inf, 4);
   parameter Real[3, 3]   T0          = QToT(q0);
 
-  parameter Real firstRollerAxialOmega0 = 0;
-  parameter Real wheelAxialOmega0       = 0;
+  parameter Real firstRollerAxialOmega0 = inf;
+  parameter Real wheelAxialOmega0       = inf;
 
   parameter Real[nActual]     RollerAngles            = { (2 * params.rollerHalfAngle * (i - 1)) for i in 1 : nActual } "Angles between downward vertical { 0, -1, 0 } and roller center radius vectors";
   // FIXME: OpenModelica just can't use above array :(
@@ -44,7 +44,7 @@ model OmniWheel
       , final omega
           ( start
             = { transpose(QToT(RollerQsAbs[i,:])) * initials.omegaVec
-                + (if i == 1 then firstRollerAxialOmega0 * RollerAxisDirectionsInWheelCoords[i] else 0)
+                + (if i == 1 then firstRollerAxialOmega0 else 0) * forward
               for i in 1 : nActual
               }
           )

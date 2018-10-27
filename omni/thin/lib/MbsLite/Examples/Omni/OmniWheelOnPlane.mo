@@ -13,8 +13,8 @@ model OmniWheelOnPlane
   parameter Initials         initials;
   parameter FrictionParams   frictionParams;
 
-  parameter Real firstRollerAxialOmega0 = 0;
-  parameter Real wheelAxialOmega0       = 0;
+  parameter Real firstRollerAxialOmega0 = inf;
+  parameter Real wheelAxialOmega0       = inf;
 
   Base base;
 
@@ -27,6 +27,8 @@ model OmniWheelOnPlane
     , params   = params
     , initials = initials
     , frictionParams = frictionParams
+    , firstRollerAxialOmega0 = firstRollerAxialOmega0
+    , wheelAxialOmega0       = wheelAxialOmega0
     );
 
   PlaneContact[nActual] contacts

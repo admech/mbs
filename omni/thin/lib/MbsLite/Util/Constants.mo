@@ -8,5 +8,7 @@ package Constants
 
   constant Real[3] gravity   = -vertical;
 
+  constant Integer FIXME_N_WHEELS   = 3 "due to a nasty bug in OpenModelica, specifying records of initially unknown length or of one specified by a parameter, especially when all of this is happening while using records, the compiler is just like '........ Meh.' :(";
+
 end Constants;
 

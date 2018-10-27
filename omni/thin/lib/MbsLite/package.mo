@@ -30,6 +30,7 @@ package MbsLite
   import MbsLite.Util.Constants.forward;
   import MbsLite.Util.Constants.userward;
   import MbsLite.Util.Constants.gravity;
+  import MbsLite.Util.Constants.FIXME_N_WHEELS;
 
   import MbsLite.Util.MassGeometry.CylinderAxialMoi;
   import MbsLite.Util.MassGeometry.CylinderOrthogonalMoi;

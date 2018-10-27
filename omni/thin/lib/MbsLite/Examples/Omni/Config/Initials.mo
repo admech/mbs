@@ -12,7 +12,7 @@ record Initials
   parameter Real[3] vVec;
   parameter Real[3] omegaVec;
 
-  parameter Real[:]  wheelAxialOmegas;
-  parameter Real[:]  firstRollerAxialOmegas;
+  parameter Real[FIXME_N_WHEELS]  wheelAxialOmegas;
+  parameter Real[FIXME_N_WHEELS]  firstRollerAxialOmegas;
 
 end Initials;
