@@ -52,6 +52,14 @@ if not SPECIFY_DRY_RUN then
     // , simflags = "-idaScaling"
 
     // , simflags = "-r=res.csv"
+    // , simflags = "-cpu
+    // , simflags = "-emit_protected
+    // , simflags = "--noRootFinding
+    // , simflags = "-output=...
+    // , simflags = "-abortSlowSimulation
+    // , simflags = "<-ignoreHideResult>
+    // , simflags = "  Emits also variables with HideResult=true annotation.
+
     , simflags = "-lssMaxDensity=0.003,-lssMinSize=1000"
 
     // , method = "impeuler"
